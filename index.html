@@ -463,8 +463,8 @@
         <div class="w-24 h-1 bg-petBlue mx-auto mb-8"></div>
 
         <!-- Linha com os 3 blocos: Telefone | Email | Horário -->
-        <div class="grid grid-cols-3 justify-items-center gap-8">
-          
+     <!--   <div class="grid grid-cols-3 justify-items-center gap-8"> -->
+        <div class="grid grid-cols-1 md:grid-cols-3 justify-items-center gap-8">  
           <!-- Telefone -->
           <div class="flex flex-col items-center text-center max-w-xs">
             <div class="w-16 h-16 bg-petBlue bg-opacity-20 rounded-full flex items-center justify-center mb-4">
@@ -513,6 +513,14 @@
     </div>
   </div>
 </section>
+
+
+
+
+
+
+
+
     <!-- Map Section -->
 <section class="py-8 bg-petLightGray bg-opacity-30">
     <div class="container mx-auto px-4">
@@ -540,7 +548,8 @@
     </div>
 </section>
 
-   <footer class="bg-petGray text-white py-2 relative">
+
+   <footer class="bg-petGray text-white py-2">
   <div class="container mx-auto px-4 flex items-center justify-between">
 
     <!-- Logo alinhada à esquerda -->
@@ -558,9 +567,11 @@
     </div>
 
     <!-- Texto centralizado -->
-    <p class="text-gray-400 text-xs absolute left-1/2 transform -translate-x-1/2">
-      © 2025 Direitos reservados à equipe PetSync.
-    </p>
+    <div class="flex-1 text-center">
+      <p class="text-gray-400 text-xs">
+        © 2025 Direitos reservados à equipe PetSync.
+      </p>
+    </div>
 
     <!-- Redes sociais dentro do footer -->
     <div class="flex space-x-2">
@@ -597,6 +608,9 @@
       103.4-9 132.9z"/>
   </svg>
 </a>
+
+
+
       <!-- Telegram 
       <a href="https://t.me/seuPerfil" target="_blank" rel="noopener"
          class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
