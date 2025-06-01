@@ -218,7 +218,9 @@ function addProductEvents() {
                 // Verificar se o script de carrinho está disponível
                 if (typeof addToCart === 'function') {
                     addToCart(product, 1);
-                    
+                    if (typeof updateCartCounter === 'function') { // Adicionado para atualizar o contador
+                        updateCartCounter();
+                    }
                     // Adicionar notificação estilizada
                     if (typeof showNotification === 'function') {
                         showNotification(`${product.name} adicionado ao carrinho!`, 'success');
@@ -335,7 +337,9 @@ function setupProductModal() {
                 // Verificar se o script de carrinho está disponível
                 if (typeof addToCart === 'function') {
                     addToCart(product, quantity);
-                    
+                    if (typeof updateCartCounter === 'function') { // Adicionado para atualizar o contador
+                        updateCartCounter();
+                    }
                     // Adicionar notificação estilizada
                     if (typeof showNotification === 'function') {
                         showNotification(`${quantity}x ${product.name} adicionado ao carrinho!`, 'success');
