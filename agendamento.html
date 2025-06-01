@@ -23,6 +23,122 @@
             }
         }
     </script>
+    <script>
+        // Função para formatar o campo de peso automaticamente
+        document.addEventListener('DOMContentLoaded', function() {
+            const pesoInput = document.getElementById('pet-weight');
+            
+            pesoInput.addEventListener('input', function(e) {
+                // Preserva a posição do cursor
+                const cursorPos = this.selectionStart;
+                
+                // Remove qualquer caractere que não seja número ou ponto
+                let value = this.value.replace(/[^\d.]/g, '');
+                
+                // Divide o valor em parte inteira e decimal
+                let parts = value.split('.');
+                let intPart = parts[0] || '';
+                let decPart = parts.length > 1 ? parts[1] : '';
+                
+                // Limita a parte inteira a 2 dígitos (para 99.99)
+                if (intPart.length > 2) {
+                    intPart = intPart.slice(0, 2);
+                }
+                
+                // Limita a parte decimal a 2 dígitos
+                if (decPart.length > 2) {
+                    decPart = decPart.slice(0, 2);
+                }
+                
+                // Verifica se o valor é maior que 99.99
+                if (parseFloat(intPart + '.' + decPart) > 99.99) {
+                    intPart = '99';
+                    decPart = '99';
+                }
+                
+                // Formata o valor final
+                if (this.value.includes('.') || decPart) {
+                    // Se já tem ponto ou parte decimal, mantém o formato
+                    this.value = intPart + (decPart || this.value.endsWith('.') ? '.' + decPart : '');
+                } else {
+                    // Se não tem ponto, mantém apenas a parte inteira
+                    this.value = intPart;
+                }
+                
+                // Restaura a posição do cursor com ajuste para o novo formato
+                const newLength = this.value.length;
+                const posDiff = newLength - value.length;
+                this.setSelectionRange(cursorPos + posDiff, cursorPos + posDiff);
+            });
+            
+            // Quando o campo perde o foco, garante a formatação correta
+            pesoInput.addEventListener('blur', function() {
+                if (this.value.trim() === '' || this.value === '0.00') {
+                    this.value = '';
+                    return;
+                }
+                
+                // Divide o valor em parte inteira e decimal
+                let parts = this.value.split('.');
+                let intPart = parts[0] || '0';
+                let decPart = parts.length > 1 ? parts[1] : '00';
+                
+                // Garante que a parte decimal tenha 2 dígitos
+                while (decPart.length < 2) {
+                    decPart += '0';
+                }
+                
+                // Formata o valor final com ponto decimal
+                this.value = intPart + '.' + decPart;
+            });
+            
+            // Função para obter a hora atual de Brasília e validar horários de agendamento
+            function obterHoraBrasilia() {
+                // Usando API para obter a hora atual de Brasília
+                fetch('https://worldtimeapi.org/api/timezone/America/Sao_Paulo')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Armazena a data e hora atual de Brasília
+                        window.horaBrasilia = new Date(data.datetime);
+                        console.log('Hora atual de Brasília:', window.horaBrasilia);
+                        
+                        // Atualiza o calendário com a validação de datas passadas
+                        if (typeof initCalendar === 'function') {
+                            initCalendar();
+                        }
+                        
+                        // Atualiza os horários disponíveis se estiver na etapa de data/hora
+                        if (document.getElementById('step3') && !document.getElementById('step3').classList.contains('hidden') && selectedDate) {
+                            updateTimeSlots();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao obter hora de Brasília:', error);
+                        // Fallback: usar hora local do navegador com timezone de Brasília
+                        const now = new Date();
+                        // Ajusta para o timezone de Brasília (UTC-3)
+                        window.horaBrasilia = new Date(now.toLocaleString('en-US', {timeZone: 'America/Sao_Paulo'}));
+                        console.log('Usando hora local como fallback:', window.horaBrasilia);
+                        
+                        // Atualiza o calendário mesmo com o fallback
+                        if (typeof initCalendar === 'function') {
+                            initCalendar();
+                        }
+                        
+                        // Atualiza os horários disponíveis se estiver na etapa de data/hora
+                        if (document.getElementById('step3') && !document.getElementById('step3').classList.contains('hidden') && selectedDate) {
+                            updateTimeSlots();
+                        }
+                    });
+            }
+            
+            // Obter a hora de Brasília ao carregar a página
+            obterHoraBrasilia();
+            
+            // Atualizar a hora a cada 30 segundos para garantir precisão
+            setInterval(obterHoraBrasilia, 30000);
+        });
+    </script>
     <!-- Referência à fonte Poppins (mantendo o original) -->
     <link href="./css2" rel="stylesheet">
     <!-- Estilos específicos da página de agendamento -->
@@ -58,6 +174,58 @@
             color: #A0AEC0;
             cursor: not-allowed;
         }
+        
+        /* Ajustes de responsividade para campos de data e hora */
+        @media (max-width: 768px) {
+            .date-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+            
+            .time-slots-container {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.5rem !important;
+            }
+            
+            .time-slot {
+                padding: 0.5rem !important;
+                font-size: 0.875rem !important;
+            }
+            
+            .calendar-container {
+                padding: 0.75rem !important;
+            }
+            
+            .calendar-header {
+                flex-direction: column !important;
+                align-items: center !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            .calendar-nav {
+                margin-top: 0.5rem !important;
+                width: 100% !important;
+                justify-content: space-between !important;
+            }
+            
+            .date-cell {
+                height: 2.5rem !important;
+                width: 2.5rem !important;
+                font-size: 0.875rem !important;
+            }
+            
+            /* Correção para o alinhamento do texto "Data e Hora" */
+            .step-indicator + span {
+                text-align: center !important;
+                width: 100% !important;
+                white-space: nowrap !important;
+            }
+            
+            /* Ajuste específico para o texto "Data e Hora" */
+            #step3-indicator + span {
+                margin-top: 0.5rem !important;
+                line-height: 1.2 !important;
+            }
+        }
     </style>
     <!-- Referência a um CSS original (mantendo o original) -->
     <link href="./3ea6e67a3e74024cf5f100ea6a2851bf.css" rel="stylesheet">
@@ -68,7 +236,7 @@
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <div class="flex items-center">
-                    <div class="text-2xl font-bold text-petBlue flex items-center">
+                    <a href="./index.html" class="text-2xl font-bold text-petBlue flex items-center">
                         <svg class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8 9C9.10457 9 10 8.10457 10 7C10 5.89543 9.10457 5 8 5C6.89543 5 6 5.89543 6 7C6 8.10457 6.89543 9 8 9Z" fill="#FF7A00"></path>
                             <path d="M16 9C17.1046 9 18 8.10457 18 7C18 5.89543 17.1046 5 16 5C14.8954 5 14 5.89543 14 7C14 8.10457 14.8954 9 16 9Z" fill="#FF7A00"></path>
@@ -77,16 +245,16 @@
                             <path d="M12 18C13.6569 18 15 16.6569 15 15C15 13.3431 13.6569 12 12 12C10.3431 12 9 13.3431 9 15C9 16.6569 10.3431 18 12 18Z" fill="#0078C8"></path>
                         </svg>
                         Pet<span class="text-petOrange">Sync</span>
-                    </div>
+                    </a>
                 </div>
                 
                 <!-- Desktop Menu -->
-                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-              <a href="./index.html" 
-                 class="bg-petOrange hover:bg-orange-600 text-white font-medium py-1.5 px-3 rounded-lg text-center transition duration-300">
-                Voltar Ao Início
-              </a>
-            </div>
+                <div class="flex items-center">
+                    <a href="./index.html" 
+                       class="bg-petOrange hover:bg-orange-600 text-white font-medium py-1.5 px-3 rounded-lg text-center transition duration-300">
+                      Voltar Ao Início
+                    </a>
+                </div>
                 
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
@@ -137,7 +305,7 @@
                     <div class="flex-1 h-1 bg-petLightGray mx-4" id="progress-bar-2"></div>
                     <div class="flex flex-col items-center">
                         <div class="w-10 h-10 bg-petLightGray text-petGray rounded-full flex items-center justify-center font-bold step-indicator" id="step3-indicator">3</div>
-                        <span class="mt-2 text-sm text-petGray font-medium">Data e Hora</span>
+                        <span class="mt-2 text-sm text-petGray font-medium text-center">Data e<br class="hidden sm:inline"> Hora</span>
                     </div>
                     <div class="flex-1 h-1 bg-petLightGray mx-4" id="progress-bar-3"></div>
                     <div class="flex flex-col items-center">
@@ -152,31 +320,31 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="owner-name" class="block text-petGray mb-2">Nome Completo</label>
+                            <label for="owner-name" class="block text-petGray mb-2">Nome Completo <span class="text-red-500">*</span></label>
                             <input type="text" id="owner-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="Seu nome completo">
                             <p class="text-red-500 text-sm mt-1 hidden" id="owner-name-error">Por favor, informe seu nome completo.</p>
                         </div>
                         
                         <div>
-                            <label for="owner-email" class="block text-petGray mb-2">E-mail</label>
+                            <label for="owner-email" class="block text-petGray mb-2">E-mail <span class="text-red-500">*</span></label>
                             <input type="email" id="owner-email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="seu.email@exemplo.com">
                             <p class="text-red-500 text-sm mt-1 hidden" id="owner-email-error">Por favor, informe um e-mail válido.</p>
                         </div>
                         
                         <div>
-                            <label for="owner-phone" class="block text-petGray mb-2">Telefone</label>
+                            <label for="owner-phone" class="block text-petGray mb-2">Telefone <span class="text-red-500">*</span></label>
                             <input type="tel" id="owner-phone" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="(00) 00000-0000">
                             <p class="text-red-500 text-sm mt-1 hidden" id="owner-phone-error">Por favor, informe um telefone válido.</p>
                         </div>
                         
                         <div>
-                            <label for="pet-name" class="block text-petGray mb-2">Nome do Pet</label>
+                            <label for="pet-name" class="block text-petGray mb-2">Nome do Pet <span class="text-red-500">*</span></label>
                             <input type="text" id="pet-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="Nome do seu pet">
                             <p class="text-red-500 text-sm mt-1 hidden" id="pet-name-error">Por favor, informe o nome do seu pet.</p>
                         </div>
                         
                         <div>
-                            <label for="pet-type" class="block text-petGray mb-2">Tipo de Pet</label>
+                            <label for="pet-type" class="block text-petGray mb-2">Tipo de Pet <span class="text-red-500">*</span></label>
                             <select id="pet-type" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input">
                                 <option value="">Selecione o tipo</option>
                                 <option value="cachorro">Cachorro</option>
@@ -207,12 +375,14 @@
                         </div>
                         
                         <div>
-                            <label for="pet-weight" class="block text-petGray mb-2">Peso (kg)</label>
-                            <input type="number" id="pet-weight" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="Peso aproximado">
-                            <p class="text-red-500 text-sm mt-1 hidden" id="pet-weight-error">Por favor, informe o peso do seu pet.</p>
+                            <label for="pet-weight" class="block text-petGray mb-2">Peso (kg) <span class="text-red-500">*</span></label>
+                            <input type="text" id="pet-weight" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="Peso aproximado" maxlength="5"
+                            min="0" max="99.99" step="0.01"
+                            oninput="limitarPeso(this)">
+                            <p class="text-red-500 text-sm mt-1 hidden" id="pet-weight-error">Por favor, informe o peso aproximado do seu pet.</p>
                         </div>
                     </div>
-                    
+
                     <div class="mt-8 flex justify-end">
                         <button id="step1-next" class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none">Próximo</button>
                     </div>
@@ -363,16 +533,8 @@
                         <!-- Time Slots -->
                         <div>
                             <h3 class="text-lg font-semibold text-petGray mb-4">Selecione um horário</h3>
-                            <div id="time-slots" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                <button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="09:00">09:00</button>
-                                <button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="10:00">10:00</button>
-                                <button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="11:00">11:00</button>
-                                <button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="13:00">13:00</button>
-                                <button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="14:00">14:00</button>
-                                <button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="15:00">15:00</button>
-                                <button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="16:00">16:00</button>
-                                <button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="17:00">17:00</button>
-                                <button class="time-slot unavailable py-2 px-3 border border-gray-300 rounded-md" data-time="18:00" disabled>18:00</button>
+                            <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <!-- Os horários serão gerados dinamicamente pelo JavaScript -->
                             </div>
                             <p class="text-red-500 text-sm mt-2 hidden" id="time-error">Por favor, selecione um horário.</p>
                             
@@ -489,55 +651,91 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-petGray text-white py-12">
-  <div class="container mx-auto px-4 text-center">
-    <div class="grid grid-cols-1 md:grid-cols-1 gap-8 justify-center">
-      <div>
-        <div class="text-2xl font-bold text-white flex items-center justify-center mb-6">
-          <svg class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 9C9.10457 9 10 8.10457 10 7C10 5.89543 9.10457 5 8 5C6.89543 5 6 5.89543 6 7C6 8.10457 6.89543 9 8 9Z" fill="#FF7A00"></path>
-            <path d="M16 9C17.1046 9 18 8.10457 18 7C18 5.89543 17.1046 5 16 5C14.8954 5 14 5.89543 14 7C14 8.10457 14.8954 9 16 9Z" fill="#FF7A00"></path>
-            <path d="M6 14C7.10457 14 8 13.1046 8 12C8 10.8954 7.10457 10 6 10C4.89543 10 4 10.8954 4 12C4 13.1046 4.89543 14 6 14Z" fill="#FF7A00"></path>
-            <path d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z" fill="#FF7A00"></path>
-            <path d="M12 18C13.6569 18 15 16.6569 15 15C15 13.3431 13.6569 12 12 12C10.3431 12 9 13.3431 9 15C9 16.6569 10.3431 18 12 18Z" fill="#0078C8"></path>
-          </svg>
-          <span>
-            Pet<span class="text-petOrange">Sync</span>
-          </span>
-        </div>
+    <footer class="bg-petGray text-white py-2">
+  <div class="container mx-auto px-4 flex items-center justify-between">
 
-        <p class="text-gray-300 mb-6 max-w-xl mx-auto">
-          Cuidando do seu pet com amor e dedicação. Oferecemos serviços completos para o bem-estar do seu melhor amigo.
-        </p>
+    <!-- Logo alinhada à esquerda -->
+    <div class="flex items-center">
+      <svg class="w-6 h-6 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 9C9.10457 9 10 8.10457 10 7C10 5.89543 9.10457 5 8 5C6.89543 5 6 5.89543 6 7C6 8.10457 6.89543 9 8 9Z" fill="#FF7A00"/>
+        <path d="M16 9C17.1046 9 18 8.10457 18 7C18 5.89543 17.1046 5 16 5C14.8954 5 14 5.89543 14 7C14 8.10457 14.8954 9 16 9Z" fill="#FF7A00"/>
+        <path d="M6 14C7.10457 14 8 13.1046 8 12C8 10.8954 7.10457 10 6 10C4.89543 10 4 10.8954 4 12C4 13.1046 4.89543 14 6 14Z" fill="#FF7A00"/>
+        <path d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z" fill="#FF7A00"/>
+        <path d="M12 18C13.6569 18 15 16.6569 15 15C15 13.3431 13.6569 12 12 12C10.3431 12 9 13.3431 9 15C9 16.6569 10.3431 18 12 18Z" fill="#0078C8"/>
+      </svg>
+      <span class="text-lg font-bold text-white">
+        Pet<span class="text-petOrange">Sync</span>
+      </span>
+    </div>
 
-        <div class="flex justify-center space-x-4 mb-6">
-          <!-- Telegram -->
-          <a href="https://t.me/seuPerfil" target="_blank" rel="noopener" class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 240 240" class="w-5 h-5">
-              <path d="M120 0C53.73 0 0 53.73 0 120s53.73 120 120 120 120-53.73 120-120S186.27 0 120 0zm56.65 83.54l-22.5 106.37c-1.7 7.43-6.18 9.3-12.52 5.8l-34.59-25.53-16.7 16.08c-1.85 1.85-3.4 3.4-6.95 3.4l2.48-35.4 64.38-58.1c2.8-2.48-.61-3.88-4.37-1.4l-79.52 50.15-34.19-10.69c-7.43-2.3-7.58-7.43 1.56-11.01l131.86-50.81c6.1-2.3 11.43 1.5 9.93 11.9z"/>
-            </svg>
-          </a>
+    <!-- Texto centralizado -->
+    <div class="flex-1 text-center">
+      <p class="text-gray-400 text-xs">
+        © 2025 Direitos reservados à equipe PetSync.
+      </p>
+    </div>
 
-          <!-- Facebook -->
-          <a href="https://facebook.com/seuPerfil" target="_blank" rel="noopener" class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition duration-300">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
-            </svg>
-          </a>
+    <!-- Redes sociais dentro do footer -->
+    <div class="flex space-x-2">
 
-          <!-- Twitter (X) -->
-          <a href="https://twitter.com/seuPerfil" target="_blank" rel="noopener" class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition duration-300">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-5">
-              <path d="M23.954 4.569c-.885.39-1.83.654-2.825.775a4.932 4.932 0 002.163-2.724 9.864 9.864 0 01-3.127 1.195 4.916 4.916 0 00-8.373 4.482A13.944 13.944 0 011.671 3.15 4.916 4.916 0 003.195 9.723 4.902 4.902 0 012 9.1v.06a4.916 4.916 0 003.946 4.814 4.935 4.935 0 01-2.212.085 4.917 4.917 0 004.588 3.415 9.868 9.868 0 01-6.102 2.104c-.396 0-.787-.023-1.174-.069a13.945 13.945 0 007.557 2.213c9.054 0 14-7.496 14-13.986 0-.21 0-.423-.015-.633a9.936 9.936 0 002.457-2.548l-.047-.02z"/>
-            </svg>
-          </a>
-        </div>
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/henriquea1ves_/" target="_blank" rel="noopener"
+   class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4">
+    <path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9
+      114.9-51.3 114.9-114.9S287.7 141 224.1 141zm0 
+      189.6c-41.2 0-74.7-33.5-74.7-74.7s33.5-74.7 
+      74.7-74.7 74.7 33.5 74.7 74.7-33.5 74.7-74.7
+      74.7zm146.4-194.3c0 14.9-12 
+      26.9-26.9 26.9s-26.9-12-26.9-26.9 12-26.9 
+      26.9-26.9 26.9 12 26.9 26.9zm76.1 
+      27.2c-1.7-35.7-9.9-67.3-36.2-93.5s-57.8-34.5-93.5-36.2C293.7 
+      32 256 32 224 32s-69.7 0-92.9 1.8c-35.7 
+      1.7-67.3 9.9-93.5 36.2S3.8 127.8 
+      2.1 163.5C.3 186.7 0 224 0 
+      256s.3 69.7 1.8 92.9c1.7 35.7 
+      9.9 67.3 36.2 93.5s57.8 34.5 
+      93.5 36.2c23.2 1.6 60.9 1.8 
+      92.9 1.8s69.7-.3 92.9-1.8c35.7-1.7 
+      67.3-9.9 93.5-36.2s34.5-57.8 
+      36.2-93.5c1.6-23.2 1.8-60.9 
+      1.8-92.9s-.2-69.7-1.8-92.9zm-48.6 
+      228c-7.8 19.6-22.9 34.7-42.6 
+      42.6-29.5 11.7-99.5 9-132.9 
+      9s-103.4 2.6-132.9-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.9s-2.6-103.4 
+      9-132.9c7.8-19.6 22.9-34.7 42.6-42.6 
+      29.5-11.7 99.5-9 132.9-9s103.4-2.6 
+      132.9 9c19.6 7.8 34.7 22.9 42.6 42.6 
+      11.7 29.5 9 99.5 9 132.9s2.7 
+      103.4-9 132.9z"/>
+  </svg>
+</a>
 
-        <p class="text-gray-400 text-sm">
-          © 2025 Direitos reservados à equipe PetSync. <br>
-          Jullye Henrique, Henrique Junyo, Guilherme Obolari, João Vaz e Miguel Araujo.
-        </p>
-      </div>
+
+
+      <!-- Telegram 
+      <a href="https://t.me/seuPerfil" target="_blank" rel="noopener"
+         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 240 240" class="w-4 h-4">
+          <path d="M120 0C53.73 0 0 53.73 0 120s53.73 120 120 120 120-53.73 120-120S186.27 0 120 0zm56.65 83.54l-22.5 106.37c-1.7 7.43-6.18 9.3-12.52 5.8l-34.59-25.53-16.7 16.08c-1.85 1.85-3.4 3.4-6.95 3.4l2.48-35.4 64.38-58.1c2.8-2.48-.61-3.88-4.37-1.4l-79.52 50.15-34.19-10.69c-7.43-2.3-7.58-7.43 1.56-11.01l131.86-50.81c6.1-2.3 11.43 1.5 9.93 11.9z"/>
+        </svg>
+      </a> -->
+
+      <!-- Facebook 
+      <a href="https://facebook.com/seuPerfil" target="_blank" rel="noopener"
+         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
+        </svg>
+      </a> -->
+
+      <!-- Twitter (X) 
+      <a href="https://twitter.com/seuPerfil" target="_blank" rel="noopener"
+         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+          <path d="M23.954 4.569c-.885.39-1.83.654-2.825.775a4.932 4.932 0 002.163-2.724 9.864 9.864 0 01-3.127 1.195 4.916 4.916 0 00-8.373 4.482A13.944 13.944 0 011.671 3.15 4.916 4.916 0 003.195 9.723 4.902 4.902 0 012 9.1v.06a4.916 4.916 0 003.946 4.814 4.935 4.935 0 01-2.212.085 4.917 4.917 0 004.588 3.415 9.868 9.868 0 01-6.102 2.104c-.396 0-.787-.023-1.174-.069a13.945 13.945 0 007.557 2.213c9.054 0 14-7.496 14-13.986 0-.21 0-.423-.015-.633a9.936 9.936 0 002.457-2.548l-.047-.02z"/>
+        </svg>
+      </a> -->
     </div>
   </div>
 </footer>
@@ -577,6 +775,8 @@
             let currentStep = 0;
             
             const showStep = (stepIndex) => {
+                console.log('Mostrando etapa:', stepIndex, steps[stepIndex]);
+                
                 // Hide all steps
                 steps.forEach(step => {
                     document.getElementById(step).classList.add('hidden');
@@ -584,6 +784,7 @@
                 
                 // Show current step
                 document.getElementById(steps[stepIndex]).classList.remove('hidden');
+                console.log('Removida classe hidden de:', steps[stepIndex]);
                 
                 // Update progress indicators
                 for (let i = 0; i < steps.length; i++) {
@@ -659,7 +860,16 @@
                     document.getElementById('pet-name-error').classList.add('hidden');
                 }
                 
-                // Validate pet type
+                // Validate pet weight (now required)
+                const petWeight = document.getElementById('pet-weight').value.trim();
+                if (petWeight === '') {
+                    document.getElementById('pet-weight-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('pet-weight-error').classList.add('hidden');
+                }
+                
+                // Validate pet type (now required)
                 const petType = document.getElementById('pet-type').value;
                 if (petType === '') {
                     document.getElementById('pet-type-error').classList.remove('hidden');
@@ -670,7 +880,9 @@
                 
                 if (isValid) {
                     currentStep = 1;
+                    console.log('Avançando para etapa de serviços (step2)');
                     showStep(currentStep);
+                    console.log('Verificando se step2 está visível:', !document.getElementById('step2').classList.contains('hidden'));
                 }
             });
             
@@ -898,31 +1110,107 @@
                 }
             };
             
-            // Time slot selection
-            const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
-            
-            timeSlots.forEach(slot => {
-                slot.addEventListener('click', function() {
-                    // Remove selected class from all time slots
-                    timeSlots.forEach(s => {
-                        s.classList.remove('selected');
-                    });
+            // Função para atualizar os horários disponíveis com base na data selecionada
+            function updateTimeSlots() {
+                const timeSlotsContainer = document.getElementById('time-slots-container');
+                timeSlotsContainer.innerHTML = '';
+                
+                // Horários disponíveis (poderia vir de uma API ou configuração)
+                const availableTimeSlots = [
+                    '08:00', '09:00', '10:00', '11:00', 
+                    '13:00', '14:00', '15:00', '16:00', '17:00'
+                ];
+                
+                // Horários indisponíveis (exemplo - poderia vir de uma API)
+                const unavailableTimeSlots = ['12:00'];
+                
+                // Referência à hora atual de Brasília
+                const horaBrasilia = window.horaBrasilia || new Date();
+                
+                // Verifica se a data selecionada é hoje
+                const isToday = selectedDate && 
+                               selectedDate.getDate() === horaBrasilia.getDate() && 
+                               selectedDate.getMonth() === horaBrasilia.getMonth() && 
+                               selectedDate.getFullYear() === horaBrasilia.getFullYear();
+                
+                // Limpa a seleção de horário anterior
+                selectedTime = null;
+                
+                // Cria os slots de horário
+                availableTimeSlots.forEach(time => {
+                    const timeSlot = document.createElement('button');
+                    timeSlot.classList.add('time-slot', 'py-2', 'px-3', 'border', 'border-gray-300', 'rounded-md', 'text-petGray', 'hover:border-petBlue', 'focus:outline-none');
+                    timeSlot.setAttribute('data-time', time);
+                    timeSlot.textContent = time;
                     
-                    // Add selected class to clicked time slot
-                    slot.classList.add('selected');
+                    // Verifica se o horário está indisponível
+                    let isUnavailable = unavailableTimeSlots.includes(time);
                     
-                    // Update selected time
-                    selectedTime = slot.getAttribute('data-time');
+                    // Se for hoje, verifica se o horário já passou
+                    if (isToday) {
+                        const [hora, minuto] = time.split(':').map(Number);
+                        const timeDate = new Date(selectedDate);
+                        timeDate.setHours(hora, minuto, 0, 0);
+                        
+                        // Compara com a hora atual de Brasília
+                        if (timeDate <= horaBrasilia) {
+                            isUnavailable = true;
+                        }
+                    }
                     
-                    // Hide time error if visible
-                    document.getElementById('time-error').classList.add('hidden');
+                    if (isUnavailable) {
+                        timeSlot.classList.add('unavailable');
+                        timeSlot.classList.remove('hover:border-petBlue');
+                        timeSlot.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed');
+                        timeSlot.disabled = true;
+                        timeSlot.title = 'Horário indisponível';
+                    } else {
+                        // Evento de clique para selecionar o horário
+                        timeSlot.addEventListener('click', function() {
+                            // Remove a classe de seleção de todos os horários
+                            document.querySelectorAll('.time-slot').forEach(slot => {
+                                slot.classList.remove('selected');
+                            });
+                            
+                            // Adiciona a classe de seleção ao horário clicado
+                            timeSlot.classList.add('selected');
+                            
+                            // Atualiza o horário selecionado
+                            selectedTime = time;
+                            
+                            // Esconde o erro de horário, se visível
+                            document.getElementById('time-error').classList.add('hidden');
+                        });
+                    }
+                    
+                    timeSlotsContainer.appendChild(timeSlot);
                 });
-            });
+            }
             
             // Initialize first step
             showStep(currentStep);
         });
     </script>
+
+    <script>
+  function limitarPeso(input) {
+    // Remove tudo que não for número
+    let valor = input.value.replace(/[^\d]/g, '');
+
+    // Linha de codigo que insere a virgula depois de 2 digitos
+    if (valor.length > 2) {
+      valor = valor.slice(0, 2) + '.' + valor.slice(2, 4);
+    }
+
+    // Atualiza o campo
+    input.value = valor;
+
+    // limitei a  digitos (exemplo 99,99, porque nao tera animal com 100kg)
+    if (valor.length > 5) {
+      input.value = valor.slice(0, 5);
+    }
+  }
+</script>
     <!-- Incluir o script de navegação suave (opcional, se necessário nesta página) -->
     <!-- <script src="scripts/smooth-navigation.js"></script> -->
 </body>
