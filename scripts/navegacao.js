@@ -77,37 +77,52 @@ document.addEventListener("DOMContentLoaded", function () {
         if (contatoSection) contatoSection.id = "contato";
     }
 
-    // Configura links do menu
-    document.querySelectorAll("nav a").forEach((link) => {
-        const text = link.textContent.trim();
-        if (text === "Serviços") {
-            link.href = "#servicos";
-            configureLink(link, "servicos");
-        } else if (text === "Produtos") {
-            link.href = "#produtos";
-            configureLink(link, "produtos");
-        } else if (text === "Contato") {
-            link.href = "#contato";
-            configureLink(link, "contato");
-        } else if (text === "Sobre") {
-            link.href = "#sobre";
-            configureLink(link, "sobre");
-        } else if (text === "Início") {
-            link.href = "index.html";
-        }
-    });
+    // Configura links do menu (Apenas na página inicial para links internos)
+    if (window.location.pathname.endsWith('/') || window.location.pathname.endsWith('index.html')) {
+        document.querySelectorAll("nav a").forEach((link) => {
+            const text = link.textContent.trim();
+            if (text === "Serviços") {
+                link.href = "#servicos";
+                configureLink(link, "servicos");
+            } else if (text === "Produtos") {
+                // Na index, aponta para a seção. Em outras páginas, mantém o href original (produtos.html)
+                link.href = "#produtos"; 
+                configureLink(link, "produtos");
+            } else if (text === "Contato") {
+                link.href = "#contato";
+                configureLink(link, "contato");
+            } else if (text === "Sobre") {
+                link.href = "#sobre";
+                configureLink(link, "sobre");
+            } else if (text === "Início") {
+                link.href = "index.html";
+            }
+            // Links como Galeria, Carrinho, Perfil, etc., manterão seus hrefs originais
+        });
 
-    // Configura botões específicos
-    document.querySelectorAll("a").forEach((link) => {
-        if (link.textContent.includes("Nossos Serviços")) {
-            link.href = "#servicos";
-            configureLink(link, "servicos");
-        } else if (link.textContent.includes("Ver Todos os Prod")) {
-            link.href = "produtos.html";
-        } else if (link.textContent.includes("Agendar Visita")) {
-            link.href = "agendamento.html";
-        }
-    });
+        // Configura botões específicos da index.html
+        document.querySelectorAll("a").forEach((link) => {
+            if (link.textContent.includes("Nossos Serviços")) {
+                link.href = "#servicos";
+                configureLink(link, "servicos");
+            } else if (link.textContent.includes("Ver Todos os Prod")) {
+                link.href = "produtos.html"; // Garante que este botão sempre vá para produtos.html
+            } else if (link.textContent.includes("Agendar Visita")) {
+                link.href = "agendamento.html";
+            }
+        });
+    } else {
+        // Em outras páginas, garante que o link 'Produtos' vá para produtos.html
+        document.querySelectorAll("nav a").forEach((link) => {
+            const text = link.textContent.trim();
+            if (text === "Produtos") {
+                link.href = "produtos.html";
+                // Remove qualquer listener de clique que possa ter sido adicionado erroneamente
+                // (Embora a condição acima deva prevenir isso, é uma segurança extra)
+                // link.removeEventListener('click', configureLink); // Não é simples remover listener anônimo, mas a condição if/else resolve
+            }
+        });
+    }
 
     // Adiciona funcionalidade ao botão do menu mobile
     const mobileMenuButton = document.getElementById("mobile-menu-button");
@@ -180,7 +195,7 @@ function isAdmin() {
 function updateNavigation() {
     const isUserLoggedIn = isLoggedIn();
     const currentUser = isUserLoggedIn ? JSON.parse(localStorage.getItem("petsync_current_user") || '{}') : null;
-
+    const userName = currentUser && currentUser.name ? currentUser.name.split(' ')[0] : 'Usuário'; // Get first name or default
     const desktopNav = document.querySelector(".hidden.md\\:flex.space-x-6, .hidden.md\\:flex.space-x-8");
     const mobileNav = document.getElementById("mobile-menu");
 
@@ -196,7 +211,7 @@ function updateNavigation() {
 
         if (isUserLoggedIn) {
             loginLink.href = "perfil.html";
-            loginLink.textContent = "Meu Perfil";
+            loginLink.textContent = `Olá, ${userName}`;
             loginLink.className = "text-petGray hover:text-petBlue font-medium login-btn-marker";
         } else {
             loginLink.href = "login.html";
@@ -225,7 +240,7 @@ function updateNavigation() {
 
         if (isUserLoggedIn) {
             mobileLoginLink.href = "perfil.html";
-            mobileLoginLink.textContent = "Meu Perfil";
+            mobileLoginLink.textContent = `Olá, ${userName}`;
             mobileLoginLink.className =
                 "block py-2 text-petGray hover:text-petBlue font-medium login-btn-marker-mobile";
         } else {
@@ -324,12 +339,11 @@ function addCartCounter(forceCount = null) {
     if (desktopNav && validItemCount > 0) {
         let cartLink = document.createElement("a");
         cartLink.href = "carrinho.html";
-        cartLink.className = "text-petGray hover:text-petBlue font-medium relative flex items-center";
+        cartLink.className = "relative text-petGray hover:text-petBlue";
         cartLink.innerHTML = `
             <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
-            <span class="hidden md:inline">Carrinho</span>`;
+            </svg>`;
 
         cartLink.style.position = "relative";
         const cartCounter = document.createElement("span");
@@ -357,7 +371,6 @@ function addCartCounter(forceCount = null) {
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                 </svg>
-                Carrinho
             </div>
         `;
 
@@ -377,4 +390,3 @@ function addCartCounter(forceCount = null) {
         }
     }
 }
-
