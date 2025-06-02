@@ -365,14 +365,20 @@
                         <div>
                             <label for="pet-age" class="block text-petGray mb-2">Idade</label>
                             <div class="flex">
-                                <input type="number" id="pet-age" class="w-2/3 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none form-input" placeholder="Idade">
-                                <select id="pet-age-unit" class="w-1/3 px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none form-input border-l-0">
+                                <input type="number" id="pet-age"
+                                    class="w-2/3 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none form-input"
+                                    placeholder="Idade" min="0" max="99"
+                                    oninput="this.value = this.value.slice(0, 2)">
+                                
+                                <select id="pet-age-unit"
+                                    class="w-1/3 px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none form-input border-l-0">
                                     <option value="anos">Anos</option>
                                     <option value="meses">Meses</option>
                                 </select>
                             </div>
                             <p class="text-red-500 text-sm mt-1 hidden" id="pet-age-error">Por favor, informe a idade do seu pet.</p>
                         </div>
+
                         
                         <div>
                             <label for="pet-weight" class="block text-petGray mb-2">Peso (kg) <span class="text-red-500">*</span></label>
