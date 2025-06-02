@@ -55,10 +55,10 @@
         .category-filter:hover:not(.active) {
             color: #FF7A00;
         }
-        /* Estilo para garantir que o contador do carrinho seja visível */
+        /* Estilo para garantir que o contador do carrinho seja visível 
         #cart-counter, #mobile-cart-counter {
-            display: inline-block; /* Garante que seja exibido */
-        }
+            display: inline-block; /* Garante que seja exibido */ 
+        
         /* Esconder placeholders de usuário por padrão */
         #user-info-desktop, #user-info-mobile {
             display: none;
@@ -87,22 +87,24 @@
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="index.html" class="text-petGray hover:text-petBlue font-medium">Início</a>
+                  <!--  <a href="index.html" class="text-petGray hover:text-petBlue font-medium">Início</a>
                     <a href="index.html#servicos" class="text-petGray hover:text-petBlue font-medium">Serviços</a>
-                    <a href="produtos.html" class="text-petBlue font-medium">Produtos</a>
+                    <a href="produtos.html" class="text-petBlue font-medium">Produtos</a> 
                     <a href="galeria.html" class="text-petGray hover:text-petBlue font-medium">Galeria</a>
                     <a href="index.html#sobre" class="text-petGray hover:text-petBlue font-medium">Sobre</a>
-                    <a href="index.html#contato" class="text-petGray hover:text-petBlue font-medium">Contato</a>
-                    <!-- Login/User Info Area -->
+                    <a href="index.html#contato" class="text-petGray hover:text-petBlue font-medium">Contato</a> -->
+
+                    <!-- Login/User Info Area 
                     <a href="login.html" class="text-petGray hover:text-petBlue font-medium mr-4">Entrar</a>
-                    <span id="user-info-desktop" class="hidden items-center"></span> <!-- Placeholder para nome/logout -->
-                    <a href="perfil.html" class="text-petGray hover:text-petBlue font-medium mr-4">Meu Perfil</a>
+                    <span id="user-info-desktop" class="hidden items-center"></span>  Placeholder para nome/logout 
+                    <a href="perfil.html" class="text-petGray hover:text-petBlue font-medium mr-4">Meu Perfil</a> -->
+
                     <!-- Cart Icon Link -->
                     <a href="carrinho.html" id="cart-link" class="relative text-petGray hover:text-petBlue"> <!-- Removido hidden -->
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-petOrange text-white text-xs font-bold rounded-full px-1.5 py-0.5 hidden">0</span>
+                        <span id="cart-counter" class="absolute -top-2 -right-2 bg-petOrange text-white text-xs font-bold rounded-full px-1.5 h-4 leading-4 hidden">0</span>
                     </a>
                 </div>
                 
@@ -113,7 +115,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span id="mobile-cart-counter" class="absolute -top-2 -right-2 bg-petOrange text-white text-xs font-bold rounded-full px-1.5 py-0.5 hidden">0</span>
+                        <span id="mobile-cart-counter" class="absolute -top-2 -right-2 bg-petOrange text-white text-xs font-bold rounded-full px-1.5 h-4 leading-4 hidden">0</span>
                     </a>
                     <button id="mobile-menu-button" class="text-petGray focus:outline-none">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -125,16 +127,18 @@
             
             <!-- Mobile Menu -->
             <div id="mobile-menu" class="md:hidden hidden mt-3 pb-3 border-t pt-3">
-                <a href="index.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Início</a>
+              <!--  <a href="index.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Início</a>
                 <a href="index.html#servicos" class="block py-2 text-petGray hover:text-petBlue font-medium">Serviços</a>
                 <a href="produtos.html" class="block py-2 text-petBlue font-medium">Produtos</a>
                 <a href="galeria.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Galeria</a>
                 <a href="index.html#sobre" class="block py-2 text-petGray hover:text-petBlue font-medium">Sobre</a>
-                <a href="index.html#contato" class="block py-2 text-petGray hover:text-petBlue font-medium">Contato</a>
-                <!-- Login/User Info Area Mobile -->
+                <a href="index.html#contato" class="block py-2 text-petGray hover:text-petBlue font-medium">Contato</a> -->
+
+                <!-- Login/User Info Area Mobile 
                 <a href="login.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Entrar</a>
-                <div id="user-info-mobile" class="hidden"></div> <!-- Placeholder para nome/logout -->
-                <a href="perfil.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Meu Perfil</a>
+                <div id="user-info-mobile" class="hidden"></div> --> <!-- Placeholder para nome/logout 
+                <a href="perfil.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Meu Perfil</a> -->
+
             </div>
         </div>
     </nav>
@@ -295,7 +299,8 @@
 
     <!-- Scripts -->
     <script src="./scripts/auth.js"></script> <!-- Carrega auth.js primeiro -->
-    <script src="./scripts/carrinho.js"></script>
+    <script src="./scripts/navegacao.js"></script>
+    <script src="./scripts/carrinho.js"></script> <!-- Carregado ANTES de produtos.js -->
     <script src="./scripts/produtos.js"></script>
     <script src="./scripts/menu-enhancement.js"></script>
     <script src="./scripts/smooth-navigation.js"></script>
@@ -303,4 +308,3 @@
 
 </body>
 </html>
-
