@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     // Adiciona a opção Galeria ao menu
     const menuDesktop = document.querySelector(".hidden.md\\:flex.space-x-8");
@@ -137,8 +138,23 @@ document.addEventListener("DOMContentLoaded", function () {
     updateNavigation();
     addCartCounter();
 
+    // Remove o link "Início" do menu mobile especificamente na página galeria.html
+    if (window.location.pathname.includes("galeria.html")) {
+        const mobileMenuForRemoval = document.getElementById("mobile-menu");
+        if (mobileMenuForRemoval) {
+            // Tenta encontrar o link de "Início" de forma mais robusta
+            const inicioLinks = mobileMenuForRemoval.querySelectorAll("a");
+            inicioLinks.forEach(link => {
+                // Verifica pelo texto e pelo href para ter mais certeza
+                if (link.textContent.trim() === "Início" && (link.getAttribute("href") === "index.html" || link.getAttribute("href") === "./index.html")) {
+                    link.remove();
+                }
+            });
+        }
+    }
+
     // Opcional: Chamar updates em eventos específicos (login/logout)
-    // document.addEventListener('userLoggedIn', () => { updateNavigation(); addCartCounter(); });
+    // document.addEventListener("userLoggedIn", () => { updateNavigation(); addCartCounter(); });
     // document.addEventListener('userLoggedOut', () => { updateNavigation(); addCartCounter(); });
 
     // Remover ou comentar o setInterval para melhor performance
@@ -378,7 +394,7 @@ function addCartCounter(forceCount = null) {
         const mobileCartCounter = document.createElement("span");
         mobileCartCounter.id = "cart-counter-mobile";
         mobileCartCounter.className =
-            "absolute top-2 left-20 bg-petOrange text-white text-xs rounded-full h-5 w-5 flex items-center justify-center";
+            "absolute top-1 left-4 bg-petOrange text-white text-xs rounded-full h-5 w-5 flex items-center justify-center";
         mobileCartCounter.textContent = validItemCount; // Usa contagem válida
         mobileCartLink.appendChild(mobileCartCounter);
 
