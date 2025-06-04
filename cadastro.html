@@ -287,5 +287,76 @@
             mobileMenu.classList.toggle('hidden');
         });
     </script>
+    <script type="module">
+  // Importa os módulos do Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // Configurações do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBMaiym9AAcGR6zuMBP4ZakyLa0Kvaf-eA",
+    authDomain: "petsync-d6b46.firebaseapp.com",
+    projectId: "petsync-d6b46",
+    storageBucket: "petsync-d6b46.firebasestorage.app",
+    messagingSenderId: "1052929637829",
+    appId: "1:1052929637829:web:4c5fc35656d5daef265fac"
+  };
+
+  // Inicializa Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Referência ao formulário
+  const form = document.getElementById('register-form');
+  const alertBox = document.getElementById('register-alert');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nome = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const telefone = document.getElementById('phone').value;
+    const senha = document.getElementById('password').value;
+    const confirmarSenha = document.getElementById('confirm-password').value;
+    const termos = document.getElementById('terms').checked;
+
+    // Validações
+    if (senha !== confirmarSenha) {
+      alertBox.textContent = 'As senhas não coincidem.';
+      alertBox.classList.remove('hidden');
+      alertBox.classList.add('bg-red-100', 'text-red-700');
+      return;
+    }
+
+    if (!termos) {
+      alertBox.textContent = 'Você deve aceitar os termos.';
+      alertBox.classList.remove('hidden');
+      alertBox.classList.add('bg-red-100', 'text-red-700');
+      return;
+    }
+
+    try {
+      // Adiciona ao Firestore
+      await addDoc(collection(db, "usuarios"), {
+        nome,
+        email,
+        telefone,
+        senha
+      });
+
+      alertBox.textContent = 'Cadastro realizado com sucesso!';
+      alertBox.classList.remove('hidden');
+      alertBox.classList.add('bg-green-100', 'text-green-700');
+
+      form.reset();
+    } catch (error) {
+      console.error("Erro ao cadastrar: ", error);
+      alertBox.textContent = 'Erro ao realizar cadastro.';
+      alertBox.classList.remove('hidden');
+      alertBox.classList.add('bg-red-100', 'text-red-700');
+    }
+  });
+</script>
+
 </body>
 </html>
