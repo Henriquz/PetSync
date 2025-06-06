@@ -49,6 +49,112 @@
     </style>
     <!-- Referência a um CSS original (mantendo o original) -->
     <link href="./3ea6e67a3e74024cf5f100ea6a2851bf.css" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Importa os módulos do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // Configurações do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBMaiym9AAcGR6zuMBP4ZakyLa0Kvaf-eA",
+            authDomain: "petsync-d6b46.firebaseapp.com",
+            projectId: "petsync-d6b46",
+            storageBucket: "petsync-d6b46.firebasestorage.app",
+            messagingSenderId: "1052929637829",
+            appId: "1:1052929637829:web:4c5fc35656d5daef265fac"
+          };    
+
+        // Inicializa Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Referência ao formulário
+        const form = document.getElementById('login-form');
+        const alertBox = document.getElementById('login-alert');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('password').value;
+
+            // Limpar mensagens anteriores
+            alertBox.textContent = '';
+            alertBox.classList.add('hidden');
+
+            try {
+                // Autenticar com Firebase Auth
+                const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+                const user = userCredential.user;
+
+                // Buscar dados adicionais do usuário no Firestore
+                const q = query(collection(db, "usuarios"), where("email", "==", email));
+                const querySnapshot = await getDocs(q);
+                
+                if (!querySnapshot.empty) {
+                    // Obter dados do usuário
+                    const userData = querySnapshot.docs[0].data();
+                    
+                    // Salvar dados do usuário no localStorage (sem a senha)
+                    const userToSave = {
+                        uid: user.uid,
+                        email: userData.email,
+                        nome: userData.nome,
+                        telefone: userData.telefone,
+                        role: userData.role || 'client'
+                    };
+                    
+                    localStorage.setItem('petsync_current_user', JSON.stringify(userToSave));
+                    
+                    // Mostrar mensagem de sucesso
+                    alertBox.textContent = 'Login realizado com sucesso!';
+                    alertBox.classList.remove('hidden');
+                    alertBox.classList.add('bg-green-100', 'text-green-700');
+                    
+                    // Verificar se há redirecionamento na URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirectUrl = urlParams.get('redirect');
+                    
+                    // Redirecionar após 1 segundo
+                    setTimeout(() => {
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        } else {
+                            window.location.href = 'index.html';
+                        }
+                    }, 1000);
+                } else {
+                    // Usuário autenticado mas sem dados no Firestore
+                    alertBox.textContent = 'Erro ao recuperar dados do usuário.';
+                    alertBox.classList.remove('hidden');
+                    alertBox.classList.add('bg-red-100', 'text-red-700');
+                }
+            } catch (error) {
+                console.error("Erro ao fazer login:", error);
+                
+                // Tratar erros específicos
+                let mensagemErro = 'Erro ao fazer login. Verifique suas credenciais.';
+                
+                if (error.code === 'auth/user-not-found') {
+                    mensagemErro = 'Usuário não encontrado.';
+                } else if (error.code === 'auth/wrong-password') {
+                    mensagemErro = 'Senha incorreta.';
+                } else if (error.code === 'auth/invalid-email') {
+                    mensagemErro = 'Email inválido.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    mensagemErro = 'Muitas tentativas de login. Tente novamente mais tarde.';
+                }
+                
+                alertBox.textContent = mensagemErro;
+                alertBox.classList.remove('hidden');
+                alertBox.classList.add('bg-red-100', 'text-red-700');
+            }
+        });
+    </script>
 </head>
 <body class="bg-white">
     <!-- Navbar -->
@@ -67,17 +173,6 @@
                         Pet<span class="text-petOrange">Sync</span>
                     </a>
                 </div>
-                
-                <!-- Desktop Menu 
-                <div class="hidden md:flex space-x-6">
-                    <a href="index.html" class="text-petGray hover:text-petBlue font-medium">Início</a>
-                    <a href="index.html#servicos" class="text-petGray hover:text-petBlue font-medium">Serviços</a>
-                    <a href="produtos.html" class="text-petGray hover:text-petBlue font-medium">Produtos</a>
-                    <a href="galeria.html" class="text-petGray hover:text-petBlue font-medium">Galeria</a>
-                    <a href="index.html#sobre" class="text-petGray hover:text-petBlue font-medium">Sobre</a>
-                    <a href="index.html#contato" class="text-petGray hover:text-petBlue font-medium">Contato</a>
-                    <a href="login.html" class="text-petBlue font-medium">Entrar</a>
-                </div> -->
                 
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
@@ -161,7 +256,7 @@
         </div>
     </section>
 
-<main class="flex-grow">  <!-- Adicionar esta tag com a classe -->
+    <main class="flex-grow">  <!-- Adicionar esta tag com a classe -->
         <section class="hero-pattern py-12">...</section>
         <section class="py-12">...</section> <!-- Você ainda pode ajustar o padding aqui (ex: pt-12) se necessário para o espaçamento interno -->
     </main> <!-- Fechar a tag main -->
@@ -226,39 +321,12 @@
       103.4-9 132.9z"/>
   </svg>
 </a>
-
-
-
-      <!-- Telegram 
-      <a href="https://t.me/seuPerfil" target="_blank" rel="noopener"
-         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 240 240" class="w-4 h-4">
-          <path d="M120 0C53.73 0 0 53.73 0 120s53.73 120 120 120 120-53.73 120-120S186.27 0 120 0zm56.65 83.54l-22.5 106.37c-1.7 7.43-6.18 9.3-12.52 5.8l-34.59-25.53-16.7 16.08c-1.85 1.85-3.4 3.4-6.95 3.4l2.48-35.4 64.38-58.1c2.8-2.48-.61-3.88-4.37-1.4l-79.52 50.15-34.19-10.69c-7.43-2.3-7.58-7.43 1.56-11.01l131.86-50.81c6.1-2.3 11.43 1.5 9.93 11.9z"/>
-        </svg>
-      </a> -->
-
-      <!-- Facebook 
-      <a href="https://facebook.com/seuPerfil" target="_blank" rel="noopener"
-         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
-        </svg>
-      </a> -->
-
-      <!-- Twitter (X) 
-      <a href="https://twitter.com/seuPerfil" target="_blank" rel="noopener"
-         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
-          <path d="M23.954 4.569c-.885.39-1.83.654-2.825.775a4.932 4.932 0 002.163-2.724 9.864 9.864 0 01-3.127 1.195 4.916 4.916 0 00-8.373 4.482A13.944 13.944 0 011.671 3.15 4.916 4.916 0 003.195 9.723 4.902 4.902 0 012 9.1v.06a4.916 4.916 0 003.946 4.814 4.935 4.935 0 01-2.212.085 4.917 4.917 0 004.588 3.415 9.868 9.868 0 01-6.102 2.104c-.396 0-.787-.023-1.174-.069a13.945 13.945 0 007.557 2.213c9.054 0 14-7.496 14-13.986 0-.21 0-.423-.015-.633a9.936 9.936 0 002.457-2.548l-.047-.02z"/>
-        </svg>
-      </a> -->
     </div>
   </div>
 </footer>
 
     <!-- Scripts -->
     <script src="scripts/navegacao.js"></script>
-    <script src="scripts/auth.js"></script>
     <script>
         // Mobile menu toggle
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
