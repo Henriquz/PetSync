@@ -31,7 +31,7 @@
         }
         .hero-pattern {
             background-color: #f7fafc;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'\%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'\%3E%3Cg fill=\'%23e2e8f0\' fill-opacity=\'0.4\'\%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
         .form-input:focus {
             border-color: #0078C8;
@@ -68,17 +68,6 @@
                     </a>
                 </div>
                 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-6">
-                    <a href="index.html" class="text-petGray hover:text-petBlue font-medium">Início</a>
-                    <a href="index.html#servicos" class="text-petGray hover:text-petBlue font-medium">Serviços</a>
-                    <a href="produtos.html" class="text-petGray hover:text-petBlue font-medium">Produtos</a>
-                    <a href="galeria.html" class="text-petGray hover:text-petBlue font-medium">Galeria</a>
-                    <a href="index.html#sobre" class="text-petGray hover:text-petBlue font-medium">Sobre</a>
-                    <a href="index.html#contato" class="text-petGray hover:text-petBlue font-medium">Contato</a>
-                    <a href="login.html" class="text-petGray hover:text-petBlue font-medium">Entrar</a>
-                </div>
-                
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
                     <button id="mobile-menu-button" class="text-petGray focus:outline-none">
@@ -97,7 +86,7 @@
                 <a href="galeria.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Galeria</a>
                 <a href="index.html#sobre" class="block py-2 text-petGray hover:text-petBlue font-medium">Sobre</a>
                 <a href="index.html#contato" class="block py-2 text-petGray hover:text-petBlue font-medium">Contato</a>
-                <a href="login.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Entrar</a>
+                <a href="login.html" class="block py-2 text-petBlue font-medium">Entrar</a>
             </div>
         </div>
     </nav>
@@ -117,10 +106,10 @@
     <!-- Main Content -->
     <section class="py-12">
         <div class="container mx-auto px-4">
-            <div class="max-w-2xl mx-auto">
+            <div class="max-w-md mx-auto">
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden auth-card">
                     <div class="bg-petOrange p-6">
-                        <h2 class="text-2xl font-bold text-white text-center">Cadastro</h2>
+                        <h2 class="text-2xl font-bold text-white text-center">adastro</h2>
                     </div>
                     <div class="p-6">
                         <div id="register-alert" class="mb-4 p-3 rounded-lg text-sm hidden"></div>
@@ -131,38 +120,34 @@
                                 <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="Seu nome completo" required>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label for="email" class="block text-petGray font-medium mb-2">Email</label>
-                                    <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="seu@email.com" required>
-                                </div>
-                                
-                                <div>
-                                    <label for="phone" class="block text-petGray font-medium mb-2">Telefone</label>
-                                    <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="(00) 00000-0000">
-                                </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-petGray font-medium mb-2">Email</label>
+                                <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="seu@email.com" required>
                             </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                <div>
-                                    <label for="password" class="block text-petGray font-medium mb-2">Senha</label>
-                                    <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="********" required>
-                                </div>
-                                
-                                <div>
-                                    <label for="confirm-password" class="block text-petGray font-medium mb-2">Confirmar Senha</label>
-                                    <input type="password" id="confirm-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="********" required>
-                                </div>
+                            <div class="mb-4">
+                                <label for="phone" class="block text-petGray font-medium mb-2">Telefone</label>
+                                <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="(00) 00000-0000">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="password" class="block text-petGray font-medium mb-2">Senha</label>
+                                <input type="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="********" required>
                             </div>
                             
                             <div class="mb-6">
-                                <label class="flex items-center">
-                                    <input type="checkbox" id="terms" class="mr-2 h-5 w-5 text-petBlue focus:ring-petBlue" required>
-                                    <span class="text-gray-600">Concordo com os <a href="#" class="text-petBlue hover:underline">Termos de Uso</a> e <a href="#" class="text-petBlue hover:underline">Política de Privacidade</a></span>
+                                <label for="confirm-password" class="block text-petGray font-medium mb-2">Confirmar Senha</label>
+                                <input type="password" id="confirm-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input" placeholder="********" required>
+                            </div>
+                            
+                            <div class="mb-6 flex items-center">
+                                <input type="checkbox" id="terms" class="form-checkbox h-5 w-5 text-petBlue" required>
+                                <label for="terms" class="ml-2 text-gray-700 text-sm">
+                                    Concordo com os <a href="#" class="text-petBlue hover:underline">Termos de Uso</a> e <a href="#" class="text-petBlue hover:underline">Política de Privacidade</a>
                                 </label>
                             </div>
                             
-                            <button type="submit" class="w-full bg-petBlue hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300 btn-primary">
+                            <button type="submit" class="w-full bg-petOrange hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300 btn-primary">
                                 Criar Conta
                             </button>
                         </form>
@@ -186,6 +171,11 @@
             </div>
         </div>
     </section>
+
+    <main class="flex-grow">  <!-- Adicionar esta tag com a classe -->
+        <section class="hero-pattern py-12">...</section>
+        <section class="py-12">...</section> <!-- Você ainda pode ajustar o padding aqui (ex: pt-12) se necessário para o espaçamento interno -->
+    </main> <!-- Fechar a tag main -->
 
     <!-- Footer -->
     <footer class="bg-petGray text-white py-2">
@@ -247,50 +237,17 @@
       103.4-9 132.9z"/>
   </svg>
 </a>
-
-
-
-      <!-- Telegram 
-      <a href="https://t.me/seuPerfil" target="_blank" rel="noopener"
-         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 240 240" class="w-4 h-4">
-          <path d="M120 0C53.73 0 0 53.73 0 120s53.73 120 120 120 120-53.73 120-120S186.27 0 120 0zm56.65 83.54l-22.5 106.37c-1.7 7.43-6.18 9.3-12.52 5.8l-34.59-25.53-16.7 16.08c-1.85 1.85-3.4 3.4-6.95 3.4l2.48-35.4 64.38-58.1c2.8-2.48-.61-3.88-4.37-1.4l-79.52 50.15-34.19-10.69c-7.43-2.3-7.58-7.43 1.56-11.01l131.86-50.81c6.1-2.3 11.43 1.5 9.93 11.9z"/>
-        </svg>
-      </a> -->
-
-      <!-- Facebook 
-      <a href="https://facebook.com/seuPerfil" target="_blank" rel="noopener"
-         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
-        </svg>
-      </a> -->
-
-      <!-- Twitter (X) 
-      <a href="https://twitter.com/seuPerfil" target="_blank" rel="noopener"
-         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
-          <path d="M23.954 4.569c-.885.39-1.83.654-2.825.775a4.932 4.932 0 002.163-2.724 9.864 9.864 0 01-3.127 1.195 4.916 4.916 0 00-8.373 4.482A13.944 13.944 0 011.671 3.15 4.916 4.916 0 003.195 9.723 4.902 4.902 0 012 9.1v.06a4.916 4.916 0 003.946 4.814 4.935 4.935 0 01-2.212.085 4.917 4.917 0 004.588 3.415 9.868 9.868 0 01-6.102 2.104c-.396 0-.787-.023-1.174-.069a13.945 13.945 0 007.557 2.213c9.054 0 14-7.496 14-13.986 0-.21 0-.423-.015-.633a9.936 9.936 0 002.457-2.548l-.047-.02z"/>
-        </svg>
-      </a> -->
     </div>
   </div>
 </footer>
 
     <!-- Scripts -->
     <script src="scripts/navegacao.js"></script>
-    <script src="scripts/auth.js"></script>
-    <script>
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        });
-    </script>
     <script type="module">
   // Importa os módulos do Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   // Configurações do Firebase
   const firebaseConfig = {
@@ -305,6 +262,7 @@
   // Inicializa Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
   // Referência ao formulário
   const form = document.getElementById('register-form');
@@ -336,12 +294,17 @@
     }
 
     try {
-      // Adiciona ao Firestore
+      // 1. Criar usuário no Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      const user = userCredential.user;
+
+      // 2. Adicionar dados adicionais ao Firestore
       await addDoc(collection(db, "usuarios"), {
+        uid: user.uid, // Salva o UID do Firebase Auth no Firestore
         nome,
         email,
         telefone,
-        senha
+        senha // A senha ainda está sendo salva aqui, mas o Firebase Auth é o principal para login
       });
 
       alertBox.textContent = 'Cadastro realizado com sucesso!';
@@ -349,14 +312,26 @@
       alertBox.classList.add('bg-green-100', 'text-green-700');
 
       form.reset();
+      // Redirecionar para a página de login após o cadastro
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
+
     } catch (error) {
       console.error("Erro ao cadastrar: ", error);
-      alertBox.textContent = 'Erro ao realizar cadastro.';
+      let mensagemErro = 'Erro ao realizar cadastro.';
+
+      if (error.code === 'auth/email-already-in-use') {
+        mensagemErro = 'Este email já está em uso. Tente outro.';
+      } else if (error.code === 'auth/weak-password') {
+        mensagemErro = 'A senha é muito fraca. Use pelo menos 6 caracteres.';
+      }
+
+      alertBox.textContent = mensagemErro;
       alertBox.classList.remove('hidden');
       alertBox.classList.add('bg-red-100', 'text-red-700');
     }
   });
 </script>
-
 </body>
 </html>
