@@ -13,59 +13,67 @@ document.addEventListener('DOMContentLoaded', function() {
 function setupLoginForm() {
     const loginForm = document.getElementById('login-form');
     if (!loginForm) return;
-    
+
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        
+
         // Validar campos
         if (!email || !password) {
             showNotification('Por favor, preencha todos os campos.', 'error');
             return;
         }
-        
-        // Buscar usuários
-        const users = JSON.parse(localStorage.getItem('petsync_users')) || [];
-        
-        // Verificar se não há usuários cadastrados
-        if (users.length === 0) {
-            // Criar usuários padrão se não existirem
-            createDefaultUsers();
-        }
-        
-        // Buscar usuários novamente (caso tenham sido criados)
-        const updatedUsers = JSON.parse(localStorage.getItem('petsync_users')) || [];
-        
-        // Verificar credenciais
-        const user = updatedUsers.find(u => u.email === email && u.password === password);
-        
-        if (user) {
-            // Login bem-sucedido
-            localStorage.setItem('petsync_current_user', JSON.stringify(user));
-            
-            // Mostrar notificação de sucesso
-            showNotification('Login realizado com sucesso!', 'success');
-            
-            // Verificar se há redirecionamento na URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const redirectUrl = urlParams.get('redirect');
-            
-            // Redirecionar após 1 segundo
+
+        // ✅ Verificar se é o admin hardcoded
+        if (email === "admin@petsync.com" && password === "admin123") {
+            const adminUser = {
+                id: 0,
+                name: "Administrador",
+                email: email,
+                role: "admin"
+            };
+            localStorage.setItem('petsync_current_user', JSON.stringify(adminUser));
+            showNotification('Login como administrador realizado com sucesso!', 'success');
             setTimeout(() => {
-                if (redirectUrl) {
-                    window.location.href = redirectUrl;
-                } else {
-                    window.location.href = 'index.html';
-                }
+                window.location.href = 'admin.html';
             }, 1000);
-        } else {
-            // Login falhou
-            showNotification('Email ou senha incorretos.', 'error');
+            return;
         }
+
+        // ✅ Login via Firebase
+        firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(async (result) => {
+                const user = result.user;
+                const docRef = firebase.firestore().collection("usuarios").doc(user.uid);
+                const doc = await docRef.get();
+
+                if (doc.exists) {
+                    const usuarioData = doc.data();
+                    localStorage.setItem('petsync_current_user', JSON.stringify(usuarioData));
+                    showNotification('Login realizado com sucesso!', 'success');
+
+                    setTimeout(() => {
+                        if (usuarioData.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'perfil.html';
+                        }
+                    }, 1000);
+                } else {
+                    showNotification('Usuário não encontrado no Firestore.', 'error');
+                    firebase.auth().signOut();
+                }
+            })
+            .catch((error) => {
+                console.error("Erro Firebase:", error);
+                showNotification('Erro ao fazer login. Verifique suas credenciais.', 'error');
+            });
     });
 }
+
+
 
 // Função para configurar o formulário de cadastro
 function setupRegisterForm() {
