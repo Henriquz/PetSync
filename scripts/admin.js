@@ -347,4 +347,42 @@ function initializeDefaultProducts() {
 }
 
 // Inicializar produtos padrão
-initializeDefaultProducts();
+document.addEventListener("DOMContentLoaded", () => {
+  const novoHorarioInput = document.getElementById("novoHorario");
+  const adicionarBtn = document.getElementById("adicionarHorario");
+  const salvarBtn = document.getElementById("salvarHorarios");
+  const listaHorarios = document.getElementById("listaHorarios");
+
+  if (!novoHorarioInput || !adicionarBtn || !salvarBtn || !listaHorarios) return;
+
+  let horarios = [];
+
+  adicionarBtn.addEventListener("click", () => {
+    const horario = novoHorarioInput.value;
+    if (horario && !horarios.includes(horario)) {
+      horarios.push(horario);
+      atualizarLista();
+      novoHorarioInput.value = "";
+    }
+  });
+
+  salvarBtn.addEventListener("click", async () => {
+    try {
+      const docRef = firebase.firestore().collection("config").doc("horarios");
+      await docRef.set({ horarios });
+      alert("Horários salvos com sucesso!");
+    } catch (err) {
+      console.error("Erro ao salvar horários:", err);
+      alert("Erro ao salvar horários.");
+    }
+  });
+
+  function atualizarLista() {
+    listaHorarios.innerHTML = "";
+    horarios.forEach((h) => {
+      const li = document.createElement("li");
+      li.textContent = h;
+      listaHorarios.appendChild(li);
+    });
+  }
+});
