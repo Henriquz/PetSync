@@ -23,6 +23,11 @@
             }
         }
     </script>
+            <script>
+        // inicializa as variáveis num escopo global
+        window.selectedDate  = null;
+        window.selectedTime  = null;
+        </script>
     <script>
         // Função para formatar o campo de peso automaticamente
         document.addEventListener('DOMContentLoaded', function() {
@@ -91,6 +96,7 @@
                 // Formata o valor final com ponto decimal
                 this.value = intPart + '.' + decPart;
             });
+                
             
             // Função para obter a hora atual de Brasília e validar horários de agendamento
             function obterHoraBrasilia() {
@@ -108,9 +114,11 @@
                         }
                         
                         // Atualiza os horários disponíveis se estiver na etapa de data/hora
-                        if (document.getElementById('step3') && !document.getElementById('step3').classList.contains('hidden') && selectedDate) {
-                            updateTimeSlots();
-                        }
+                        if ( document.getElementById('step3') &&
+     !document.getElementById('step3').classList.contains('hidden') &&
+     window.selectedDate ) {
+  updateTimeSlots();
+}
                     })
                     .catch(error => {
                         console.error('Erro ao obter hora de Brasília:', error);
@@ -126,9 +134,11 @@
                         }
                         
                         // Atualiza os horários disponíveis se estiver na etapa de data/hora
-                        if (document.getElementById('step3') && !document.getElementById('step3').classList.contains('hidden') && selectedDate) {
-                            updateTimeSlots();
-                        }
+                        if ( document.getElementById('step3') &&
+     !document.getElementById('step3').classList.contains('hidden') &&
+     window.selectedDate ) {
+  updateTimeSlots();
+}
                     });
             }
             
@@ -538,25 +548,28 @@
                         
                         <!-- Time Slots -->
                         <div>
-                            <h3 class="text-lg font-semibold text-petGray mb-4">Selecione um horário</h3>
-                            <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                <!-- Os horários serão gerados dinamicamente pelo JavaScript -->
-                            </div>
-                            <p class="text-red-500 text-sm mt-2 hidden" id="time-error">Por favor, selecione um horário.</p>
-                            
-                            <div class="mt-6">
-                                <h3 class="text-lg font-semibold text-petGray mb-4">Observações</h3>
-                                <textarea id="booking-notes" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" rows="3" placeholder="Alguma informação adicional que devemos saber?"></textarea>
-                            </div>
+                        <h3 class="text-lg font-semibold text-petGray mb-4">Selecione um horário</h3>
+                        <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <input type="hidden" id="horario-escolhido" name="horario">
+
+                            <!-- Os horários serão gerados dinamicamente pelo JavaScript -->
+                        </div>
+                        <p class="text-red-500 text-sm mt-2 hidden" id="time-error">Por favor, selecione um horário.</p>
+
+                        <div class="mt-6">
+                            <h3 class="text-lg font-semibold text-petGray mb-4">Observações</h3>
+                            <textarea id="booking-notes" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" rows="3" placeholder="Alguma informação adicional que devemos saber?"></textarea>
                         </div>
                     </div>
+
                     
                     <div class="mt-8 flex justify-between">
                         <button id="step3-prev" class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none">Voltar</button>
-                        <button id="step3-next" class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none">Próximo</button>
+                        <button type="button" id="step3-next" class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none">Próximo</button>
                     </div>
                 </div>
                 
+                <!-- Step 4: Confirmation -->
                 <!-- Step 4: Confirmation -->
                 <div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content hidden" id="step4">
                     <h2 class="text-2xl font-bold text-petGray mb-6">Confirme seu Agendamento</h2>
@@ -921,82 +934,67 @@
             });
             
             // Step 3 navigation
-            document.getElementById('step3-prev').addEventListener('click', function() {
-                currentStep = 1;
-                showStep(currentStep);
-            });
+document.getElementById('step3-prev').addEventListener('click', function() {
+    currentStep = 1;
+    showStep(currentStep);
+});
+
+document.getElementById('step3-next').addEventListener('click', function(e) {
+  e.preventDefault();
+
+  let isValid = true;
+  // valida data
+  if (!window.selectedDate) {
+    document.getElementById('date-error').classList.remove('hidden');
+    isValid = false;
+  } else {
+    document.getElementById('date-error').classList.add('hidden');
+  }
+  // valida horário
+  const horarioInput = document.getElementById('horario-escolhido');
+  if (!window.selectedTime && !horarioInput.value) {
+    document.getElementById('time-error').classList.remove('hidden');
+    isValid = false;
+  } else {
+    document.getElementById('time-error').classList.add('hidden');
+    window.selectedTime = window.selectedTime || horarioInput.value;
+  }
+  if (!isValid) return;
+
+    currentStep = 3;
+    showStep(currentStep);
+
+  // popula o resumo
+  document.getElementById('summary-owner-name').textContent  = document.getElementById('owner-name').value;
+  document.getElementById('summary-owner-phone').textContent = document.getElementById('owner-phone').value;
+  document.getElementById('summary-pet-name').textContent    = document.getElementById('pet-name').value;
+
+  const petType  = document.getElementById('pet-type');
+  const petBreed = document.getElementById('pet-breed').value;
+  document.getElementById('summary-pet-type').textContent =
+    `${petType.options[petType.selectedIndex].text} / ${petBreed}`;
+
+  const checked = document.querySelectorAll('input[name^="service-"]:checked');
+  const services = Array.from(checked).map(cb => {
+    switch (cb.name.replace('service-','')) {
+      case 'banho-tosa':   return 'Banho e Tosa';
+      case 'veterinaria':  return 'Consulta Veterinária';
+      case 'hospedagem':   return 'Hospedagem';
+      case 'adestramento': return 'Adestramento';
+    }
+  });
+  document.getElementById('summary-services').textContent = services.join(', ');
+
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  const dateStr = window.selectedDate.toLocaleDateString('pt-BR', opts);
+  document.getElementById('summary-datetime').textContent = `${dateStr} às ${window.selectedTime}`;
+
+  const notes = document.getElementById('booking-notes').value.trim() || 'Nenhuma observação.';
+  document.getElementById('summary-notes').textContent = notes;
+});
+
             
-            document.getElementById('step3-next').addEventListener('click', function() {
-                let isValid = true;
-                
-                // Check if date is selected
-                if (!selectedDate) {
-                    document.getElementById('date-error').classList.remove('hidden');
-                    isValid = false;
-                } else {
-                    document.getElementById('date-error').classList.add('hidden');
-                }
-                
-                // Check if time is selected
-                if (!selectedTime) {
-                    document.getElementById('time-error').classList.remove('hidden');
-                    isValid = false;
-                } else {
-                    document.getElementById('time-error').classList.add('hidden');
-                }
-                
-                if (isValid) {
-                    // Update summary
-                    document.getElementById('summary-owner-name').textContent = document.getElementById('owner-name').value;
-                    document.getElementById('summary-owner-phone').textContent = document.getElementById('owner-phone').value;
-                    document.getElementById('summary-pet-name').textContent = document.getElementById('pet-name').value;
-                    
-                    const petType = document.getElementById('pet-type');
-                    const petBreed = document.getElementById('pet-breed').value;
-                    document.getElementById('summary-pet-type').textContent = `${petType.options[petType.selectedIndex].text} / ${petBreed}`;
-                    
-                    // Get selected services
-                    const serviceCheckboxes = document.querySelectorAll('input[name^="service-"]:checked');
-                    let selectedServices = [];
-                    
-                    serviceCheckboxes.forEach(checkbox => {
-                        const serviceName = checkbox.name.replace('service-', '');
-                        let displayName = '';
-                        
-                        switch(serviceName) {
-                            case 'banho-tosa':
-                                displayName = 'Banho e Tosa';
-                                break;
-                            case 'veterinaria':
-                                displayName = 'Consulta Veterinária';
-                                break;
-                            case 'hospedagem':
-                                displayName = 'Hospedagem';
-                                break;
-                            case 'adestramento':
-                                displayName = 'Adestramento';
-                                break;
-                        }
-                        
-                        selectedServices.push(displayName);
-                    });
-                    
-                    document.getElementById('summary-services').textContent = selectedServices.join(', ');
-                    
-                    // Format date
-                    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                    const formattedDate = selectedDate.toLocaleDateString('pt-BR', dateOptions);
-                    document.getElementById('summary-datetime').textContent = `${formattedDate} às ${selectedTime}`;
-                    
-                    // Notes
-                    const notes = document.getElementById('booking-notes').value.trim();
-                    document.getElementById('summary-notes').textContent = notes || 'Nenhuma observação.';
-                    
-                    currentStep = 3;
-                    showStep(currentStep);
-                }
-            });
-            
+            // Step 4 navigation
             // Step 4 navigation
             document.getElementById('step4-prev').addEventListener('click', function() {
                 currentStep = 2;
@@ -1025,9 +1023,9 @@
                 document.getElementById('booking-success').classList.remove('hidden');
             });
             
-            // Calendar functionality
-            let selectedDate = null;
-            let selectedTime = null;
+            // Calendar functionality - usando as variáveis globais já declaradas
+            window.selectedDate = window.selectedDate || null;
+            window.selectedTime = window.selectedTime || null;
             let currentMonth = new Date();
             
             const initCalendar = () => {
@@ -1090,7 +1088,7 @@
                         }
                         
                         // Selected date
-                        if (selectedDate && date.getTime() === selectedDate.getTime()) {
+                        if (window.selectedDate && date.getTime() === window.selectedDate.getTime()) {
                             dayCell.classList.add('date-selected');
                         }
                         
@@ -1105,7 +1103,7 @@
                             dayCell.classList.add('date-selected');
                             
                             // Update selected date
-                            selectedDate = date;
+                            window.selectedDate = date;
                             
                             // Hide date error if visible
                             document.getElementById('date-error').classList.add('hidden');
@@ -1122,10 +1120,10 @@
                 timeSlotsContainer.innerHTML = '';
                 
                 // Horários disponíveis (poderia vir de uma API ou configuração)
-                const availableTimeSlots = [
-                    '08:00', '09:00', '10:00', '11:00', 
-                    '13:00', '14:00', '15:00', '16:00', '17:00'
-                ];
+               // const availableTimeSlots = [
+                 //   '08:00', '09:00', '10:00', '11:00', 
+                   // '13:00', '14:00', '15:00', '16:00', '17:00'
+                //]; 
                 
                 // Horários indisponíveis (exemplo - poderia vir de uma API)
                 const unavailableTimeSlots = ['12:00'];
@@ -1134,17 +1132,18 @@
                 const horaBrasilia = window.horaBrasilia || new Date();
                 
                 // Verifica se a data selecionada é hoje
-                const isToday = selectedDate && 
-                               selectedDate.getDate() === horaBrasilia.getDate() && 
-                               selectedDate.getMonth() === horaBrasilia.getMonth() && 
-                               selectedDate.getFullYear() === horaBrasilia.getFullYear();
+                const isToday = window.selectedDate && 
+                               window.selectedDate.getDate() === horaBrasilia.getDate() && 
+                               window.selectedDate.getMonth() === horaBrasilia.getMonth() && 
+                               window.selectedDate.getFullYear() === horaBrasilia.getFullYear();
                 
                 // Limpa a seleção de horário anterior
-                selectedTime = null;
+                window.selectedTime = null;
                 
                 // Cria os slots de horário
                 availableTimeSlots.forEach(time => {
                     const timeSlot = document.createElement('button');
+                    timeSlot.type = 'button';
                     timeSlot.classList.add('time-slot', 'py-2', 'px-3', 'border', 'border-gray-300', 'rounded-md', 'text-petGray', 'hover:border-petBlue', 'focus:outline-none');
                     timeSlot.setAttribute('data-time', time);
                     timeSlot.textContent = time;
@@ -1182,7 +1181,7 @@
                             timeSlot.classList.add('selected');
                             
                             // Atualiza o horário selecionado
-                            selectedTime = time;
+                            window.selectedTime = time;
                             
                             // Esconde o erro de horário, se visível
                             document.getElementById('time-error').classList.add('hidden');
@@ -1195,11 +1194,11 @@
             
             // Initialize first step
             showStep(currentStep);
-        });
+       });
     </script>
 
     <script>
-  function limitarPeso(input) {
+    function limitarPeso(input) {
     // Remove tudo que não for número
     let valor = input.value.replace(/[^\d]/g, '');
 
@@ -1217,7 +1216,197 @@
     }
   }
 </script>
-    <!-- Incluir o script de navegação suave (opcional, se necessário nesta página) -->
-    <!-- <script src="scripts/smooth-navigation.js"></script> -->
+
+    <!-- Incluir o script de navegação suave (opcional, se necessário nesta página)
+    // <script src="scripts/smooth-navigation.js"></script> 
+      Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBMaiym9AAcGR6zuMBP4ZakyLa0Kvaf-eA",
+    authDomain: "petsync-d6b46.firebaseapp.com",
+    projectId: "petsync-d6b46",
+    storageBucket: "petsync-d6b46.appspot.com",
+    messagingSenderId: "1052929637829",
+    appId: "1:1052929637829:web:4c5fc35656d5daef265fac"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  // --- Helpers ---
+  function showStep(n) {
+    document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden'));
+    document.getElementById(`step${n}`).classList.remove('hidden');
+  }
+
+  // --- Calendário ---
+  let currentMonth = new Date();
+  function initCalendar() {
+    updateCalendar();
+    document.getElementById('prev-month').onclick = () => { currentMonth.setMonth(currentMonth.getMonth() - 1); updateCalendar(); };
+    document.getElementById('next-month').onclick = () => { currentMonth.setMonth(currentMonth.getMonth() + 1); updateCalendar(); };
+  }
+  function updateCalendar() {
+    const calendarDays = document.getElementById('calendar-days');
+    calendarDays.innerHTML = '';
+    const year = currentMonth.getFullYear(), month = currentMonth.getMonth();
+    document.getElementById('current-month').textContent =
+      ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][month]
+      + ' ' + year;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    // preenche células vazias
+    for (let i = 0; i < firstDay; i++) calendarDays.appendChild(document.createElement('div'));
+    // preenche dias
+    const today = new Date(); today.setHours(0,0,0,0);
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
+      const cell = document.createElement('div');
+      cell.textContent = d;
+      cell.classList.add('py-2','text-center','rounded-md');
+      if (date < today) {
+        cell.classList.add('text-gray-300','cursor-not-allowed');
+      } else {
+        if ([0,6].includes(date.getDay())) cell.classList.add('bg-petLightGray','bg-opacity-30');
+        if (window.selectedDate && date.getTime() === window.selectedDate.getTime()) {
+          cell.classList.add('date-selected');
+        }
+        cell.classList.add('cursor-pointer','hover:bg-petBlue','hover:text-white');
+        cell.onclick = () => {
+          document.querySelectorAll('#calendar-days div').forEach(c=>c.classList.remove('date-selected'));
+          cell.classList.add('date-selected');
+          window.selectedDate = date;
+          document.getElementById('date-error').classList.add('hidden');
+          updateTimeSlots();
+        };
+      }
+      calendarDays.appendChild(cell);
+    }
+  }
+
+  // --- Time Slots via Firestore ---
+  async function updateTimeSlots() {
+    const container   = document.getElementById('time-slots-container');
+    const inputHorario= document.getElementById('horario-escolhido');
+    const erroHorario = document.getElementById('time-error');
+    container.querySelectorAll('button').forEach(b=>b.remove());
+
+    try {
+      const doc = await firebase.firestore().collection('config').doc('horarios').get();
+      if (!doc.exists) {
+        container.innerHTML = '<p class="text-red-500">Nenhum horário disponível.</p>';
+        return;
+      }
+      const { horarios } = doc.data();
+      horarios.forEach(h => {
+        const btn = document.createElement('button');
+        btn.type        = 'button';
+        btn.textContent = h;
+        btn.className   = 'slot-button px-4 py-2 border border-petBlue text-petBlue rounded-md hover:bg-petBlue hover:text-white transition';
+        btn.onclick     = () => {
+          container.querySelectorAll('button').forEach(x => {
+            x.classList.remove('bg-petBlue','text-white');
+            x.classList.add('text-petBlue');
+          });
+          btn.classList.replace('text-petBlue','bg-petBlue');
+          btn.classList.add('text-white');
+          inputHorario.value = h;
+          erroHorario.classList.add('hidden');
+        };
+        container.appendChild(btn);
+      });
+    } catch (e) {
+      console.error('Erro ao carregar horários:', e);
+      container.innerHTML = '<p class="text-red-500">Erro ao buscar horários.</p>';
+    }
+  }
+
+  // --- Fluxo de navegação e resumo ---
+  document.addEventListener('DOMContentLoaded', () => {
+    // começa no passo 1
+    showStep(1);
+
+    // Step 1 → Step 2
+    document.getElementById('step1-next').onclick = () => {
+      // faça aqui suas validações do step 1…
+      showStep(2);
+    };
+    document.getElementById('step2-prev').onclick = () => showStep(1);
+
+    // Step 2 → Step 3
+    document.getElementById('step2-next').onclick = () => {
+      // valide seleção de serviços…
+      initCalendar();
+      showStep(3);
+      updateTimeSlots();
+    };
+
+    // Step 3 → Step 4
+    document.getElementById('step3-prev').onclick = () => showStep(2);
+    document.getElementById('step3-next').onclick = e => {
+      e.preventDefault();
+      let valid = true;
+      const dErr = document.getElementById('date-error');
+      const tErr = document.getElementById('time-error');
+      const date = window.selectedDate;
+      const time = document.getElementById('horario-escolhido').value;
+      if (!date)      { dErr.classList.remove('hidden'); valid = false; } else dErr.classList.add('hidden');
+      if (!time)      { tErr.classList.remove('hidden'); valid = false; } else tErr.classList.add('hidden');
+      if (!valid) return;
+
+      // popula o resumo
+      document.getElementById('summary-owner-name').textContent  = document.getElementById('owner-name').value;
+      document.getElementById('summary-owner-phone').textContent = document.getElementById('owner-phone').value;
+      document.getElementById('summary-pet-name').textContent    = document.getElementById('pet-name').value;
+
+      const tipo = document.getElementById('pet-type');
+      document.getElementById('summary-pet-type').textContent =
+        `${tipo.options[tipo.selectedIndex].text} / ${document.getElementById('pet-breed').value}`;
+
+      const servs = Array.from(document.querySelectorAll('input[name^="service-"]:checked'))
+        .map(cb => cb.getAttribute('data-label') || cb.value);
+      document.getElementById('summary-services').textContent = servs.join(', ');
+
+      const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+      document.getElementById('summary-datetime').textContent =
+        date.toLocaleDateString('pt-BR', opts) + ' às ' + time;
+
+      document.getElementById('summary-notes').textContent =
+        document.getElementById('booking-notes').value.trim() || 'Nenhuma observação.';
+
+      // finalmente mostra o Step 4
+      showStep(4);
+    };
+
+    // Step 4 ←→ Step 3
+    document.getElementById('step4-prev').onclick = () => showStep(3);
+
+    // Confirmar agendamento…
+    document.getElementById('confirm-booking').onclick = () => {
+      // termos e submissão final…
+    };
+  });
+</script>
+
+<!-- <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form        = document.getElementById('form-agendamento');
+  const inputHorario = document.getElementById('horario-escolhido');
+  const erroHorario  = document.getElementById('time-error');
+
+  form.addEventListener('submit', e => {
+    if (!inputHorario.value) {
+      e.preventDefault();
+      erroHorario.classList.remove('hidden');
+    }
+  });
+});
+</script> -->
+
 </body>
 </html>
