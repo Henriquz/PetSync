@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<!-- favicon -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
 
+<!-- favicon -->
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🐾&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendar Visita - PetSync</title>
-    <!-- Referência ao Tailwind CSS e configuração (mantendo o original) -->
-    <script src="./saved_resource"></script>
-    <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agendar Visita - PetSync</title>
+<!-- Referência ao Tailwind CSS e configuração (mantendo o original) -->
+<script src="./saved_resource"></script>
+<script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -23,109 +23,10 @@
             }
         }
     </script>
-            <script>
-        // inicializa as variáveis num escopo global
-        window.selectedDate  = null;
-        window.selectedTime  = null;
-        </script>
-    <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const totalSteps = 4;
-    let currentStep = 0;
-
-    // Coleções de elementos
-    const stepContents = Array.from(document.querySelectorAll('.step-content'));
-    const indicators = Array.from(document.querySelectorAll('.step-indicator'));
-    const progressBars = Array.from(document.querySelectorAll('[id^="progress-bar-"]'));
-
-    // IDs dos botões Next / Prev
-    const nextBtns = ['step1-next', 'step2-next', 'step3-next'];
-    const prevBtns = ['step2-prev', 'step3-prev', 'step4-prev'];
-
-    function showStep(index) {
-      currentStep = index;
-
-      // 1) mostrar/ocultar conteúdo
-      stepContents.forEach((el, i) => el.classList.toggle('hidden', i !== index));
-
-      // 2) atualizar indicadores (círculos)
-      indicators.forEach((ind, i) => {
-        if (i <= index) {
-          ind.classList.add('bg-petBlue', 'text-white');
-          ind.classList.remove('bg-petLightGray', 'text-petGray');
-        } else {
-          ind.classList.add('bg-petLightGray', 'text-petGray');
-          ind.classList.remove('bg-petBlue', 'text-white');
-        }
-      });
-
-      // 3) atualizar barras de progresso
-      progressBars.forEach(bar => {
-        const barIndex = parseInt(bar.id.split('-')[2], 10);
-        if (barIndex <= index) {
-          bar.classList.add('bg-petBlue');
-          bar.classList.remove('bg-petLightGray');
-        } else {
-          bar.classList.add('bg-petLightGray');
-          bar.classList.remove('bg-petBlue');
-        }
-      });
-
-      // 4) ao entrar no passo 4 (index 3), preenche o resumo
-      if (index === 3) updateResumo();
-    }
-
-    // Liga os botões Next
-    nextBtns.forEach((btnId, idx) => {
-      const btn = document.getElementById(btnId);
-      if (!btn) return;
-      btn.addEventListener('click', () => {
-        if (currentStep < totalSteps - 1) showStep(currentStep + 1);
-      });
-    });
-
-    // Liga os botões Prev
-    prevBtns.forEach((btnId, idx) => {
-      const btn = document.getElementById(btnId);
-      if (!btn) return;
-      btn.addEventListener('click', () => {
-        if (currentStep > 0) showStep(currentStep - 1);
-      });
-    });
-
-    // Função para trocar os valores do resumo no passo 4
-    function updateResumo() {
-      // Exemplos de campos (ajuste os IDs se forem diferentes)
-      const nome   = document.getElementById('owner-name')?.value   || '-';
-      const tel    = document.getElementById('owner-phone')?.value  || '-';
-      const pet    = document.getElementById('pet-name')?.value     || '-';
-      const tipo   = document.getElementById('pet-type')?.value     || '-';
-      const notas  = document.getElementById('notes')?.value        || '-';
-      const data   = window.selectedDate  || '-';
-      const hora   = window.selectedTime  || '-';
-      const servs  = Array.from(document.querySelectorAll('.service-checkbox:checked'))
-                          .map(cb => cb.dataset.label || cb.value)
-                          .join(', ') || '-';
-      const dt     = (data!=='-' && hora!=='-') ? `${data} às ${hora}` : '-';
-
-      document.getElementById('summary-owner-name').innerText  = nome;
-      document.getElementById('summary-owner-phone').innerText = tel;
-      document.getElementById('summary-pet-name').innerText    = pet;
-      document.getElementById('summary-pet-type').innerText    = tipo;
-      document.getElementById('summary-services').innerText    = servs;
-      document.getElementById('summary-datetime').innerText    = dt;
-      document.getElementById('summary-notes').innerText       = notas;
-    }
-
-    // Inicia no passo 1 (index 0)
-    showStep(0);
-  });
-</script>
-
-    <!-- Referência à fonte Poppins (mantendo o original) -->
-    <link href="./css2" rel="stylesheet">
-    <!-- Estilos específicos da página de agendamento -->
-    <style>
+<!-- Referência à fonte Poppins (mantendo o original) -->
+<link href="./css2" rel="stylesheet"/>
+<!-- Estilos específicos da página de agendamento -->
+<style>
         body {
             font-family: 'Poppins', sans-serif;
         }
@@ -157,69 +58,17 @@
             color: #A0AEC0;
             cursor: not-allowed;
         }
-        
-        /* Ajustes de responsividade para campos de data e hora */
-        @media (max-width: 768px) {
-            .date-grid {
-                grid-template-columns: repeat(4, 1fr) !important;
-            }
-            
-            .time-slots-container {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 0.5rem !important;
-            }
-            
-            .time-slot {
-                padding: 0.5rem !important;
-                font-size: 0.875rem !important;
-            }
-            
-            .calendar-container {
-                padding: 0.75rem !important;
-            }
-            
-            .calendar-header {
-                flex-direction: column !important;
-                align-items: center !important;
-                margin-bottom: 1rem !important;
-            }
-            
-            .calendar-nav {
-                margin-top: 0.5rem !important;
-                width: 100% !important;
-                justify-content: space-between !important;
-            }
-            
-            .date-cell {
-                height: 2.5rem !important;
-                width: 2.5rem !important;
-                font-size: 0.875rem !important;
-            }
-            
-            /* Correção para o alinhamento do texto "Data e Hora" */
-            .step-indicator + span {
-                text-align: center !important;
-                width: 100% !important;
-                white-space: nowrap !important;
-            }
-            
-            /* Ajuste específico para o texto "Data e Hora" */
-            #step3-indicator + span {
-                margin-top: 0.5rem !important;
-                line-height: 1.2 !important;
-            }
-        }
     </style>
-    <!-- Referência a um CSS original (mantendo o original) -->
-    <link href="./3ea6e67a3e74024cf5f100ea6a2851bf.css" rel="stylesheet">
+<!-- Referência a um CSS original (mantendo o original) -->
+<link href="./3ea6e67a3e74024cf5f100ea6a2851bf.css" rel="stylesheet"/>
 </head>
 <body class="bg-white">
-    <!-- Navbar -->
+<!-- Navbar -->
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3">
             <div class="flex justify-between items-center">
                 <div class="flex items-center">
-                    <a href="./index.html" class="text-2xl font-bold text-petBlue flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-petBlue flex items-center">
                         <svg class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8 9C9.10457 9 10 8.10457 10 7C10 5.89543 9.10457 5 8 5C6.89543 5 6 5.89543 6 7C6 8.10457 6.89543 9 8 9Z" fill="#FF7A00"></path>
                             <path d="M16 9C17.1046 9 18 8.10457 18 7C18 5.89543 17.1046 5 16 5C14.8954 5 14 5.89543 14 7C14 8.10457 14.8954 9 16 9Z" fill="#FF7A00"></path>
@@ -230,327 +79,384 @@
                         Pet<span class="text-petOrange">Sync</span>
                     </a>
                 </div>
-                
-                <!-- Desktop Menu -->
-                <div class="flex items-center">
-                    <a href="./index.html" 
-                       class="bg-petOrange hover:bg-orange-600 text-white font-medium py-1.5 px-3 rounded-lg text-center transition duration-300">
-                      Voltar Ao Início
-                    </a>
-                </div>
-                
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-petGray focus:outline-none">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="md:hidden hidden pt-4 pb-2">
-              <a href="./index.html" 
-                 class="block bg-petOrange hover:bg-orange-600 text-white font-medium py-3 px-6 rounded-lg text-center transition duration-300">
+<!-- Desktop Menu -->
+<div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+<a class="bg-petOrange hover:bg-orange-600 text-white font-medium py-1.5 px-3 rounded-lg text-center transition duration-300" href="./index.html">
                 Voltar Ao Início
               </a>
-            </div>
-        </div>
-    </nav>
+</div>
+<!-- Mobile Menu Button -->
+<div class="md:hidden">
+<button class="text-petGray focus:outline-none" id="mobile-menu-button">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Mobile Menu -->
+<div class="md:hidden hidden pt-4 pb-2" id="mobile-menu">
+<a class="block bg-petOrange hover:bg-orange-600 text-white font-medium py-3 px-6 rounded-lg text-center transition duration-300" href="./index.html">
+                Voltar Ao Início
+              </a>
+</div>
+</div>
+</nav>
+<!-- Header Section -->
+<section class="hero-pattern py-12 md:py-16">
+<div class="container mx-auto px-6">
+<div class="text-center">
+<h1 class="text-4xl md:text-5xl font-bold text-petGray mb-4">Agendar <span class="text-petOrange">Visita</span></h1>
+<p class="text-petGray mb-6 max-w-md mx-auto">Marque um horário para seu pet e garanta o melhor atendimento com nossa equipe especializada.</p>
+<div class="h-1 w-24 bg-petOrange mx-auto"></div>
+</div>
+</div>
+</section>
+<!-- Booking Section -->
+<section class="py-16 bg-white">
+<div class="container mx-auto px-6">
+<div class="max-w-4xl mx-auto">
+<div id="booking-alert" class="mb-6 p-4 rounded-lg text-sm hidden"></div>
+<!-- Progress Steps -->
+<div class="flex items-center justify-between mb-12">
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 bg-petBlue text-white rounded-full flex items-center justify-center font-bold step-indicator" id="step1-indicator">1</div>
+<span class="mt-2 text-sm text-petBlue font-medium">Informações</span>
+</div>
+<div class="flex-1 h-1 bg-petLightGray mx-4" id="progress-bar-1"></div>
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 bg-petLightGray text-petGray rounded-full flex items-center justify-center font-bold step-indicator" id="step2-indicator">2</div>
+<span class="mt-2 text-sm text-petGray font-medium">Serviços</span>
+</div>
+<div class="flex-1 h-1 bg-petLightGray mx-4" id="progress-bar-2"></div>
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 bg-petLightGray text-petGray rounded-full flex items-center justify-center font-bold step-indicator" id="step3-indicator">3</div>
+<span class="mt-2 text-sm text-petGray font-medium">Data e Hora</span>
+</div>
+<div class="flex-1 h-1 bg-petLightGray mx-4" id="progress-bar-3"></div>
+<div class="flex flex-col items-center">
+<div class="w-10 h-10 bg-petLightGray text-petGray rounded-full flex items-center justify-center font-bold step-indicator" id="step4-indicator">4</div>
+<span class="mt-2 text-sm text-petGray font-medium">Confirmação</span>
+</div>
+</div>
+<!-- Step 1: Personal Information -->
+<div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content" id="step1">
+<h2 class="text-2xl font-bold text-petGray mb-6">Informações Pessoais</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-petGray mb-2" for="owner-name">Nome Completo <span class="text-red-500">*</span></label>
+<input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" id="owner-name" placeholder="Seu nome completo" required="required" type="text"/>
+<p class="text-red-500 text-sm mt-1 hidden" id="owner-name-error">Por favor, informe seu nome completo.</p>
+</div>
+<div>
+<label class="block text-petGray mb-2" for="owner-email">E-mail <span class="text-red-500">*</span></label>
+<input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" id="owner-email" placeholder="seu.email@exemplo.com" required="required" type="email"/>
+<p class="text-red-500 text-sm mt-1 hidden" id="owner-email-error">Por favor, informe um e-mail válido.</p>
+</div>
+<div>
+<label class="block text-petGray mb-2" for="owner-phone">Telefone <span class="text-red-500">*</span></label>
+<input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" id="owner-phone" placeholder="(00) 00000-0000" required="required" type="tel"/>
+<p class="text-red-500 text-sm mt-1 hidden" id="owner-phone-error">Por favor, informe um telefone válido.</p>
+</div>
+<div>
+<label class="block text-petGray mb-2" for="pet-name">Nome do Pet <span class="text-red-500">*</span></label>
+<input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" id="pet-name" placeholder="Nome do seu pet" required="required" type="text"/>
+<p class="text-red-500 text-sm mt-1 hidden" id="pet-name-error">Por favor, informe o nome do seu pet.</p>
+</div>
+<div>
+<label class="block text-petGray mb-2" for="pet-type">Tipo de Pet <span class="text-red-500">*</span></label>
+<select class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" id="pet-type" required="required">
+<option value="">Selecione o tipo</option>
+<option value="cachorro">Cachorro</option>
+<option value="gato">Gato</option>
+<option value="ave">Ave</option>
+<option value="roedor">Roedor</option>
+<option value="outro">Outro</option>
+</select>
+<p class="text-red-500 text-sm mt-1 hidden" id="pet-type-error">Por favor, selecione o tipo do seu pet.</p>
+</div>
+<div>
+<label class="block text-petGray mb-2" for="pet-breed">Raça <span class="text-red-500">*</span></label>
+<input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" id="pet-breed" placeholder="Raça do seu pet" required="required" type="text"/>
+<p class="text-red-500 text-sm mt-1 hidden" id="pet-breed-error">Por favor, informe a raça do seu pet.</p>
+</div>
+<div>
+<label class="block text-petGray mb-2" for="pet-age">Idade <span class="text-red-500">*</span></label>
+<div class="flex">
+<input class="w-2/3 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none form-input" id="pet-age" placeholder="Idade" required="required" type="number"/>
+<select class="w-1/3 px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none form-input border-l-0" id="pet-age-unit">
+<option value="anos">Anos</option>
+<option value="meses">Meses</option>
+</select>
+</div>
+<p class="text-red-500 text-sm mt-1 hidden" id="pet-age-error">Por favor, informe a idade do seu pet.</p>
+</div>
 
-    <!-- Header Section -->
-    <section class="hero-pattern py-12 md:py-16">
-        <div class="container mx-auto px-6">
-            <div class="text-center">
-                <h1 class="text-4xl md:text-5xl font-bold text-petGray mb-4">Agendar <span class="text-petOrange">Visita</span></h1>
-                <p class="text-petGray mb-6 max-w-md mx-auto">Marque um horário para seu pet e garanta o melhor atendimento com nossa equipe especializada.</p>
-                <div class="h-1 w-24 bg-petOrange mx-auto"></div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Booking Section -->
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="max-w-4xl mx-auto">
-                <!-- Progress Steps -->
-                <div class="flex items-center justify-between mb-12">
-                    <div class="flex flex-col items-center">
-                        <div class="w-10 h-10 bg-petBlue text-white rounded-full flex items-center justify-center font-bold step-indicator" id="step1-indicator">1</div>
-                        <span class="mt-2 text-sm text-petBlue font-medium">Informações</span>
-                    </div>
-                    <div class="flex-1 h-1 bg-petLightGray mx-4" id="progress-bar-1"></div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-10 h-10 bg-petLightGray text-petGray rounded-full flex items-center justify-center font-bold step-indicator" id="step2-indicator">2</div>
-                        <span class="mt-2 text-sm text-petGray font-medium">Serviços</span>
-                    </div>
-                    <div class="flex-1 h-1 bg-petLightGray mx-4" id="progress-bar-2"></div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-10 h-10 bg-petLightGray text-petGray rounded-full flex items-center justify-center font-bold step-indicator" id="step3-indicator">3</div>
-                        <span class="mt-2 text-sm text-petGray font-medium text-center">Data e<br class="hidden sm:inline"> Hora</span>
-                    </div>
-                    <div class="flex-1 h-1 bg-petLightGray mx-4" id="progress-bar-3"></div>
-                    <div class="flex flex-col items-center">
-                        <div class="w-10 h-10 bg-petLightGray text-petGray rounded-full flex items-center justify-center font-bold step-indicator" id="step4-indicator">4</div>
-                        <span class="mt-2 text-sm text-petGray font-medium">Confirmação</span>
-                    </div>
-                </div>
+<div>
+  <label for="pet-weight" class="block text-petGray mb-2 flex items-center gap-1">
+    Peso (kg) <span class="text-red-500">*</span>
 
-                <!-- Step 1: Personal Information -->
-                <div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content" id="step1">
-                    <h2 class="text-2xl font-bold text-petGray mb-6">Informações Pessoais</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="owner-name" class="block text-petGray mb-2">Nome Completo <span class="text-red-500">*</span></label>
-                            <input type="text" id="owner-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="Seu nome completo">
-                            <p class="text-red-500 text-sm mt-1 hidden" id="owner-name-error">Por favor, informe seu nome completo.</p>
-                        </div>
-                        
-                        <div>
-                            <label for="owner-email" class="block text-petGray mb-2">E-mail <span class="text-red-500">*</span></label>
-                            <input type="email" id="owner-email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="seu.email@exemplo.com">
-                            <p class="text-red-500 text-sm mt-1 hidden" id="owner-email-error">Por favor, informe um e-mail válido.</p>
-                        </div>
-                        
-                        <div>
-                            <label for="owner-phone" class="block text-petGray mb-2">Telefone <span class="text-red-500">*</span></label>
-                            <input type="tel" id="owner-phone" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="(00) 00000-0000">
-                            <p class="text-red-500 text-sm mt-1 hidden" id="owner-phone-error">Por favor, informe um telefone válido.</p>
-                        </div>
-                        
-                        <div>
-                            <label for="pet-name" class="block text-petGray mb-2">Nome do Pet <span class="text-red-500">*</span></label>
-                            <input type="text" id="pet-name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="Nome do seu pet">
-                            <p class="text-red-500 text-sm mt-1 hidden" id="pet-name-error">Por favor, informe o nome do seu pet.</p>
-                        </div>
-                        
-                        <div>
-                            <label for="pet-type" class="block text-petGray mb-2">Tipo de Pet <span class="text-red-500">*</span></label>
-                            <select id="pet-type" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input">
-                                <option value="">Selecione o tipo</option>
-                                <option value="cachorro">Cachorro</option>
-                                <option value="gato">Gato</option>
-                                <option value="ave">Ave</option>
-                                <option value="roedor">Roedor</option>
-                                <option value="outro">Outro</option>
-                            </select>
-                            <p class="text-red-500 text-sm mt-1 hidden" id="pet-type-error">Por favor, selecione o tipo do seu pet.</p>
-                        </div>
-                        
-                        <div>
-                            <label for="pet-breed" class="block text-petGray mb-2">Raça</label>
-                            <input type="text" id="pet-breed" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="Raça do seu pet">
-                            <p class="text-red-500 text-sm mt-1 hidden" id="pet-breed-error">Por favor, informe a raça do seu pet.</p>
-                        </div>
-                        
-                        <div>
-                            <label for="pet-age" class="block text-petGray mb-2">Idade</label>
-                            <div class="flex">
-                                <input type="number" id="pet-age"
-                                    class="w-2/3 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none form-input"
-                                    placeholder="Idade" min="0" max="99"
-                                    oninput="this.value = this.value.slice(0, 2)">
-                                
-                                <select id="pet-age-unit"
-                                    class="w-1/3 px-4 py-2 border border-gray-300 rounded-r-md focus:outline-none form-input border-l-0">
-                                    <option value="anos">Anos</option>
-                                    <option value="meses">Meses</option>
-                                </select>
-                            </div>
-                            <p class="text-red-500 text-sm mt-1 hidden" id="pet-age-error">Por favor, informe a idade do seu pet.</p>
-                        </div>
+    <!-- Tooltip com ícone de patinha -->
+    <span class="relative group cursor-pointer">
+      <span class="text-lg">🐾</span>
+      <div class="absolute z-10 hidden group-hover:block bg-petGray text-white text-xs rounded px-3 py-1 bottom-full mb-1 left-1/2 transform -translate-x-1/2 whitespace-nowrap shadow-md">
+        Se o seu pequenino ainda não tem 1 kg,<br>informe o peso como "0400" para 400g.
+      </div>
+    </span>
+  </label>
 
-                        
-                        <div>
-                            <label for="pet-weight" class="block text-petGray mb-2">Peso (kg) <span class="text-red-500">*</span></label>
-                            <input type="text" id="pet-weight" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" placeholder="Peso aproximado" maxlength="5"
-                            min="0" max="99.99" step="0.01"
-                            oninput="limitarPeso(this)">
-                            <p class="text-red-500 text-sm mt-1 hidden" id="pet-weight-error">Por favor, informe o peso aproximado do seu pet.</p>
-                        </div>
-                    </div>
 
-                    <div class="mt-8 flex justify-end">
-                        <button id="step1-next" class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none">Próximo</button>
-                    </div>
-                </div>
-                
-                <!-- Step 2: Services Selection -->
-                <div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content hidden" id="step2">
-                    <h2 class="text-2xl font-bold text-petGray mb-6">Selecione os Serviços</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Banho e Tosa -->
-                        <div class="border border-gray-300 rounded-lg p-6 service-option" data-service="banho-tosa">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <div class="w-12 h-12 bg-petOrange bg-opacity-20 rounded-full flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-petOrange" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M14.7 10A4.3 4.3 0 0 0 19 5.7 4.3 4.3 0 0 0 14.7 1.4a4.3 4.3 0 0 0-4.3 4.3c0 2.4 1.9 4.3 4.3 4.3zm0-7.1a2.9 2.9 0 0 1 2.9 2.8 2.9 2.9 0 0 1-2.9 2.9 2.9 2.9 0 0 1-2.8-2.9 2.9 2.9 0 0 1 2.8-2.8z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-semibold text-petGray">Banho e Tosa</h3>
-                                    <p class="text-petGray mt-1">Banho completo, secagem, escovação e tosa higiênica ou estética.</p>
-                                    <div class="mt-4">
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-checkbox h-5 w-5 text-petBlue" name="service-banho-tosa">
-                                            <span class="ml-2 text-petGray">Selecionar</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Veterinária -->
-                        <div class="border border-gray-300 rounded-lg p-6 service-option" data-service="veterinaria">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <div class="w-12 h-12 bg-petBlue bg-opacity-20 rounded-full flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-petBlue" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-semibold text-petGray">Consulta Veterinária</h3>
-                                    <p class="text-petGray mt-1">Avaliação completa da saúde do seu pet com profissionais experientes.</p>
-                                    <div class="mt-4">
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-checkbox h-5 w-5 text-petBlue" name="service-veterinaria">
-                                            <span class="ml-2 text-petGray">Selecionar</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Hospedagem -->
-                        <div class="border border-gray-300 rounded-lg p-6 service-option" data-service="hospedagem">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <div class="w-12 h-12 bg-petBlue bg-opacity-20 rounded-full flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-petBlue" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-semibold text-petGray">Hospedagem</h3>
-                                    <p class="text-petGray mt-1">Estadia confortável e segura para seu pet durante sua ausência.</p>
-                                    <div class="mt-4">
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-checkbox h-5 w-5 text-petBlue" name="service-hospedagem">
-                                            <span class="ml-2 text-petGray">Selecionar</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Adestramento -->
-                        <div class="border border-gray-300 rounded-lg p-6 service-option" data-service="adestramento">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0">
-                                    <div class="w-12 h-12 bg-petOrange bg-opacity-20 rounded-full flex items-center justify-center">
-                                        <svg class="w-6 h-6 text-petOrange" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-semibold text-petGray">Adestramento</h3>
-                                    <p class="text-petGray mt-1">Sessões de treinamento para melhorar o comportamento do seu pet.</p>
-                                    <div class="mt-4">
-                                        <label class="inline-flex items-center">
-                                            <input type="checkbox" class="form-checkbox h-5 w-5 text-petBlue" name="service-adestramento">
-                                            <span class="ml-2 text-petGray">Selecionar</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                </div>
-                
-                <!-- Step 3: Date and Time Selection -->
-                <div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content hidden" id="step3">
-                    <h2 class="text-2xl font-bold text-petGray mb-6">Escolha a Data e Horário</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- Calendar -->
-                        <div>
-                            <h3 class="text-lg font-semibold text-petGray mb-4">Selecione uma data</h3>
-                            <div class="calendar bg-white border border-gray-300 rounded-lg p-4">
-                                <div class="flex justify-between items-center mb-4">
-                                    <button id="prev-month" class="text-petGray hover:text-petBlue">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                        </svg>
-                                    </button>
-                                    <h4 id="current-month" class="text-petGray font-medium">Maio 2025</h4>
-                                    <button id="next-month" class="text-petGray hover:text-petBlue">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="grid grid-cols-7 gap-1 text-center">
-                                    <div class="text-petGray text-sm font-medium">D</div>
-                                    <div class="text-petGray text-sm font-medium">S</div>
-                                    <div class="text-petGray text-sm font-medium">T</div>
-                                    <div class="text-petGray text-sm font-medium">Q</div>
-                                    <div class="text-petGray text-sm font-medium">Q</div>
-                                    <div class="text-petGray text-sm font-medium">S</div>
-                                    <div class="text-petGray text-sm font-medium">S
-                </div>
-                
-                <!-- Success Message (initially hidden) -->
-                <div class="bg-white p-8 rounded-lg shadow-md text-center hidden" id="booking-success">
-                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </div>
-                    
-                    <h2 class="text-2xl font-bold text-petGray mb-4">Agendamento Confirmado!</h2>
-                    <p class="text-petGray mb-6">Seu agendamento foi realizado com sucesso. Enviamos um e-mail de confirmação com todos os detalhes.</p>
-                    
-                    <div class="bg-petLightGray bg-opacity-30 p-6 rounded-lg mb-6 text-left">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-petGray font-medium">Número de Confirmação:</p>
-                                <p id="confirmation-number" class="text-petBlue font-bold">PS-25052025-001</p>
-                            </div>
-                            
-                            <div>
-                                <p class="text-petGray font-medium">Data e Hora:</p>
-                                <p id="confirmation-datetime" class="text-petGray">-</p>
-                            <div class="mt-8 flex justify-between"><button id="step3-prev" type="button" class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none">Voltar</button><button id="step3-next" type="button" class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none">Próximo</button></div></div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                      <a href="./index.html" 
-                         class="bg-petOrange hover:bg-orange-600 text-white font-medium px-6 py-3 rounded-md text-center transition duration-300 focus:outline-none">
+<input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" id="pet-weight" placeholder="Peso aproximado" required="required" type="number"/>
+<p class="text-red-500 text-sm mt-1 hidden" id="pet-weight-error">Por favor, informe o peso do seu pet.</p>
+</div>
+</div>
+<div class="mt-8 flex justify-end">
+<button class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none" id="step1-next">Próximo</button>
+</div>
+</div>
+<!-- Step 2: Services Selection -->
+<div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content hidden" id="step2">
+<h2 class="text-2xl font-bold text-petGray mb-6">Selecione os Serviços</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Banho e Tosa -->
+<div class="border border-gray-300 rounded-lg p-6 service-option" data-service="banho-tosa">
+<div class="flex items-start">
+<div class="flex-shrink-0">
+<div class="w-12 h-12 bg-petOrange bg-opacity-20 rounded-full flex items-center justify-center">
+<svg class="w-6 h-6 text-petOrange" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M14.7 10A4.3 4.3 0 0 0 19 5.7 4.3 4.3 0 0 0 14.7 1.4a4.3 4.3 0 0 0-4.3 4.3c0 2.4 1.9 4.3 4.3 4.3zm0-7.1a2.9 2.9 0 0 1 2.9 2.8 2.9 2.9 0 0 1-2.9 2.9 2.9 2.9 0 0 1-2.8-2.9 2.9 2.9 0 0 1 2.8-2.8z" fill-rule="evenodd"></path>
+</svg>
+</div>
+</div>
+<div class="ml-4">
+<h3 class="text-lg font-semibold text-petGray">Banho e Tosa</h3>
+<p class="text-petGray mt-1">Banho completo, secagem, escovação e tosa higiênica ou estética.</p>
+<div class="mt-4">
+<label class="inline-flex items-center">
+<input class="form-checkbox h-5 w-5 text-petBlue" name="service-banho-tosa" type="checkbox"/>
+<span class="ml-2 text-petGray">Selecionar</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Veterinária -->
+<div class="border border-gray-300 rounded-lg p-6 service-option" data-service="veterinaria">
+<div class="flex items-start">
+<div class="flex-shrink-0">
+<div class="w-12 h-12 bg-petBlue bg-opacity-20 rounded-full flex items-center justify-center">
+<svg class="w-6 h-6 text-petBlue" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" fill-rule="evenodd"></path>
+</svg>
+</div>
+</div>
+<div class="ml-4">
+<h3 class="text-lg font-semibold text-petGray">Consulta Veterinária</h3>
+<p class="text-petGray mt-1">Avaliação completa da saúde do seu pet com profissionais experientes.</p>
+<div class="mt-4">
+<label class="inline-flex items-center">
+<input class="form-checkbox h-5 w-5 text-petBlue" name="service-veterinaria" type="checkbox"/>
+<span class="ml-2 text-petGray">Selecionar</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Hospedagem -->
+<div class="border border-gray-300 rounded-lg p-6 service-option" data-service="hospedagem">
+<div class="flex items-start">
+<div class="flex-shrink-0">
+<div class="w-12 h-12 bg-petBlue bg-opacity-20 rounded-full flex items-center justify-center">
+<svg class="w-6 h-6 text-petBlue" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" fill-rule="evenodd"></path>
+</svg>
+</div>
+</div>
+<div class="ml-4">
+<h3 class="text-lg font-semibold text-petGray">Hospedagem</h3>
+<p class="text-petGray mt-1">Estadia confortável e segura para seu pet durante sua ausência.</p>
+<div class="mt-4">
+<label class="inline-flex items-center">
+<input class="form-checkbox h-5 w-5 text-petBlue" name="service-hospedagem" type="checkbox"/>
+<span class="ml-2 text-petGray">Selecionar</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Adestramento -->
+<div class="border border-gray-300 rounded-lg p-6 service-option" data-service="adestramento">
+<div class="flex items-start">
+<div class="flex-shrink-0">
+<div class="w-12 h-12 bg-petOrange bg-opacity-20 rounded-full flex items-center justify-center">
+<svg class="w-6 h-6 text-petOrange" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" fill-rule="evenodd"></path>
+</svg>
+</div>
+</div>
+<div class="ml-4">
+<h3 class="text-lg font-semibold text-petGray">Adestramento</h3>
+<p class="text-petGray mt-1">Sessões de treinamento para melhorar o comportamento do seu pet.</p>
+<div class="mt-4">
+<label class="inline-flex items-center">
+<input class="form-checkbox h-5 w-5 text-petBlue" name="service-adestramento" type="checkbox"/>
+<span class="ml-2 text-petGray">Selecionar</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-between">
+<button class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none" id="step2-prev">Voltar</button>
+<button class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none" id="step2-next">Próximo</button>
+</div>
+</div>
+<!-- Step 3: Date and Time Selection -->
+<div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content hidden" id="step3">
+<h2 class="text-2xl font-bold text-petGray mb-6">Escolha a Data e Horário</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Calendar -->
+<div>
+<h3 class="text-lg font-semibold text-petGray mb-4">Selecione uma data</h3>
+<div class="calendar bg-white border border-gray-300 rounded-lg p-4">
+<div class="flex justify-between items-center mb-4">
+<button class="text-petGray hover:text-petBlue" id="prev-month">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<h4 class="text-petGray font-medium" id="current-month">Maio 2025</h4>
+<button class="text-petGray hover:text-petBlue" id="next-month">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center">
+<div class="text-petGray text-sm font-medium">D</div>
+<div class="text-petGray text-sm font-medium">S</div>
+<div class="text-petGray text-sm font-medium">T</div>
+<div class="text-petGray text-sm font-medium">Q</div>
+<div class="text-petGray text-sm font-medium">Q</div>
+<div class="text-petGray text-sm font-medium">S</div>
+<div class="text-petGray text-sm font-medium">S</div>
+</div>
+<div class="grid grid-cols-7 gap-1 mt-2" id="calendar-days">
+<!-- Calendar days will be generated by JavaScript -->
+</div>
+</div>
+<p class="text-red-500 text-sm mt-2 hidden" id="date-error">Por favor, selecione uma data.</p>
+</div>
+<!-- Time Slots -->
+<div>
+<h3 class="text-lg font-semibold text-petGray mb-4">Selecione um horário</h3>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="time-slots">
+<button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="09:00">09:00</button>
+<button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="10:00">10:00</button>
+<button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="11:00">11:00</button>
+<button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="13:00">13:00</button>
+<button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="14:00">14:00</button>
+<button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="15:00">15:00</button>
+<button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="16:00">16:00</button>
+<button class="time-slot py-2 px-3 border border-gray-300 rounded-md text-petGray hover:border-petBlue focus:outline-none" data-time="17:00">17:00</button>
+<button class="time-slot unavailable py-2 px-3 border border-gray-300 rounded-md" data-time="18:00" disabled="">18:00</button>
+</div>
+<p class="text-red-500 text-sm mt-2 hidden" id="time-error">Por favor, selecione um horário.</p>
+<div class="mt-6">
+<h3 class="text-lg font-semibold text-petGray mb-4">Observações</h3>
+<textarea class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" id="booking-notes" placeholder="Alguma informação adicional que devemos saber?" rows="3"></textarea>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-between">
+<button class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none" id="step3-prev">Voltar</button>
+<button class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none" id="step3-next">Próximo</button>
+</div>
+</div>
+<!-- Step 4: Confirmation -->
+<div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content hidden" id="step4">
+<h2 class="text-2xl font-bold text-petGray mb-6">Confirme seu Agendamento</h2>
+<div class="bg-petLightGray bg-opacity-30 p-6 rounded-lg mb-6">
+<h3 class="text-lg font-semibold text-petGray mb-4">Resumo do Agendamento</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<p class="text-petGray font-medium">Cliente:</p>
+<p class="text-petGray" id="summary-owner-name">-</p>
+</div>
+<div>
+<p class="text-petGray font-medium">Contato:</p>
+<p class="text-petGray" id="summary-owner-phone">-</p>
+</div>
+<div>
+<p class="text-petGray font-medium">Pet:</p>
+<p class="text-petGray" id="summary-pet-name">-</p>
+</div>
+<div>
+<p class="text-petGray font-medium">Tipo/Raça:</p>
+<p class="text-petGray" id="summary-pet-type">-</p>
+</div>
+<div>
+<p class="text-petGray font-medium">Serviços:</p>
+<p class="text-petGray" id="summary-services">-</p>
+</div>
+<div>
+<p class="text-petGray font-medium">Data e Hora:</p>
+<p class="text-petGray" id="summary-datetime">-</p>
+</div>
+<div class="md:col-span-2">
+<p class="text-petGray font-medium">Observações:</p>
+<p class="text-petGray" id="summary-notes">-</p>
+</div>
+</div>
+</div>
+<div class="mb-6">
+<label class="inline-flex items-center">
+<input class="form-checkbox h-5 w-5 text-petBlue" id="terms-checkbox" type="checkbox"/>
+<span class="ml-2 text-petGray">Concordo com os <a class="text-petBlue hover:underline" href="#">termos e condições</a> do PetSync.</span>
+</label>
+<p class="text-red-500 text-sm mt-1 hidden" id="terms-error">Você precisa concordar com os termos e condições.</p>
+</div>
+<div class="mt-8 flex justify-between">
+<button class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none" id="step4-prev">Voltar</button>
+<button class="bg-petOrange text-white px-6 py-3 rounded-md font-medium hover:bg-orange-600 transition focus:outline-none" id="confirm-booking">Confirmar Agendamento</button>
+</div>
+</div>
+<!-- Success Message (initially hidden) -->
+<div class="bg-white p-8 rounded-lg shadow-md text-center hidden" id="booking-success">
+<div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+<svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h2 class="text-2xl font-bold text-petGray mb-4">Agendamento Confirmado!</h2>
+<p class="text-petGray mb-6">Seu agendamento foi realizado com sucesso. Enviamos um e-mail de confirmação com todos os detalhes.</p>
+<div class="bg-petLightGray bg-opacity-30 p-6 rounded-lg mb-6 text-left">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<p class="text-petGray font-medium">Número de Confirmação:</p>
+<p class="text-petBlue font-bold" id="confirmation-number">PS-25052025-001</p>
+</div>
+<div>
+<p class="text-petGray font-medium">Data e Hora:</p>
+<p class="text-petGray" id="confirmation-datetime">-</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+<a class="bg-petOrange hover:bg-orange-600 text-white font-medium px-6 py-3 rounded-md text-center transition duration-300 focus:outline-none" href="./index.html">
                         Voltar Ao Início
                       </a>
-                      <a href="galeria.html" 
-                         class="bg-petBlue text-white font-medium px-6 py-3 rounded-md text-center hover:bg-blue-700 transition focus:outline-none">
+<a class="bg-petBlue text-white font-medium px-6 py-3 rounded-md text-center hover:bg-blue-700 transition focus:outline-none" href="galeria.html">
                         Ver Galeria de Pets
                       </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
     <footer class="bg-petGray text-white py-2">
   <div class="container mx-auto px-4 flex items-center justify-between">
 
@@ -639,9 +545,8 @@
     </div>
   </div>
 </footer>
-
-    <!-- Script para funcionalidades do agendamento -->
-    <script>
+<!-- Script para funcionalidades do agendamento -->
+<script>
         document.addEventListener('DOMContentLoaded', function() {
             // Form validation
             const validateEmail = (email) => {
@@ -675,8 +580,6 @@
             let currentStep = 0;
             
             const showStep = (stepIndex) => {
-                console.log('Mostrando etapa:', stepIndex, steps[stepIndex]);
-                
                 // Hide all steps
                 steps.forEach(step => {
                     document.getElementById(step).classList.add('hidden');
@@ -684,7 +587,6 @@
                 
                 // Show current step
                 document.getElementById(steps[stepIndex]).classList.remove('hidden');
-                console.log('Removida classe hidden de:', steps[stepIndex]);
                 
                 // Update progress indicators
                 for (let i = 0; i < steps.length; i++) {
@@ -760,16 +662,7 @@
                     document.getElementById('pet-name-error').classList.add('hidden');
                 }
                 
-                // Validate pet weight (now required)
-                const petWeight = document.getElementById('pet-weight').value.trim();
-                if (petWeight === '') {
-                    document.getElementById('pet-weight-error').classList.remove('hidden');
-                    isValid = false;
-                } else {
-                    document.getElementById('pet-weight-error').classList.add('hidden');
-                }
-                
-                // Validate pet type (now required)
+                // Validate pet type
                 const petType = document.getElementById('pet-type').value;
                 if (petType === '') {
                     document.getElementById('pet-type-error').classList.remove('hidden');
@@ -778,11 +671,37 @@
                     document.getElementById('pet-type-error').classList.add('hidden');
                 }
                 
+                
+                // Validate pet breed
+                const petBreed = document.getElementById('pet-breed').value.trim();
+                if (petBreed === '') {
+                    document.getElementById('pet-breed-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('pet-breed-error').classList.add('hidden');
+                }
+
+                // Validate pet age
+                const petAge = document.getElementById('pet-age').value.trim();
+                if (petAge === '') {
+                    document.getElementById('pet-age-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('pet-age-error').classList.add('hidden');
+                }
+
+                // Validate pet weight
+                const petWeight = document.getElementById('pet-weight').value.trim();
+                if (petWeight === '') {
+                    document.getElementById('pet-weight-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('pet-weight-error').classList.add('hidden');
+                }
+
                 if (isValid) {
                     currentStep = 1;
-                    console.log('Avançando para etapa de serviços (step2)');
                     showStep(currentStep);
-                    console.log('Verificando se step2 está visível:', !document.getElementById('step2').classList.contains('hidden'));
                 }
             });
             
@@ -810,72 +729,115 @@
                     // Initialize calendar
                     initCalendar();
                 } else {
-                    alert('Por favor, selecione pelo menos um serviço.');
+                    showNotification('Por favor, selecione pelo menos um serviço.', 'error');
                 }
             });
             
             // Step 3 navigation
-document.getElementById('step3-prev').addEventListener('click', function() {
-    currentStep = 1;
-    showStep(currentStep);
-});
-
-document.getElementById('step3-next').addEventListener('click', function(e) {
-  e.preventDefault();
-
-  let isValid = true;
-  // valida data
-  if (!window.selectedDate) {
-    document.getElementById('date-error').classList.remove('hidden');
-    isValid = false;
-  } else {
-    document.getElementById('date-error').classList.add('hidden');
-  }
-  // valida horário
-  const horarioInput = document.getElementById('horario-escolhido');
-  if (!window.selectedTime && !horarioInput.value) {
-    document.getElementById('time-error').classList.remove('hidden');
-    isValid = false;
-  } else {
-    document.getElementById('time-error').classList.add('hidden');
-    window.selectedTime = window.selectedTime || horarioInput.value;
-  }
-  if (!isValid) return;
-
-    currentStep = 3;
-    showStep(currentStep);
-
-  // popula o resumo
-  document.getElementById('summary-owner-name').textContent  = document.getElementById('owner-name').value;
-  document.getElementById('summary-owner-phone').textContent = document.getElementById('owner-phone').value;
-  document.getElementById('summary-pet-name').textContent    = document.getElementById('pet-name').value;
-
-  const petType  = document.getElementById('pet-type');
-  const petBreed = document.getElementById('pet-breed').value;
-  document.getElementById('summary-pet-type').textContent =
-    `${petType.options[petType.selectedIndex].text} / ${petBreed}`;
-
-  const checked = document.querySelectorAll('input[name^="service-"]:checked');
-  const services = Array.from(checked).map(cb => {
-    switch (cb.name.replace('service-','')) {
-      case 'banho-tosa':   return 'Banho e Tosa';
-      case 'veterinaria':  return 'Consulta Veterinária';
-      case 'hospedagem':   return 'Hospedagem';
-      case 'adestramento': return 'Adestramento';
-    }
-  });
-  document.getElementById('summary-services').textContent = services.join(', ');
-
-  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
-  const dateStr = window.selectedDate.toLocaleDateString('pt-BR', opts);
-  document.getElementById('summary-datetime').textContent = `${dateStr} às ${window.selectedTime}`;
-
-  const notes = document.getElementById('booking-notes').value.trim() || 'Nenhuma observação.';
-  document.getElementById('summary-notes').textContent = notes;
-});
-
+            document.getElementById('step3-prev').addEventListener('click', function() {
+                currentStep = 1;
+                showStep(currentStep);
+            });
             
-            // Step 4 navigation
+            document.getElementById('step3-next').addEventListener('click', function() {
+                let isValid = true;
+                
+                // Check if date is selected
+                if (!selectedDate) {
+                    document.getElementById('date-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('date-error').classList.add('hidden');
+                }
+                
+                // Check if time is selected
+                if (!selectedTime) {
+                    document.getElementById('time-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('time-error').classList.add('hidden');
+                }
+                
+                
+                // Validate pet breed
+                const petBreed = document.getElementById('pet-breed').value.trim();
+                if (petBreed === '') {
+                    document.getElementById('pet-breed-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('pet-breed-error').classList.add('hidden');
+                }
+
+                // Validate pet age
+                const petAge = document.getElementById('pet-age').value.trim();
+                if (petAge === '') {
+                    document.getElementById('pet-age-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('pet-age-error').classList.add('hidden');
+                }
+
+                // Validate pet weight
+                const petWeight = document.getElementById('pet-weight').value.trim();
+                if (petWeight === '') {
+                    document.getElementById('pet-weight-error').classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById('pet-weight-error').classList.add('hidden');
+                }
+
+                if (isValid) {
+                    // Update summary
+                    document.getElementById('summary-owner-name').textContent = document.getElementById('owner-name').value;
+                    document.getElementById('summary-owner-phone').textContent = document.getElementById('owner-phone').value;
+                    document.getElementById('summary-pet-name').textContent = document.getElementById('pet-name').value;
+                    
+                    const petType = document.getElementById('pet-type');
+                    const petBreed = document.getElementById('pet-breed').value;
+                    document.getElementById('summary-pet-type').textContent = `${petType.options[petType.selectedIndex].text} / ${petBreed}`;
+                    
+                    // Get selected services
+                    const serviceCheckboxes = document.querySelectorAll('input[name^="service-"]:checked');
+                    let selectedServices = [];
+                    
+                    serviceCheckboxes.forEach(checkbox => {
+                        const serviceName = checkbox.name.replace('service-', '');
+                        let displayName = '';
+                        
+                        switch(serviceName) {
+                            case 'banho-tosa':
+                                displayName = 'Banho e Tosa';
+                                break;
+                            case 'veterinaria':
+                                displayName = 'Consulta Veterinária';
+                                break;
+                            case 'hospedagem':
+                                displayName = 'Hospedagem';
+                                break;
+                            case 'adestramento':
+                                displayName = 'Adestramento';
+                                break;
+                        }
+                        
+                        selectedServices.push(displayName);
+                    });
+                    
+                    document.getElementById('summary-services').textContent = selectedServices.join(', ');
+                    
+                    // Format date
+                    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    const formattedDate = selectedDate.toLocaleDateString('pt-BR', dateOptions);
+                    document.getElementById('summary-datetime').textContent = `${formattedDate} às ${selectedTime}`;
+                    
+                    // Notes
+                    const notes = document.getElementById('booking-notes').value.trim();
+                    document.getElementById('summary-notes').textContent = notes || 'Nenhuma observação.';
+                    
+                    currentStep = 3;
+                    showStep(currentStep);
+                }
+            });
+            
             // Step 4 navigation
             document.getElementById('step4-prev').addEventListener('click', function() {
                 currentStep = 2;
@@ -904,9 +866,9 @@ document.getElementById('step3-next').addEventListener('click', function(e) {
                 document.getElementById('booking-success').classList.remove('hidden');
             });
             
-            // Calendar functionality - usando as variáveis globais já declaradas
-            window.selectedDate = window.selectedDate || null;
-            window.selectedTime = window.selectedTime || null;
+            // Calendar functionality
+            let selectedDate = null;
+            let selectedTime = null;
             let currentMonth = new Date();
             
             const initCalendar = () => {
@@ -969,7 +931,7 @@ document.getElementById('step3-next').addEventListener('click', function(e) {
                         }
                         
                         // Selected date
-                        if (window.selectedDate && date.getTime() === window.selectedDate.getTime()) {
+                        if (selectedDate && date.getTime() === selectedDate.getTime()) {
                             dayCell.classList.add('date-selected');
                         }
                         
@@ -984,7 +946,7 @@ document.getElementById('step3-next').addEventListener('click', function(e) {
                             dayCell.classList.add('date-selected');
                             
                             // Update selected date
-                            window.selectedDate = date;
+                            selectedDate = date;
                             
                             // Hide date error if visible
                             document.getElementById('date-error').classList.add('hidden');
@@ -995,299 +957,133 @@ document.getElementById('step3-next').addEventListener('click', function(e) {
                 }
             };
             
-            // Função para atualizar os horários disponíveis com base na data selecionada
-            function updateTimeSlots() {
-                const timeSlotsContainer = document.getElementById('time-slots-container');
-                timeSlotsContainer.innerHTML = '';
-                
-                // Horários disponíveis (poderia vir de uma API ou configuração)
-               // const availableTimeSlots = [
-                 //   '08:00', '09:00', '10:00', '11:00', 
-                   // '13:00', '14:00', '15:00', '16:00', '17:00'
-                //]; 
-                
-                // Horários indisponíveis (exemplo - poderia vir de uma API)
-                const unavailableTimeSlots = ['12:00'];
-                
-                // Referência à hora atual de Brasília
-                const horaBrasilia = window.horaBrasilia || new Date();
-                
-                // Verifica se a data selecionada é hoje
-                const isToday = window.selectedDate && 
-                               window.selectedDate.getDate() === horaBrasilia.getDate() && 
-                               window.selectedDate.getMonth() === horaBrasilia.getMonth() && 
-                               window.selectedDate.getFullYear() === horaBrasilia.getFullYear();
-                
-                // Limpa a seleção de horário anterior
-                window.selectedTime = null;
-                
-                // Cria os slots de horário
-                availableTimeSlots.forEach(time => {
-                    const timeSlot = document.createElement('button');
-                    timeSlot.type = 'button';
-                    timeSlot.classList.add('time-slot', 'py-2', 'px-3', 'border', 'border-gray-300', 'rounded-md', 'text-petGray', 'hover:border-petBlue', 'focus:outline-none');
-                    timeSlot.setAttribute('data-time', time);
-                    timeSlot.textContent = time;
+            // Time slot selection
+            const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
+            
+            timeSlots.forEach(slot => {
+                slot.addEventListener('click', function() {
+                    // Remove selected class from all time slots
+                    timeSlots.forEach(s => {
+                        s.classList.remove('selected');
+                    });
                     
-                    // Verifica se o horário está indisponível
-                    let isUnavailable = unavailableTimeSlots.includes(time);
+                    // Add selected class to clicked time slot
+                    slot.classList.add('selected');
                     
-                    // Se for hoje, verifica se o horário já passou
-                    if (isToday) {
-                        const [hora, minuto] = time.split(':').map(Number);
-                        const timeDate = new Date(selectedDate);
-                        timeDate.setHours(hora, minuto, 0, 0);
-                        
-                        // Compara com a hora atual de Brasília
-                        if (timeDate <= horaBrasilia) {
-                            isUnavailable = true;
-                        }
-                    }
+                    // Update selected time
+                    selectedTime = slot.getAttribute('data-time');
                     
-                    if (isUnavailable) {
-                        timeSlot.classList.add('unavailable');
-                        timeSlot.classList.remove('hover:border-petBlue');
-                        timeSlot.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed');
-                        timeSlot.disabled = true;
-                        timeSlot.title = 'Horário indisponível';
-                    } else {
-                        // Evento de clique para selecionar o horário
-                        timeSlot.addEventListener('click', function() {
-                            // Remove a classe de seleção de todos os horários
-                            document.querySelectorAll('.time-slot').forEach(slot => {
-                                slot.classList.remove('selected');
-                            });
-                            
-                            // Adiciona a classe de seleção ao horário clicado
-                            timeSlot.classList.add('selected');
-                            
-                            // Atualiza o horário selecionado
-                            window.selectedTime = time;
-                            
-                            // Esconde o erro de horário, se visível
-                            document.getElementById('time-error').classList.add('hidden');
-                        });
-                    }
-                    
-                    timeSlotsContainer.appendChild(timeSlot);
+                    // Hide time error if visible
+                    document.getElementById('time-error').classList.add('hidden');
                 });
-            }
+            });
             
             // Initialize first step
             showStep(currentStep);
-       });
+        });
     </script>
+<!-- Incluir o script de navegação suave (opcional, se necessário nesta página) -->
+<!-- <script src="scripts/smooth-navigation.js"></script> -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const weightInput = document.getElementById('pet-weight');
 
-    <script>
-    function limitarPeso(input) {
-    // Remove tudo que não for número
-    let valor = input.value.replace(/[^\d]/g, '');
+    if (weightInput) {
+        weightInput.addEventListener('input', function (e) {
+            let raw = e.target.value.replace(/\D/g, ''); // remove tudo que não for número
 
-    // Linha de codigo que insere a virgula depois de 2 digitos
-    if (valor.length > 2) {
-      valor = valor.slice(0, 2) + '.' + valor.slice(2, 4);
+            // Limita a 4 dígitos
+            raw = raw.slice(0, 4);
+
+            // Se começar com 0 (gramas), não formata com ponto
+            if (raw.startsWith('0')) {
+                e.target.value = raw;
+            } else if (raw.length >= 3) {
+                // Ex: 1500 → 15.00 | 800 → 8.00
+                const inteiro = raw.slice(0, raw.length - 2);
+                const decimal = raw.slice(-2);
+                e.target.value = `${inteiro}.${decimal}`;
+            } else {
+                e.target.value = raw;
+            }
+        });
     }
-
-    // Atualiza o campo
-    input.value = valor;
-
-    // limitei a  digitos (exemplo 99,99, porque nao tera animal com 100kg)
-    if (valor.length > 5) {
-      input.value = valor.slice(0, 5);
-    }
-  }
+});
 </script>
 
-    <!-- Incluir o script de navegação suave (opcional, se necessário nesta página)
-    // <script src="scripts/smooth-navigation.js"></script> 
-      Firebase CDN -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<!-- Notification Area -->
+<div id="notification-area" style="position: fixed; top: 20px; right: 20px; z-index: 1050; display: flex; flex-direction: column; gap: 10px;"></div>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBMaiym9AAcGR6zuMBP4ZakyLa0Kvaf-eA",
-    authDomain: "petsync-d6b46.firebaseapp.com",
-    projectId: "petsync-d6b46",
-    storageBucket: "petsync-d6b46.appspot.com",
-    messagingSenderId: "1052929637829",
-    appId: "1:1052929637829:web:4c5fc35656d5daef265fac"
-  };
+  function showNotification(message, type = 'error') {
+    const area = document.getElementById('notification-area');
+    const notification = document.createElement('div');
+    const color = type === 'error' ? 'bg-red-100 text-red-800 border-red-300' : 'bg-green-100 text-green-800 border-green-300';
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
+    notification.className = `border ${color} px-4 py-3 rounded relative shadow-md max-w-xs w-full`;
+    notification.innerHTML = `
+      <strong class="font-bold">${type === 'error' ? 'Erro' : 'Sucesso'}:</strong>
+      <span class="block sm:inline ml-1">${message}</span>
+      <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer">
+        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"><title>Fechar</title><path d="M14.348 5.652a1 1 0 10-1.414-1.414L10 7.172 7.066 4.238A1 1 0 105.652 5.652L8.586 8.586 5.652 11.52a1 1 0 101.414 1.414L10 9.828l2.934 2.934a1 1 0 001.414-1.414L11.414 8.586l2.934-2.934z"/></svg>
+      </span>
+    `;
 
-  // --- Helpers ---
-  function showStep(n) {
-    document.querySelectorAll('.step-content').forEach(s => s.classList.add('hidden'));
-    document.getElementById(`step${n}`).classList.remove('hidden');
-  }
+    // Fechar ao clicar no X
+    notification.querySelector('span[role="button"], span[title]').addEventListener('click', () => {
+      area.removeChild(notification);
+    });
 
-  // --- Calendário ---
-  let currentMonth = new Date();
-  function initCalendar() {
-    updateCalendar();
-    document.getElementById('prev-month').onclick = () => { currentMonth.setMonth(currentMonth.getMonth() - 1); updateCalendar(); };
-    document.getElementById('next-month').onclick = () => { currentMonth.setMonth(currentMonth.getMonth() + 1); updateCalendar(); };
-  }
-  function updateCalendar() {
-    const calendarDays = document.getElementById('calendar-days');
-    calendarDays.innerHTML = '';
-    const year = currentMonth.getFullYear(), month = currentMonth.getMonth();
-    document.getElementById('current-month').textContent =
-      ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][month]
-      + ' ' + year;
+    area.appendChild(notification);
 
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    // preenche células vazias
-    for (let i = 0; i < firstDay; i++) calendarDays.appendChild(document.createElement('div'));
-    // preenche dias
-    const today = new Date(); today.setHours(0,0,0,0);
-    for (let d = 1; d <= daysInMonth; d++) {
-      const date = new Date(year, month, d);
-      const cell = document.createElement('div');
-      cell.textContent = d;
-      cell.classList.add('py-2','text-center','rounded-md');
-      if (date < today) {
-        cell.classList.add('text-gray-300','cursor-not-allowed');
-      } else {
-        if ([0,6].includes(date.getDay())) cell.classList.add('bg-petLightGray','bg-opacity-30');
-        if (window.selectedDate && date.getTime() === window.selectedDate.getTime()) {
-          cell.classList.add('date-selected');
-        }
-        cell.classList.add('cursor-pointer','hover:bg-petBlue','hover:text-white');
-        cell.onclick = () => {
-          document.querySelectorAll('#calendar-days div').forEach(c=>c.classList.remove('date-selected'));
-          cell.classList.add('date-selected');
-          window.selectedDate = date;
-          document.getElementById('date-error').classList.add('hidden');
-          updateTimeSlots();
-        };
+    // Remover após 5 segundos
+    setTimeout(() => {
+      if (area.contains(notification)) {
+        area.removeChild(notification);
       }
-      calendarDays.appendChild(cell);
-    }
+    }, 5000);
   }
-
-  // --- Time Slots via Firestore ---
-  async function updateTimeSlots() {
-    const container   = document.getElementById('time-slots-container');
-    const inputHorario= document.getElementById('horario-escolhido');
-    const erroHorario = document.getElementById('time-error');
-    container.querySelectorAll('button').forEach(b=>b.remove());
-
-    try {
-      const doc = await firebase.firestore().collection('config').doc('horarios').get();
-      if (!doc.exists) {
-        container.innerHTML = '<p class="text-red-500">Nenhum horário disponível.</p>';
-        return;
-      }
-      const { horarios } = doc.data();
-      horarios.forEach(h => {
-        const btn = document.createElement('button');
-        btn.type        = 'button';
-        btn.textContent = h;
-        btn.className   = 'slot-button px-4 py-2 border border-petBlue text-petBlue rounded-md hover:bg-petBlue hover:text-white transition';
-        btn.onclick     = () => {
-          container.querySelectorAll('button').forEach(x => {
-            x.classList.remove('bg-petBlue','text-white');
-            x.classList.add('text-petBlue');
-          });
-          btn.classList.replace('text-petBlue','bg-petBlue');
-          btn.classList.add('text-white');
-          inputHorario.value = h;
-          erroHorario.classList.add('hidden');
-        };
-        container.appendChild(btn);
-      });
-    } catch (e) {
-      console.error('Erro ao carregar horários:', e);
-      container.innerHTML = '<p class="text-red-500">Erro ao buscar horários.</p>';
-    }
-  }
-
-  // --- Fluxo de navegação e resumo ---
-  document.addEventListener('DOMContentLoaded', () => {
-    // começa no passo 1
-    showStep(1);
-
-    // Step 1 → Step 2
-    document.getElementById('step1-next').onclick = () => {
-      // faça aqui suas validações do step 1…
-      showStep(2);
-    };
-    document.getElementById('step2-prev').onclick = () => showStep(1);
-
-    // Step 2 → Step 3
-    document.getElementById('step2-next').onclick = () => {
-      // valide seleção de serviços…
-      initCalendar();
-      showStep(3);
-      updateTimeSlots();
-    };
-
-    // Step 3 → Step 4
-    document.getElementById('step3-prev').onclick = () => showStep(2);
-    document.getElementById('step3-next').onclick = e => {
-      e.preventDefault();
-      let valid = true;
-      const dErr = document.getElementById('date-error');
-      const tErr = document.getElementById('time-error');
-      const date = window.selectedDate;
-      const time = document.getElementById('horario-escolhido').value;
-      if (!date)      { dErr.classList.remove('hidden'); valid = false; } else dErr.classList.add('hidden');
-      if (!time)      { tErr.classList.remove('hidden'); valid = false; } else tErr.classList.add('hidden');
-      if (!valid) return;
-
-      // popula o resumo
-      document.getElementById('summary-owner-name').textContent  = document.getElementById('owner-name').value;
-      document.getElementById('summary-owner-phone').textContent = document.getElementById('owner-phone').value;
-      document.getElementById('summary-pet-name').textContent    = document.getElementById('pet-name').value;
-
-      const tipo = document.getElementById('pet-type');
-      document.getElementById('summary-pet-type').textContent =
-        `${tipo.options[tipo.selectedIndex].text} / ${document.getElementById('pet-breed').value}`;
-
-      const servs = Array.from(document.querySelectorAll('input[name^="service-"]:checked'))
-        .map(cb => cb.getAttribute('data-label') || cb.value);
-      document.getElementById('summary-services').textContent = servs.join(', ');
-
-      const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
-      document.getElementById('summary-datetime').textContent =
-        date.toLocaleDateString('pt-BR', opts) + ' às ' + time;
-
-      document.getElementById('summary-notes').textContent =
-        document.getElementById('booking-notes').value.trim() || 'Nenhuma observação.';
-
-      // finalmente mostra o Step 4
-      showStep(4);
-    };
-
-    // Step 4 ←→ Step 3
-    document.getElementById('step4-prev').onclick = () => showStep(3);
-
-    // Confirmar agendamento…
-    document.getElementById('confirm-booking').onclick = () => {
-      // termos e submissão final…
-    };
-  });
 </script>
 
-<!-- <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const form        = document.getElementById('form-agendamento');
-  const inputHorario = document.getElementById('horario-escolhido');
-  const erroHorario  = document.getElementById('time-error');
 
-  form.addEventListener('submit', e => {
-    if (!inputHorario.value) {
-      e.preventDefault();
-      erroHorario.classList.remove('hidden');
-    }
-  });
-});
-</script> -->
+<!-- Notification Area -->
+<div id="notification-area" class="fixed top-4 right-4 z-50 flex flex-col gap-4"></div>
 
 </body>
+
+<script>
+function showNotification(message, type = 'error') {
+  const area = document.getElementById('notification-area');
+  const notification = document.createElement('div');
+
+  const bg = type === 'error'
+    ? 'bg-red-500 text-white'
+    : 'bg-green-500 text-white';
+
+  notification.className = `flex items-center justify-between ${bg} px-4 py-3 rounded shadow-md max-w-sm w-full`;
+
+  notification.innerHTML = `
+    <span class="text-sm font-medium">${message}</span>
+    <button class="ml-4 text-white text-xl font-bold focus:outline-none">&times;</button>
+  `;
+
+  // Fechar ao clicar
+  notification.querySelector('button').addEventListener('click', () => {
+    area.removeChild(notification);
+  });
+
+  // Adiciona à área
+  area.appendChild(notification);
+
+  // Remover após 5 segundos
+  setTimeout(() => {
+    if (area.contains(notification)) {
+      area.removeChild(notification);
+    }
+  }, 5000);
+}
+</script>
+
+
 </html>
