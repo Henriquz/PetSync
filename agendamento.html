@@ -29,126 +29,99 @@
         window.selectedTime  = null;
         </script>
     <script>
-        // Função para formatar o campo de peso automaticamente
-        document.addEventListener('DOMContentLoaded', function() {
-            const pesoInput = document.getElementById('pet-weight');
-            
-            pesoInput.addEventListener('input', function(e) {
-                // Preserva a posição do cursor
-                const cursorPos = this.selectionStart;
-                
-                // Remove qualquer caractere que não seja número ou ponto
-                let value = this.value.replace(/[^\d.]/g, '');
-                
-                // Divide o valor em parte inteira e decimal
-                let parts = value.split('.');
-                let intPart = parts[0] || '';
-                let decPart = parts.length > 1 ? parts[1] : '';
-                
-                // Limita a parte inteira a 2 dígitos (para 99.99)
-                if (intPart.length > 2) {
-                    intPart = intPart.slice(0, 2);
-                }
-                
-                // Limita a parte decimal a 2 dígitos
-                if (decPart.length > 2) {
-                    decPart = decPart.slice(0, 2);
-                }
-                
-                // Verifica se o valor é maior que 99.99
-                if (parseFloat(intPart + '.' + decPart) > 99.99) {
-                    intPart = '99';
-                    decPart = '99';
-                }
-                
-                // Formata o valor final
-                if (this.value.includes('.') || decPart) {
-                    // Se já tem ponto ou parte decimal, mantém o formato
-                    this.value = intPart + (decPart || this.value.endsWith('.') ? '.' + decPart : '');
-                } else {
-                    // Se não tem ponto, mantém apenas a parte inteira
-                    this.value = intPart;
-                }
-                
-                // Restaura a posição do cursor com ajuste para o novo formato
-                const newLength = this.value.length;
-                const posDiff = newLength - value.length;
-                this.setSelectionRange(cursorPos + posDiff, cursorPos + posDiff);
-            });
-            
-            // Quando o campo perde o foco, garante a formatação correta
-            pesoInput.addEventListener('blur', function() {
-                if (this.value.trim() === '' || this.value === '0.00') {
-                    this.value = '';
-                    return;
-                }
-                
-                // Divide o valor em parte inteira e decimal
-                let parts = this.value.split('.');
-                let intPart = parts[0] || '0';
-                let decPart = parts.length > 1 ? parts[1] : '00';
-                
-                // Garante que a parte decimal tenha 2 dígitos
-                while (decPart.length < 2) {
-                    decPart += '0';
-                }
-                
-                // Formata o valor final com ponto decimal
-                this.value = intPart + '.' + decPart;
-            });
-                
-            
-            // Função para obter a hora atual de Brasília e validar horários de agendamento
-            function obterHoraBrasilia() {
-                // Usando API para obter a hora atual de Brasília
-                fetch('https://worldtimeapi.org/api/timezone/America/Sao_Paulo')
-                    .then(response => response.json())
-                    .then(data => {
-                        // Armazena a data e hora atual de Brasília
-                        window.horaBrasilia = new Date(data.datetime);
-                        console.log('Hora atual de Brasília:', window.horaBrasilia);
-                        
-                        // Atualiza o calendário com a validação de datas passadas
-                        if (typeof initCalendar === 'function') {
-                            initCalendar();
-                        }
-                        
-                        // Atualiza os horários disponíveis se estiver na etapa de data/hora
-                        if ( document.getElementById('step3') &&
-     !document.getElementById('step3').classList.contains('hidden') &&
-     window.selectedDate ) {
-  updateTimeSlots();
-}
-                    })
-                    .catch(error => {
-                        console.error('Erro ao obter hora de Brasília:', error);
-                        // Fallback: usar hora local do navegador com timezone de Brasília
-                        const now = new Date();
-                        // Ajusta para o timezone de Brasília (UTC-3)
-                        window.horaBrasilia = new Date(now.toLocaleString('en-US', {timeZone: 'America/Sao_Paulo'}));
-                        console.log('Usando hora local como fallback:', window.horaBrasilia);
-                        
-                        // Atualiza o calendário mesmo com o fallback
-                        if (typeof initCalendar === 'function') {
-                            initCalendar();
-                        }
-                        
-                        // Atualiza os horários disponíveis se estiver na etapa de data/hora
-                        if ( document.getElementById('step3') &&
-     !document.getElementById('step3').classList.contains('hidden') &&
-     window.selectedDate ) {
-  updateTimeSlots();
-}
-                    });
-            }
-            
-            // Obter a hora de Brasília ao carregar a página
-            obterHoraBrasilia();
-            
-            // Atualizar a hora a cada 30 segundos para garantir precisão
-            setInterval(obterHoraBrasilia, 30000);
-        });
-    </script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const totalSteps = 4;
+    let currentStep = 0;
+
+    // Coleções de elementos
+    const stepContents = Array.from(document.querySelectorAll('.step-content'));
+    const indicators = Array.from(document.querySelectorAll('.step-indicator'));
+    const progressBars = Array.from(document.querySelectorAll('[id^="progress-bar-"]'));
+
+    // IDs dos botões Next / Prev
+    const nextBtns = ['step1-next', 'step2-next', 'step3-next'];
+    const prevBtns = ['step2-prev', 'step3-prev', 'step4-prev'];
+
+    function showStep(index) {
+      currentStep = index;
+
+      // 1) mostrar/ocultar conteúdo
+      stepContents.forEach((el, i) => el.classList.toggle('hidden', i !== index));
+
+      // 2) atualizar indicadores (círculos)
+      indicators.forEach((ind, i) => {
+        if (i <= index) {
+          ind.classList.add('bg-petBlue', 'text-white');
+          ind.classList.remove('bg-petLightGray', 'text-petGray');
+        } else {
+          ind.classList.add('bg-petLightGray', 'text-petGray');
+          ind.classList.remove('bg-petBlue', 'text-white');
+        }
+      });
+
+      // 3) atualizar barras de progresso
+      progressBars.forEach(bar => {
+        const barIndex = parseInt(bar.id.split('-')[2], 10);
+        if (barIndex <= index) {
+          bar.classList.add('bg-petBlue');
+          bar.classList.remove('bg-petLightGray');
+        } else {
+          bar.classList.add('bg-petLightGray');
+          bar.classList.remove('bg-petBlue');
+        }
+      });
+
+      // 4) ao entrar no passo 4 (index 3), preenche o resumo
+      if (index === 3) updateResumo();
+    }
+
+    // Liga os botões Next
+    nextBtns.forEach((btnId, idx) => {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        if (currentStep < totalSteps - 1) showStep(currentStep + 1);
+      });
+    });
+
+    // Liga os botões Prev
+    prevBtns.forEach((btnId, idx) => {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        if (currentStep > 0) showStep(currentStep - 1);
+      });
+    });
+
+    // Função para trocar os valores do resumo no passo 4
+    function updateResumo() {
+      // Exemplos de campos (ajuste os IDs se forem diferentes)
+      const nome   = document.getElementById('owner-name')?.value   || '-';
+      const tel    = document.getElementById('owner-phone')?.value  || '-';
+      const pet    = document.getElementById('pet-name')?.value     || '-';
+      const tipo   = document.getElementById('pet-type')?.value     || '-';
+      const notas  = document.getElementById('notes')?.value        || '-';
+      const data   = window.selectedDate  || '-';
+      const hora   = window.selectedTime  || '-';
+      const servs  = Array.from(document.querySelectorAll('.service-checkbox:checked'))
+                          .map(cb => cb.dataset.label || cb.value)
+                          .join(', ') || '-';
+      const dt     = (data!=='-' && hora!=='-') ? `${data} às ${hora}` : '-';
+
+      document.getElementById('summary-owner-name').innerText  = nome;
+      document.getElementById('summary-owner-phone').innerText = tel;
+      document.getElementById('summary-pet-name').innerText    = pet;
+      document.getElementById('summary-pet-type').innerText    = tipo;
+      document.getElementById('summary-services').innerText    = servs;
+      document.getElementById('summary-datetime').innerText    = dt;
+      document.getElementById('summary-notes').innerText       = notas;
+    }
+
+    // Inicia no passo 1 (index 0)
+    showStep(0);
+  });
+</script>
+
     <!-- Referência à fonte Poppins (mantendo o original) -->
     <link href="./css2" rel="stylesheet">
     <!-- Estilos específicos da página de agendamento -->
@@ -502,10 +475,7 @@
                         </div>
                     </div>
                     
-                    <div class="mt-8 flex justify-between">
-                        <button id="step2-prev" class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none">Voltar</button>
-                        <button id="step2-next" class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none">Próximo</button>
-                    </div>
+                    
                 </div>
                 
                 <!-- Step 3: Date and Time Selection -->
@@ -537,96 +507,7 @@
                                     <div class="text-petGray text-sm font-medium">Q</div>
                                     <div class="text-petGray text-sm font-medium">Q</div>
                                     <div class="text-petGray text-sm font-medium">S</div>
-                                    <div class="text-petGray text-sm font-medium">S</div>
-                                </div>
-                                <div id="calendar-days" class="grid grid-cols-7 gap-1 mt-2">
-                                    <!-- Calendar days will be generated by JavaScript -->
-                                </div>
-                            </div>
-                            <p class="text-red-500 text-sm mt-2 hidden" id="date-error">Por favor, selecione uma data.</p>
-                        </div>
-                        
-                        <!-- Time Slots -->
-                        <div>
-                        <h3 class="text-lg font-semibold text-petGray mb-4">Selecione um horário</h3>
-                        <div id="time-slots-container" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            <input type="hidden" id="horario-escolhido" name="horario">
-
-                            <!-- Os horários serão gerados dinamicamente pelo JavaScript -->
-                        </div>
-                        <p class="text-red-500 text-sm mt-2 hidden" id="time-error">Por favor, selecione um horário.</p>
-
-                        <div class="mt-6">
-                            <h3 class="text-lg font-semibold text-petGray mb-4">Observações</h3>
-                            <textarea id="booking-notes" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none form-input" rows="3" placeholder="Alguma informação adicional que devemos saber?"></textarea>
-                        </div>
-                    </div>
-
-                    
-                    <div class="mt-8 flex justify-between">
-                        <button id="step3-prev" class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none">Voltar</button>
-                        <button type="button" id="step3-next" class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none">Próximo</button>
-                    </div>
-                </div>
-                
-                <!-- Step 4: Confirmation -->
-                <!-- Step 4: Confirmation -->
-                <div class="bg-white p-8 rounded-lg shadow-md mb-8 step-content hidden" id="step4">
-                    <h2 class="text-2xl font-bold text-petGray mb-6">Confirme seu Agendamento</h2>
-                    
-                    <div class="bg-petLightGray bg-opacity-30 p-6 rounded-lg mb-6">
-                        <h3 class="text-lg font-semibold text-petGray mb-4">Resumo do Agendamento</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-petGray font-medium">Cliente:</p>
-                                <p id="summary-owner-name" class="text-petGray">-</p>
-                            </div>
-                            
-                            <div>
-                                <p class="text-petGray font-medium">Contato:</p>
-                                <p id="summary-owner-phone" class="text-petGray">-</p>
-                            </div>
-                            
-                            <div>
-                                <p class="text-petGray font-medium">Pet:</p>
-                                <p id="summary-pet-name" class="text-petGray">-</p>
-                            </div>
-                            
-                            <div>
-                                <p class="text-petGray font-medium">Tipo/Raça:</p>
-                                <p id="summary-pet-type" class="text-petGray">-</p>
-                            </div>
-                            
-                            <div>
-                                <p class="text-petGray font-medium">Serviços:</p>
-                                <p id="summary-services" class="text-petGray">-</p>
-                            </div>
-                            
-                            <div>
-                                <p class="text-petGray font-medium">Data e Hora:</p>
-                                <p id="summary-datetime" class="text-petGray">-</p>
-                            </div>
-                            
-                            <div class="md:col-span-2">
-                                <p class="text-petGray font-medium">Observações:</p>
-                                <p id="summary-notes" class="text-petGray">-</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" id="terms-checkbox" class="form-checkbox h-5 w-5 text-petBlue">
-                            <span class="ml-2 text-petGray">Concordo com os <a href="#" class="text-petBlue hover:underline">termos e condições</a> do PetSync.</span>
-                        </label>
-                        <p class="text-red-500 text-sm mt-1 hidden" id="terms-error">Você precisa concordar com os termos e condições.</p>
-                    </div>
-                    
-                    <div class="mt-8 flex justify-between">
-                        <button id="step4-prev" class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none">Voltar</button>
-                        <button id="confirm-booking" class="bg-petOrange text-white px-6 py-3 rounded-md font-medium hover:bg-orange-600 transition focus:outline-none">Confirmar Agendamento</button>
-                    </div>
+                                    <div class="text-petGray text-sm font-medium">S
                 </div>
                 
                 <!-- Success Message (initially hidden) -->
@@ -650,7 +531,7 @@
                             <div>
                                 <p class="text-petGray font-medium">Data e Hora:</p>
                                 <p id="confirmation-datetime" class="text-petGray">-</p>
-                            </div>
+                            <div class="mt-8 flex justify-between"><button id="step3-prev" type="button" class="bg-petLightGray text-petGray px-6 py-3 rounded-md font-medium hover:bg-gray-300 transition focus:outline-none">Voltar</button><button id="step3-next" type="button" class="bg-petBlue text-white px-6 py-3 rounded-md font-medium hover:bg-blue-700 transition focus:outline-none">Próximo</button></div></div>
                         </div>
                     </div>
                     
