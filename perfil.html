@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<!-- favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - PetSync</title>
+    <!-- Referência ao Tailwind CSS e configuração (mantendo o original) -->
+    <script src="./saved_resource"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        petOrange: '#FF7A00',
+                        petBlue: '#0078C8',
+                        petGray: '#4A5568',
+                        petLightGray: '#E2E8F0'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Referência à fonte Poppins (mantendo o original) -->
+    <link href="./css2" rel="stylesheet">
+    <!-- Estilos específicos da página de perfil -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hero-pattern {
+            background-color: #f7fafc;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .form-input:focus {
+            border-color: #0078C8;
+            box-shadow: 0 0 0 3px rgba(0, 120, 200, 0.2);
+        }
+        .profile-card {
+            transition: all 0.3s ease;
+        }
+        .profile-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .btn {
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .profile-nav-item {
+            transition: all 0.2s ease;
+        }
+        .profile-nav-item:hover, .profile-nav-item.active {
+            color: #0078C8;
+            border-bottom: 2px solid #0078C8;
+        }
+    </style>
+    <!-- Referência a um CSS original (mantendo o original) -->
+    <link href="./3ea6e67a3e74024cf5f100ea6a2851bf.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-petBlue flex items-center">
+                        <svg class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 9C9.10457 9 10 8.10457 10 7C10 5.89543 9.10457 5 8 5C6.89543 5 6 5.89543 6 7C6 8.10457 6.89543 9 8 9Z" fill="#FF7A00"></path>
+                            <path d="M16 9C17.1046 9 18 8.10457 18 7C18 5.89543 17.1046 5 16 5C14.8954 5 14 5.89543 14 7C14 8.10457 14.8954 9 16 9Z" fill="#FF7A00"></path>
+                            <path d="M6 14C7.10457 14 8 13.1046 8 12C8 10.8954 7.10457 10 6 10C4.89543 10 4 10.8954 4 12C4 13.1046 4.89543 14 6 14Z" fill="#FF7A00"></path>
+                            <path d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z" fill="#FF7A00"></path>
+                            <path d="M12 18C13.6569 18 15 16.6569 15 15C15 13.3431 13.6569 12 12 12C10.3431 12 9 13.3431 9 15C9 16.6569 10.3431 18 12 18Z" fill="#0078C8"></path>
+                        </svg>
+                        Pet<span class="text-petOrange">Sync</span>
+                    </a>
+                </div>
+                
+                <!-- Desktop Menu  -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <!--  <a href="index.html" class="text-petGray hover:text-petBlue font-medium">Início</a>
+                      <a href="index.html#servicos" class="text-petGray hover:text-petBlue font-medium">Serviços</a> -->
+                      <a href="produtos.html" class="text-petGray hover:text-petBlue font-medium">Produtos</a>
+                      <a href="galeria.html" class="text-petGray hover:text-petBlue font-medium">Galeria</a>
+                    <!-- <a href="index.html#sobre" class="text-petGray hover:text-petBlue font-medium">Sobre</a> -->
+                    <!--  <a href="index.html#contato" class="text-petGray hover:text-petBlue font-medium">Contato</a> -->
+  
+                      <!-- Login/User Info Area 
+                      <a href="login.html" class="text-petGray hover:text-petBlue font-medium mr-4">Entrar</a>
+                      <span id="user-info-desktop" class="hidden items-center"></span> 
+                      <a href="perfil.html" class="text-petGray hover:text-petBlue font-medium mr-4">Meu Perfil</a> -->
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-petGray focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden mt-3 pb-3 border-t pt-3">
+                <!-- <a href="index.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Início</a>
+                <a href="index.html#servicos" class="block py-2 text-petGray hover:text-petBlue font-medium">Serviços</a> -->
+                <a href="produtos.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Produtos</a>
+                <a href="galeria.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Galeria</a>
+              <!--  <a href="index.html#sobre" class="block py-2 text-petGray hover:text-petBlue font-medium">Sobre</a>
+                <a href="index.html#contato" class="block py-2 text-petGray hover:text-petBlue font-medium">Contato</a> -->
+                
+                <!-- Login/User Info Area Mobile 
+                <a href="login.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Entrar</a>
+                <div id="user-info-mobile" class="hidden"></div> 
+                <a href="perfil.html" class="block py-2 text-petGray hover:text-petBlue font-medium">Meu Perfil</a> -->
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-pattern py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-petGray mb-4">Meu Perfil</h1>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Gerencie suas informações pessoais, acompanhe seus pedidos e aproveite todos os benefícios de ser um cliente PetSync.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row gap-6">
+                <!-- Profile Sidebar -->
+                <div class="md:w-1/3 lg:w-1/4">
+                    <div class="bg-white rounded-lg shadow-md p-6 profile-card mb-6">
+                        <div class="flex flex-col items-center">
+                            <div class="w-24 h-24 bg-petLightGray rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-12 h-12 text-petGray" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-xl font-bold text-petGray mb-1" id="profile-name">Carregando...</h2>
+                            <p class="text-gray-500 mb-4" id="profile-email">carregando@email.com</p>
+                            <div id="admin-badge" class="hidden bg-petOrange text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
+                                Administrador
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-200 pt-4 mt-2">
+                            <a href="#" id="logout-button" class="block text-center bg-gray-200 hover:bg-gray-300 text-petGray font-medium py-2 px-4 rounded-lg transition duration-300">
+                                Sair da Conta
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden profile-card">
+                        <div class="p-4 bg-petBlue text-white">
+                            <h3 class="font-semibold">Menu Rápido</h3>
+                        </div>
+                        <div class="p-4">
+                            <ul class="space-y-2">
+                                <li>
+                                    <a href="#" class="profile-nav-item block py-2 px-3 rounded hover:bg-gray-50 active" data-tab="info">
+                                        <div class="flex items-center">
+                                            <svg class="w-5 h-5 mr-3 text-petGray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                            </svg>
+                                            Informações Pessoais
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="profile-nav-item block py-2 px-3 rounded hover:bg-gray-50" data-tab="pedidos">
+                                        <div class="flex items-center">
+                                            <svg class="w-5 h-5 mr-3 text-petGray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                            </svg>
+                                            Meus Pedidos
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="profile-nav-item block py-2 px-3 rounded hover:bg-gray-50" data-tab="pets">
+                                        <div class="flex items-center">
+                                            <svg class="w-5 h-5 mr-3 text-petGray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                                            </svg>
+                                            Meus Pets
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="profile-nav-item block py-2 px-3 rounded hover:bg-gray-50" data-tab="senha">
+                                        <div class="flex items-center">
+                                            <svg class="w-5 h-5 mr-3 text-petGray" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                            </svg>
+                                            Alterar Senha
+                                        </div>
+                                    </a>
+                                </li>
+                                <li id="admin-link" class="hidden">
+                                    <a href="admin.html" class="block py-2 px-3 rounded hover:bg-gray-50 text-petOrange">
+                                        <div class="flex items-center">
+                                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            </svg>
+                                            Painel Admin
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Content -->
+                <div class="md:w-2/3 lg:w-3/4">
+                    <!-- Informações Pessoais Tab -->
+                    <div id="info" class="tab-content active">
+                        <div class="bg-white rounded-lg shadow-md p-6 profile-card">
+                            <h2 class="text-2xl font-bold text-petGray mb-6">Informações Pessoais</h2>
+                            
+                            <div id="info-alert" class="mb-6 p-3 rounded-lg text-sm hidden"></div>
+                            
+                            <form id="info-form">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label for="name" class="block text-petGray font-medium mb-2">Nome Completo</label>
+                                        <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="email" class="block text-petGray font-medium mb-2">Email</label>
+                                        <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input bg-gray-100" readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label for="phone" class="block text-petGray font-medium mb-2">Telefone</label>
+                                        <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="birth-date" class="block text-petGray font-medium mb-2">Data de Nascimento</label>
+                                        <input type="date" id="birth-date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label for="address" class="block text-petGray font-medium mb-2">Endereço</label>
+                                    <input type="text" id="address" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                    <div>
+                                        <label for="city" class="block text-petGray font-medium mb-2">Cidade</label>
+                                        <input type="text" id="city" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="state" class="block text-petGray font-medium mb-2">Estado</label>
+                                        <input type="text" id="state" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="zip" class="block text-petGray font-medium mb-2">CEP</label>
+                                        <input type="text" id="zip" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button type="submit" class="bg-petBlue hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg transition duration-300 btn">
+                                        Salvar Alterações
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Meus Pedidos Tab -->
+                    <div id="pedidos" class="tab-content">
+                        <div class="bg-white rounded-lg shadow-md p-6 profile-card">
+                            <h2 class="text-2xl font-bold text-petGray mb-6">Meus Pedidos</h2>
+                            
+                            <div id="pedidos-container">
+                                <div class="text-center py-12">
+                                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                    </svg>
+                                    <h3 class="text-xl font-medium text-gray-500">Nenhum pedido encontrado</h3>
+                                    <p class="text-gray-500 mt-2">Você ainda não realizou nenhum pedido.</p>
+                                    <a href="produtos.html" class="inline-block mt-4 bg-petOrange hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg transition duration-300">
+                                        Ver Produtos
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Meus Pets Tab -->
+                    <div id="pets" class="tab-content">
+                        <div class="bg-white rounded-lg shadow-md p-6 profile-card">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-2xl font-bold text-petGray">Meus Pets</h2>
+                                <button id="add-pet-btn" class="bg-petOrange hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg flex items-center transition duration-300 btn">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    Adicionar Pet
+                                </button>
+                            </div>
+                            
+                            <div id="pets-container">
+                                <div class="text-center py-12">
+                                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                                    </svg>
+                                    <h3 class="text-xl font-medium text-gray-500">Nenhum pet cadastrado</h3>
+                                    <p class="text-gray-500 mt-2">Adicione informações sobre seus pets para um atendimento personalizado.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Alterar Senha Tab -->
+                    <div id="senha" class="tab-content">
+                        <div class="bg-white rounded-lg shadow-md p-6 profile-card">
+                            <h2 class="text-2xl font-bold text-petGray mb-6">Alterar Senha</h2>
+                            
+                            <div id="senha-alert" class="mb-6 p-3 rounded-lg text-sm hidden"></div>
+                            
+                            <form id="senha-form">
+                                <div class="mb-4">
+                                    <label for="current-password" class="block text-petGray font-medium mb-2">Senha Atual</label>
+                                    <input type="password" id="current-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="new-password" class="block text-petGray font-medium mb-2">Nova Senha</label>
+                                    <input type="password" id="new-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                </div>
+                                
+                                <div class="mb-6">
+                                    <label for="confirm-password" class="block text-petGray font-medium mb-2">Confirmar Nova Senha</label>
+                                    <input type="password" id="confirm-password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none form-input">
+                                </div>
+                                
+                                <div class="flex justify-end">
+                                    <button type="submit" class="bg-petBlue hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg transition duration-300 btn">
+                                        Alterar Senha
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-petGray text-white py-2">
+  <div class="container mx-auto px-4 flex items-center justify-between">
+
+    <!-- Logo alinhada à esquerda -->
+    <div class="flex items-center">
+      <svg class="w-6 h-6 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 9C9.10457 9 10 8.10457 10 7C10 5.89543 9.10457 5 8 5C6.89543 5 6 5.89543 6 7C6 8.10457 6.89543 9 8 9Z" fill="#FF7A00"/>
+        <path d="M16 9C17.1046 9 18 8.10457 18 7C18 5.89543 17.1046 5 16 5C14.8954 5 14 5.89543 14 7C14 8.10457 14.8954 9 16 9Z" fill="#FF7A00"/>
+        <path d="M6 14C7.10457 14 8 13.1046 8 12C8 10.8954 7.10457 10 6 10C4.89543 10 4 10.8954 4 12C4 13.1046 4.89543 14 6 14Z" fill="#FF7A00"/>
+        <path d="M18 14C19.1046 14 20 13.1046 20 12C20 10.8954 19.1046 10 18 10C16.8954 10 16 10.8954 16 12C16 13.1046 16.8954 14 18 14Z" fill="#FF7A00"/>
+        <path d="M12 18C13.6569 18 15 16.6569 15 15C15 13.3431 13.6569 12 12 12C10.3431 12 9 13.3431 9 15C9 16.6569 10.3431 18 12 18Z" fill="#0078C8"/>
+      </svg>
+      <span class="text-lg font-bold text-white">
+        Pet<span class="text-petOrange">Sync</span>
+      </span>
+    </div>
+
+    <!-- Texto centralizado -->
+    <div class="flex-1 text-center">
+      <p class="text-gray-400 text-xs">
+        © 2025 Direitos reservados à equipe PetSync.
+      </p>
+    </div>
+
+    <!-- Redes sociais dentro do footer -->
+    <div class="flex space-x-2">
+
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/henriquea1ves_/" target="_blank" rel="noopener"
+   class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="w-4 h-4">
+    <path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9
+      114.9-51.3 114.9-114.9S287.7 141 224.1 141zm0 
+      189.6c-41.2 0-74.7-33.5-74.7-74.7s33.5-74.7 
+      74.7-74.7 74.7 33.5 74.7 74.7-33.5 74.7-74.7
+      74.7zm146.4-194.3c0 14.9-12 
+      26.9-26.9 26.9s-26.9-12-26.9-26.9 12-26.9 
+      26.9-26.9 26.9 12 26.9 26.9zm76.1 
+      27.2c-1.7-35.7-9.9-67.3-36.2-93.5s-57.8-34.5-93.5-36.2C293.7 
+      32 256 32 224 32s-69.7 0-92.9 1.8c-35.7 
+      1.7-67.3 9.9-93.5 36.2S3.8 127.8 
+      2.1 163.5C.3 186.7 0 224 0 
+      256s.3 69.7 1.8 92.9c1.7 35.7 
+      9.9 67.3 36.2 93.5s57.8 34.5 
+      93.5 36.2c23.2 1.6 60.9 1.8 
+      92.9 1.8s69.7-.3 92.9-1.8c35.7-1.7 
+      67.3-9.9 93.5-36.2s34.5-57.8 
+      36.2-93.5c1.6-23.2 1.8-60.9 
+      1.8-92.9s-.2-69.7-1.8-92.9zm-48.6 
+      228c-7.8 19.6-22.9 34.7-42.6 
+      42.6-29.5 11.7-99.5 9-132.9 
+      9s-103.4 2.6-132.9-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.9s-2.6-103.4 
+      9-132.9c7.8-19.6 22.9-34.7 42.6-42.6 
+      29.5-11.7 99.5-9 132.9-9s103.4-2.6 
+      132.9 9c19.6 7.8 34.7 22.9 42.6 42.6 
+      11.7 29.5 9 99.5 9 132.9s2.7 
+      103.4-9 132.9z"/>
+  </svg>
+</a>
+
+
+
+      <!-- Telegram 
+      <a href="https://t.me/seuPerfil" target="_blank" rel="noopener"
+         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 240 240" class="w-4 h-4">
+          <path d="M120 0C53.73 0 0 53.73 0 120s53.73 120 120 120 120-53.73 120-120S186.27 0 120 0zm56.65 83.54l-22.5 106.37c-1.7 7.43-6.18 9.3-12.52 5.8l-34.59-25.53-16.7 16.08c-1.85 1.85-3.4 3.4-6.95 3.4l2.48-35.4 64.38-58.1c2.8-2.48-.61-3.88-4.37-1.4l-79.52 50.15-34.19-10.69c-7.43-2.3-7.58-7.43 1.56-11.01l131.86-50.81c6.1-2.3 11.43 1.5 9.93 11.9z"/>
+        </svg>
+      </a> -->
+
+      <!-- Facebook 
+      <a href="https://facebook.com/seuPerfil" target="_blank" rel="noopener"
+         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
+        </svg>
+      </a> -->
+
+      <!-- Twitter (X) 
+      <a href="https://twitter.com/seuPerfil" target="_blank" rel="noopener"
+         class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-petOrange transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-4 h-4">
+          <path d="M23.954 4.569c-.885.39-1.83.654-2.825.775a4.932 4.932 0 002.163-2.724 9.864 9.864 0 01-3.127 1.195 4.916 4.916 0 00-8.373 4.482A13.944 13.944 0 011.671 3.15 4.916 4.916 0 003.195 9.723 4.902 4.902 0 012 9.1v.06a4.916 4.916 0 003.946 4.814 4.935 4.935 0 01-2.212.085 4.917 4.917 0 004.588 3.415 9.868 9.868 0 01-6.102 2.104c-.396 0-.787-.023-1.174-.069a13.945 13.945 0 007.557 2.213c9.054 0 14-7.496 14-13.986 0-.21 0-.423-.015-.633a9.936 9.936 0 002.457-2.548l-.047-.02z"/>
+        </svg>
+      </a> -->
+    </div>
+  </div>
+</footer>
+
+    <!-- Scripts -->
+    <script src="scripts/navegacao.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se o usuário está logado
+            if (!isLoggedIn()) {
+                window.location.href = 'login.html?redirect=perfil.html';
+                return;
+            }
+            
+            // Carregar dados do usuário
+            const currentUser = JSON.parse(localStorage.getItem('petsync_current_user'));
+            if (currentUser) {
+                document.getElementById('profile-name').textContent = currentUser.name;
+                document.getElementById('profile-email').textContent = currentUser.email;
+                
+                // Preencher formulário de informações pessoais
+                document.getElementById('name').value = currentUser.name;
+                document.getElementById('email').value = currentUser.email;
+                document.getElementById('phone').value = currentUser.phone || '';
+                
+                // Mostrar badge de admin se aplicável
+                if (currentUser.role === 'admin') {
+                    document.getElementById('admin-badge').classList.remove('hidden');
+                    document.getElementById('admin-link').classList.remove('hidden');
+                }
+            }
+            
+            // Configurar logout
+            document.getElementById('logout-button').addEventListener('click', function(e) {
+                e.preventDefault();
+                logout();
+            });
+            
+            // Configurar navegação por tabs
+            const tabLinks = document.querySelectorAll('[data-tab]');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remover classe ativa de todos os links e conteúdos
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Adicionar classe ativa ao link e conteúdo clicado
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Configurar formulário de informações pessoais
+            document.getElementById('info-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('name').value;
+                const phone = document.getElementById('phone').value;
+                const birthDate = document.getElementById('birth-date').value;
+                const address = document.getElementById('address').value;
+                const city = document.getElementById('city').value;
+                const state = document.getElementById('state').value;
+                const zip = document.getElementById('zip').value;
+                
+                // Atualizar dados do usuário
+                const users = JSON.parse(localStorage.getItem('petsync_users')) || [];
+                const currentUser = JSON.parse(localStorage.getItem('petsync_current_user'));
+                
+                if (currentUser) {
+                    const userIndex = users.findIndex(u => u.id === currentUser.id);
+                    
+                    if (userIndex !== -1) {
+                        users[userIndex].name = name;
+                        users[userIndex].phone = phone;
+                        users[userIndex].birthDate = birthDate;
+                        users[userIndex].address = address;
+                        users[userIndex].city = city;
+                        users[userIndex].state = state;
+                        users[userIndex].zip = zip;
+                        
+                        localStorage.setItem('petsync_users', JSON.stringify(users));
+                        
+                        // Atualizar usuário atual
+                        const updatedUser = {
+                            ...currentUser,
+                            name,
+                            phone,
+                            birthDate,
+                            address,
+                            city,
+                            state,
+                            zip
+                        };
+                        
+                        localStorage.setItem('petsync_current_user', JSON.stringify(updatedUser));
+                        
+                        // Atualizar nome na página
+                        document.getElementById('profile-name').textContent = name;
+                        
+                        // Mostrar mensagem de sucesso
+                        const infoAlert = document.getElementById('info-alert');
+                        infoAlert.textContent = 'Informações atualizadas com sucesso!';
+                        infoAlert.className = 'mb-6 p-3 rounded-lg text-sm bg-green-100 text-green-800';
+                        infoAlert.classList.remove('hidden');
+                        
+                        // Esconder mensagem após 3 segundos
+                        setTimeout(() => {
+                            infoAlert.classList.add('hidden');
+                        }, 3000);
+                    }
+                }
+            });
+            
+            // Configurar formulário de alteração de senha
+            document.getElementById('senha-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                const senhaAlert = document.getElementById('senha-alert');
+                
+                // Validar campos
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    senhaAlert.textContent = 'Por favor, preencha todos os campos.';
+                    senhaAlert.className = 'mb-6 p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                    senhaAlert.classList.remove('hidden');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    senhaAlert.textContent = 'As senhas não coincidem.';
+                    senhaAlert.className = 'mb-6 p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                    senhaAlert.classList.remove('hidden');
+                    return;
+                }
+                
+                // Verificar senha atual
+                const users = JSON.parse(localStorage.getItem('petsync_users')) || [];
+                const currentUser = JSON.parse(localStorage.getItem('petsync_current_user'));
+                
+                if (currentUser) {
+                    const userIndex = users.findIndex(u => u.id === currentUser.id);
+                    
+                    if (userIndex !== -1) {
+                        if (users[userIndex].password !== currentPassword) {
+                            senhaAlert.textContent = 'Senha atual incorreta.';
+                            senhaAlert.className = 'mb-6 p-3 rounded-lg text-sm bg-red-100 text-red-800';
+                            senhaAlert.classList.remove('hidden');
+                            return;
+                        }
+                        
+                        // Atualizar senha
+                        users[userIndex].password = newPassword;
+                        localStorage.setItem('petsync_users', JSON.stringify(users));
+                        
+                        // Limpar formulário
+                        document.getElementById('current-password').value = '';
+                        document.getElementById('new-password').value = '';
+                        document.getElementById('confirm-password').value = '';
+                        
+                        // Mostrar mensagem de sucesso
+                        senhaAlert.textContent = 'Senha alterada com sucesso!';
+                        senhaAlert.className = 'mb-6 p-3 rounded-lg text-sm bg-green-100 text-green-800';
+                        senhaAlert.classList.remove('hidden');
+                        
+                        // Esconder mensagem após 3 segundos
+                        setTimeout(() => {
+                            senhaAlert.classList.add('hidden');
+                        }, 3000);
+                    }
+                }
+            });
+            
+            // Mobile menu toggle
+            document.getElementById('mobile-menu-button').addEventListener('click', function() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
