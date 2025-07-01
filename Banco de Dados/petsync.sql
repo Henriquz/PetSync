@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 27-Jun-2025 às 00:47
+-- Tempo de geração: 01-Jul-2025 às 21:26
 -- Versão do servidor: 10.4.27-MariaDB
 -- versão do PHP: 7.4.33
 
@@ -33,8 +33,9 @@ CREATE TABLE `agendamentos` (
   `pet_id` int(11) NOT NULL,
   `servico` varchar(255) NOT NULL,
   `data_agendamento` datetime NOT NULL,
-  `status` enum('Pendente','Confirmado','Concluído','Cancelado') NOT NULL DEFAULT 'Pendente',
+  `status` enum('Pendente','Confirmado','Em Andamento','Concluído','Cancelado') NOT NULL DEFAULT 'Pendente',
   `observacoes` text DEFAULT NULL,
+  `observacoes_admin` text DEFAULT NULL,
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `tipo_entrega` varchar(50) NOT NULL,
   `endereco_id` int(11) DEFAULT NULL
@@ -44,8 +45,20 @@ CREATE TABLE `agendamentos` (
 -- Extraindo dados da tabela `agendamentos`
 --
 
-INSERT INTO `agendamentos` (`id`, `usuario_id`, `pet_id`, `servico`, `data_agendamento`, `status`, `observacoes`, `data_criacao`, `tipo_entrega`, `endereco_id`) VALUES
-(1, 3, 2, 'Banho e Tosa, Consulta Veterinária, Hospedagem', '2025-06-26 09:00:00', 'Pendente', '', '2025-06-26 21:55:53', '', NULL);
+INSERT INTO `agendamentos` (`id`, `usuario_id`, `pet_id`, `servico`, `data_agendamento`, `status`, `observacoes`, `observacoes_admin`, `data_criacao`, `tipo_entrega`, `endereco_id`) VALUES
+(1, 3, 2, 'Banho e Tosa, Consulta Veterinária, Hospedagem', '2025-06-26 09:00:00', 'Pendente', '', NULL, '2025-06-26 21:55:53', '', NULL),
+(2, 3, 2, 'Banho e Tosa', '2025-06-30 09:00:00', 'Pendente', '0', NULL, '2025-06-30 17:49:07', 'delivery', 1),
+(3, 3, 5, 'Vacinação', '2025-06-30 15:00:00', 'Pendente', '0', NULL, '2025-06-30 17:49:47', 'loja', NULL),
+(4, 3, 2, 'Vacinação', '2025-07-04 09:00:00', 'Concluído', '0', 'feito', '2025-07-01 12:51:53', 'delivery', 2),
+(5, 3, 7, 'Consulta Veterinária', '2025-07-11 14:00:00', 'Cancelado', '0', NULL, '2025-07-01 12:52:21', 'loja', NULL),
+(6, 13, 8, 'Banho e Tosa', '2025-07-10 14:00:00', 'Pendente', '0', NULL, '2025-07-01 12:55:13', 'loja', NULL),
+(7, 14, 9, 'Banho e Tosa', '2025-07-24 17:00:00', 'Pendente', '0', NULL, '2025-07-01 13:05:05', 'loja', NULL),
+(8, 13, 10, 'Banho e Tosa', '2025-07-10 09:00:00', 'Pendente', '0', NULL, '2025-07-01 13:14:16', 'loja', NULL),
+(9, 1, 11, 'Banho e Tosa', '2025-07-16 14:00:00', 'Pendente', '0', NULL, '2025-07-01 13:29:58', 'loja', NULL),
+(10, 1, 12, 'Vacinação', '2025-07-31 17:00:00', 'Pendente', '0', NULL, '2025-07-01 13:41:17', 'loja', NULL),
+(11, 15, 13, 'Vacinação', '2025-07-17 09:00:00', 'Pendente', '0', NULL, '2025-07-01 13:53:17', 'loja', NULL),
+(12, 3, 14, 'Banho e Tosa', '2025-07-03 14:00:00', 'Cancelado', '0', NULL, '2025-07-01 13:59:31', 'loja', NULL),
+(13, 3, 5, 'Banho e Tosa', '2025-07-01 09:00:00', 'Em Andamento', '0', NULL, '2025-07-01 14:05:11', 'loja', NULL);
 
 -- --------------------------------------------------------
 
@@ -162,7 +175,17 @@ INSERT INTO `pets` (`id`, `dono_id`, `nome`, `especie`, `raca`, `data_nascimento
 (1, 3, 'Xaninha', 'gato', 'Siamês', '2001-09-11', NULL, NULL, '2025-06-26 20:01:07'),
 (2, 3, 'tico', 'cachorro', 'pincher', '2024-06-25', NULL, NULL, '2025-06-26 21:55:53'),
 (3, 7, 'jully', 'cachorro', 'cachorro', NULL, NULL, NULL, '2025-06-26 22:10:48'),
-(4, 7, 'rex', 'cachorro', 'pitbull', '2025-06-03', NULL, NULL, '2025-06-26 22:11:42');
+(4, 7, 'rex', 'cachorro', 'pitbull', '2025-06-03', NULL, NULL, '2025-06-26 22:11:42'),
+(5, 3, 'shirlei', 'rato', 'bulgaro', NULL, NULL, NULL, '2025-06-30 17:49:47'),
+(6, 11, 'xulis', 'gato', '', '0000-00-00', NULL, NULL, '2025-06-30 18:21:35'),
+(7, 3, 'teste novo', '', '', '0000-00-00', NULL, NULL, '2025-07-01 12:52:21'),
+(8, 13, 'kelly', 'lula', 'nao sei', '0000-00-00', NULL, NULL, '2025-07-01 12:55:13'),
+(9, 14, 'vanilha', '', 'pet', '0000-00-00', NULL, NULL, '2025-07-01 13:05:05'),
+(10, 13, 'ddd', 'Gato', 'Sphynx', '0000-00-00', NULL, NULL, '2025-07-01 13:14:16'),
+(11, 1, 'lola', 'rato', 'N/A', '0000-00-00', NULL, NULL, '2025-07-01 13:29:58'),
+(12, 1, 'teste pet novo', 'roedor', 'N/A', '0000-00-00', NULL, NULL, '2025-07-01 13:41:17'),
+(13, 15, 'olatest', 'Gato', 'Siamês', '0000-00-00', NULL, NULL, '2025-07-01 13:53:17'),
+(14, 3, 'pity', 'cachorro', 'N/A', NULL, NULL, NULL, '2025-07-01 13:59:31');
 
 -- --------------------------------------------------------
 
@@ -215,7 +238,11 @@ INSERT INTO `usuarios` (`id`, `nome`, `email`, `telefone`, `senha`, `data_cadast
 (5, 'admin', 'admin@admin.com', '33999856525', '$2y$10$8ndbxvY8jEIX9W60N2gPeemjdgZVBP.4AJyWFP7zJYw6reewubvGe', '2025-06-26 17:55:08', 1, 1),
 (6, 'teste', 'teste@admin.com', NULL, '$2y$10$ZVZS7YJX4oFm8FzgL9N3PO86stLS1gOgCAc/F/CO4.MwiFEZQlvXS', '2025-06-26 18:14:10', 1, 1),
 (7, 'miguel araujo', 'miguel@mighuel.com', '339999999', '$2y$10$y0hXAEdagO.HrFCwWMlyRuQOSm/rb3MhbHoQXWDQh7x/hPupWIjci', '2025-06-26 22:07:00', 0, 1),
-(8, 'miguel araujo', 'miguel@araujo.com', NULL, '$2y$10$ZadXVKxe6Ql/yC8AJ1tt6uJtNobosmFdvNuDGxFfGAXtZvS26Cwpm', '2025-06-26 22:22:28', 1, 1);
+(8, 'miguel araujo', 'miguel@araujo.com', NULL, '$2y$10$ZadXVKxe6Ql/yC8AJ1tt6uJtNobosmFdvNuDGxFfGAXtZvS26Cwpm', '2025-06-26 22:22:28', 1, 1),
+(11, 'chico le', 'chicole@gmail.com', '', '$2y$10$wM.rm/qsKGA1TTwwUIdw1e3pWCiBsN1RdmjvXhyisdFK6BM9RsvWe', '2025-06-30 18:21:35', 0, 1),
+(13, 'teste novo cadastro', 'teste@kelly.com', '33999465022', '$2y$10$bX1Wupiyv2pc5pVfVt1Gpe.QyCu1mZvD5hJWnS3JR495YQJFaNufa', '2025-07-01 12:55:13', 0, 1),
+(14, 'teste endereço', 'testeendereco@gmail.com', '', '$2y$10$2EZJ80avPnnVvDu/KALKA.oUChUa5hgfJrcYqQSvnyN.Aq28RvSeO', '2025-07-01 13:05:05', 0, 1),
+(15, 'ola teste', 'teste@ola.com', '(33) 3 3333-3333', '$2y$10$t5vzIXQkaKB22QvXHq2EO.1IslJqD2Uh5NyRfbY5cnZas9p/PkMxG', '2025-07-01 13:53:17', 0, 1);
 
 --
 -- Índices para tabelas despejadas
@@ -278,7 +305,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `agendamentos`
 --
 ALTER TABLE `agendamentos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `configuracoes`
@@ -302,7 +329,7 @@ ALTER TABLE `horarios_disponiveis`
 -- AUTO_INCREMENT de tabela `pets`
 --
 ALTER TABLE `pets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
@@ -314,7 +341,7 @@ ALTER TABLE `produtos`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Restrições para despejos de tabelas
