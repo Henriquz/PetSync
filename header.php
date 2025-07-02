@@ -64,12 +64,18 @@
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                             </button>
                             <div id="user-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-20">
-                                <a href="/petsync/cliente/perfil.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meu Perfil</a>
-                                <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
-                                    <a href="/petsync/admin/index.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Painel do Administrador</a>
-                                <?php endif; ?>
-                                <a href="/petsync/logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-petLightGray">Sair</a>
-                            </div>
+    <a href="/petsync/cliente/perfil.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meu Perfil</a>
+    
+    <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+        <a href="/petsync/admin/gerencia_agendamentos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Gerenciar Agendamentos</a>
+    <?php else: ?>
+        <a href="/petsync/meus_agendamentos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meus Agendamentos</a>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+        <a href="/petsync/admin/index.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Painel do Administrador</a>
+    <?php endif; ?>
+    <a href="/petsync/logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-petLightGray">Sair</a>
+</div>
                         </div>
                     <?php else: ?>
                         <a href="/petsync/login.php" class="inline-block px-4 py-1.5 bg-petOrange text-white text-sm font-semibold rounded-full shadow-md hover:bg-petBlue hover:shadow-lg transition-colors duration-300 ease-in-out">Entrar</a>
@@ -84,24 +90,22 @@
             </div>
             
             <div id="mobile-menu" class="md:hidden hidden pt-4 pb-2">
-                <a href="/petsync/index.php#services" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Serviços</a>
-                <a href="/petsync/index.php#products" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Produtos</a>
-                <a href="/petsync/index.php#about" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Sobre</a>
-                <a href="/petsync/index.php#contact" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Contato</a>
-                <div class="border-t my-2"></div>
-                 <?php if (isset($_SESSION['usuario'])): ?>
-                    <div class="px-4 py-2">
-                        <p class="font-semibold text-petGray">Olá, <?php echo htmlspecialchars($primeiroNome); ?></p>
-                    </div>
-                    <a href="/petsync/cliente/perfil.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meu Perfil</a>
-                    <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
-                        <a href="/petsync/admin/index.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Painel do Administrador</a>
-                    <?php endif; ?>
-                    <a href="/petsync/logout.php" class="block py-2 px-4 text-red-600 hover:bg-petLightGray rounded-md">Sair</a>
-                <?php else: ?>
-                    <a href="/petsync/login.php" class="block w-full text-center mt-2 py-2 bg-petOrange text-white font-semibold rounded-md hover:bg-petBlue">Entrar</a>
-                <?php endif; ?>
-            </div>
+    <div class="border-t my-2"></div>
+    <?php if (isset($_SESSION['usuario'])): ?>
+        <a href="/petsync/cliente/perfil.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meu Perfil</a>
+        
+        <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+            <a href="/petsync/admin/gerencia_agendamentos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Gerenciar Agendamentos</a>
+        <?php else: ?>
+            <a href="/petsync/meus_agendamentos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meus Agendamentos</a>
+        <?php endif; ?>
+        <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+            <a href="/petsync/admin/index.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Painel do Administrador</a>
+        <?php endif; ?>
+        <a href="/petsync/logout.php" class="block py-2 px-4 text-red-600 hover:bg-petLightGray rounded-md">Sair</a>
+    <?php else: ?>
+        <?php endif; ?>
+</div>
         </div>
     </nav>
     <main class="flex-grow">

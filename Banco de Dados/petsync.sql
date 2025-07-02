@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 01-Jul-2025 às 21:26
+-- Tempo de geração: 02-Jul-2025 às 04:49
 -- Versão do servidor: 10.4.27-MariaDB
 -- versão do PHP: 7.4.33
 
@@ -121,7 +121,7 @@ CREATE TABLE `enderecos` (
 
 INSERT INTO `enderecos` (`id`, `usuario_id`, `cep`, `rua`, `numero`, `complemento`, `bairro`, `cidade`, `estado`, `is_principal`) VALUES
 (1, 3, '35300-003', 'Vila Francisco de Assis', '11', '4', 'Centro', 'Caratinga', 'MG', 0),
-(2, 3, '35300-037', 'Rua João Pinheiro', '45', '201', 'Centro', 'Caratinga', 'MG', 0),
+(2, 3, '35300292', 'Rua Pedro Mourão', '45', '201', 'Santa Zita', 'Caratinga', 'MG', 0),
 (3, 7, '35300-282', 'Rua Tupy', '12', '45', 'Santa Zita', 'Caratinga', 'MG', 0),
 (4, 7, '35300-297', 'Rua Doutor Aluízio Muniz', '289', '10', 'Santa Zita', 'Caratinga', 'MG', 0);
 
@@ -162,6 +162,7 @@ CREATE TABLE `pets` (
   `especie` varchar(50) DEFAULT NULL,
   `raca` varchar(100) DEFAULT NULL,
   `data_nascimento` date DEFAULT NULL,
+  `foto_url` varchar(255) DEFAULT NULL,
   `genero` varchar(20) DEFAULT NULL,
   `observacoes` text DEFAULT NULL,
   `data_cadastro` timestamp NOT NULL DEFAULT current_timestamp()
@@ -171,21 +172,29 @@ CREATE TABLE `pets` (
 -- Extraindo dados da tabela `pets`
 --
 
-INSERT INTO `pets` (`id`, `dono_id`, `nome`, `especie`, `raca`, `data_nascimento`, `genero`, `observacoes`, `data_cadastro`) VALUES
-(1, 3, 'Xaninha', 'gato', 'Siamês', '2001-09-11', NULL, NULL, '2025-06-26 20:01:07'),
-(2, 3, 'tico', 'cachorro', 'pincher', '2024-06-25', NULL, NULL, '2025-06-26 21:55:53'),
-(3, 7, 'jully', 'cachorro', 'cachorro', NULL, NULL, NULL, '2025-06-26 22:10:48'),
-(4, 7, 'rex', 'cachorro', 'pitbull', '2025-06-03', NULL, NULL, '2025-06-26 22:11:42'),
-(5, 3, 'shirlei', 'rato', 'bulgaro', NULL, NULL, NULL, '2025-06-30 17:49:47'),
-(6, 11, 'xulis', 'gato', '', '0000-00-00', NULL, NULL, '2025-06-30 18:21:35'),
-(7, 3, 'teste novo', '', '', '0000-00-00', NULL, NULL, '2025-07-01 12:52:21'),
-(8, 13, 'kelly', 'lula', 'nao sei', '0000-00-00', NULL, NULL, '2025-07-01 12:55:13'),
-(9, 14, 'vanilha', '', 'pet', '0000-00-00', NULL, NULL, '2025-07-01 13:05:05'),
-(10, 13, 'ddd', 'Gato', 'Sphynx', '0000-00-00', NULL, NULL, '2025-07-01 13:14:16'),
-(11, 1, 'lola', 'rato', 'N/A', '0000-00-00', NULL, NULL, '2025-07-01 13:29:58'),
-(12, 1, 'teste pet novo', 'roedor', 'N/A', '0000-00-00', NULL, NULL, '2025-07-01 13:41:17'),
-(13, 15, 'olatest', 'Gato', 'Siamês', '0000-00-00', NULL, NULL, '2025-07-01 13:53:17'),
-(14, 3, 'pity', 'cachorro', 'N/A', NULL, NULL, NULL, '2025-07-01 13:59:31');
+INSERT INTO `pets` (`id`, `dono_id`, `nome`, `especie`, `raca`, `data_nascimento`, `foto_url`, `genero`, `observacoes`, `data_cadastro`) VALUES
+(1, 3, 'Xaninha', 'gato', 'Siamês', '2001-09-11', NULL, NULL, NULL, '2025-06-26 20:01:07'),
+(2, 3, 'tico', 'cachorro', 'pincher', '2024-06-25', NULL, NULL, NULL, '2025-06-26 21:55:53'),
+(3, 7, 'jully', 'cachorro', 'cachorro', NULL, NULL, NULL, NULL, '2025-06-26 22:10:48'),
+(4, 7, 'rex', 'cachorro', 'pitbull', '2025-06-03', NULL, NULL, NULL, '2025-06-26 22:11:42'),
+(5, 3, 'shirlei', 'rato', 'bulgaro', NULL, NULL, NULL, NULL, '2025-06-30 17:49:47'),
+(6, 11, 'xulis', 'gato', '', '0000-00-00', NULL, NULL, NULL, '2025-06-30 18:21:35'),
+(7, 3, 'teste novo', '', NULL, NULL, '', NULL, NULL, '2025-07-01 12:52:21'),
+(8, 13, 'kelly', 'lula', 'nao sei', '0000-00-00', NULL, NULL, NULL, '2025-07-01 12:55:13'),
+(9, 14, 'vanilha', '', 'pet', '0000-00-00', NULL, NULL, NULL, '2025-07-01 13:05:05'),
+(10, 13, 'ddd', 'Gato', 'Sphynx', '0000-00-00', NULL, NULL, NULL, '2025-07-01 13:14:16'),
+(11, 1, 'lola', 'rato', 'N/A', '0000-00-00', NULL, NULL, NULL, '2025-07-01 13:29:58'),
+(12, 1, 'teste pet novo', 'roedor', 'N/A', '0000-00-00', NULL, NULL, NULL, '2025-07-01 13:41:17'),
+(13, 15, 'olatest', 'Gato', 'Siamês', '0000-00-00', NULL, NULL, NULL, '2025-07-01 13:53:17'),
+(14, 3, 'pity', 'Cão', 'Golden Retriever', NULL, 'pet_686463aed402d_1751409582.png', NULL, NULL, '2025-07-01 13:59:31'),
+(15, 3, 'teste imagem', 'Gato', 'SRD (Vira-lata)', NULL, 'pet_6864614b52335_1751408971.png', NULL, NULL, '2025-07-01 22:29:31'),
+(16, 3, 'teste sem especie', 'nenhuma', '', NULL, NULL, NULL, NULL, '2025-07-01 22:52:25'),
+(17, 3, 'testeeeee', 'Cão', 'Poodle', NULL, NULL, NULL, NULL, '2025-07-01 22:53:00'),
+(18, 3, 'ola imagem', 'foto', NULL, NULL, 'pet_68646c77787cb_1751411831.png', NULL, NULL, '2025-07-01 22:55:03'),
+(19, 3, 'to cansado', 'foto cade', '', NULL, NULL, NULL, NULL, '2025-07-01 22:56:28'),
+(20, 3, 'ultima tentativa', 'n sei', '', NULL, NULL, NULL, NULL, '2025-07-01 23:02:37'),
+(21, 3, 'ratazinha', 'n sei n', '', NULL, NULL, NULL, NULL, '2025-07-01 23:14:32'),
+(22, 3, 'ola foto', 'ff', '', NULL, NULL, NULL, NULL, '2025-07-01 23:38:25');
 
 -- --------------------------------------------------------
 
@@ -329,7 +338,7 @@ ALTER TABLE `horarios_disponiveis`
 -- AUTO_INCREMENT de tabela `pets`
 --
 ALTER TABLE `pets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de tabela `produtos`
