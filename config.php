@@ -4,7 +4,7 @@
 $db_host = 'sql304.infinityfree.com'; 
 $db_user = 'if0_39376507';      
 $db_pass = 'JsJImtFhyeFLg';       
-$db_name = 'if0_39376507_XXX';  
+$db_name = 'if0_39376507_petsync';  
 
 // --- Configurações do Banco de Dados localhost ---
 // $db_host = 'localhost'; // Geralmente 'localhost'
