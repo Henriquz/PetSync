@@ -13,7 +13,7 @@ $db_name = 'if0_39376507_XXX';
 // $db_name = 'petsync';   // O nome que você deu ao seu banco de dados
 
 // --- Conexão ---
-$mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
+$mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name, 3306);
 
 // --- Verificação de Erro ---
 if ($mysqli->connect_error) {
