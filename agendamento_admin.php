@@ -120,9 +120,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_agendamento
 
     // Se não houver erros, salva no banco
     if (empty($erro)) {
-        $stmt = $mysqli->prepare("INSERT INTO agendamentos (usuario_id, pet_id, servico, data_agendamento, observacoes, tipo_entrega, endereco_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iissisi", $cliente_id, $pet_id, $servicos, $data_agendamento_str, $observacoes, $tipo_entrega, $endereco_id);
-        if ($stmt->execute()) {
+    $stmt = $mysqli->prepare("INSERT INTO agendamentos (usuario_id, pet_id, servico, data_agendamento, observacoes, tipo_entrega, endereco_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    // ALTERAÇÃO AQUI v
+    $stmt->bind_param("iissssi", $cliente_id, $pet_id, $servicos, $data_agendamento_str, $observacoes, $tipo_entrega, $endereco_id);
+    if ($stmt->execute()) {
             $_SESSION['ok_msg'] = "Agendamento realizado com sucesso!";
         } else {
             $_SESSION['erro_msg'] = "Ocorreu um erro ao salvar o agendamento: " . $stmt->error;

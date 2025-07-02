@@ -1,6 +1,6 @@
 <?php
 // ======================================================================
-// PetSync - Página de Perfil do Cliente v2.6 (FINAL COMPLETO)
+// PetSync - v5.0 (Lógica de Caminho Absoluto e Cópia de Imagem)
 // ======================================================================
 
 // 1. CONFIGURAÇÃO E FUNÇÕES
@@ -77,43 +77,111 @@ $enderecos_bloqueados_ids = array_column($result_enderecos->fetch_all(MYSQLI_ASS
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form_ok = true; 
 
+    // --- DEFINIÇÃO DE CAMINHOS ABSOLUTOS ---
+    $path_para_filesystem = $_SERVER['DOCUMENT_ROOT'] . '/petsync/Imagens/pets/';
+    $target_dir_absolute = str_replace('/', DIRECTORY_SEPARATOR, $path_para_filesystem);
+
     if (isset($_POST['add_pet'])) {
-        $nome_pet = trim($_POST['nome_pet']);
-        $especie = trim($_POST['especie']); if ($especie === 'Outro(a)') { $especie = trim($_POST['outra_especie']); }
-        $raca = trim($_POST['raca']); if ($raca === 'Outro(a)') { $raca = trim($_POST['outra_raca']); }
+        $nome_pet        = trim($_POST['nome_pet']);
+        $especie         = trim($_POST['especie']);
+        if ($especie === 'Outro(a)') { $especie = trim($_POST['outra_especie']); }
+        $raca            = trim($_POST['raca']);
+        if ($raca === 'Outro(a)') { $raca = trim($_POST['outra_raca']); }
         $data_nascimento = $_POST['data_nascimento'] ?: null;
-        $foto_url = null;
+        $foto_url        = null;
 
-        if (isset($_FILES['foto_pet']) && $_FILES['foto_pet']['error'] == 0) {
-            $target_dir = "../imagens/pets/";
-            if (!is_dir($target_dir)) { mkdir($target_dir, 0755, true); }
-
-            if (!is_writable($target_dir)) {
-                $_SESSION['erro_msg'] = "Erro Crítico: O diretório de imagens não tem permissão de escrita no servidor.";
-                $form_ok = false;
-            } else {
-                $allowed_formats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                $ext = strtolower(pathinfo($_FILES['foto_pet']['name'], PATHINFO_EXTENSION));
-                if (in_array($ext, $allowed_formats)) {
-                    $foto_url = uniqid('pet_') . '_' . time() . '.' . $ext;
-                    if (!resizeImage($_FILES['foto_pet']['tmp_name'], $target_dir . $foto_url, 800, 800)) {
-                        $foto_url = null; $_SESSION['erro_msg'] = "Ocorreu um erro ao salvar a imagem."; $form_ok = false;
-                    }
-                } else {
-                    $_SESSION['erro_msg'] = "Formato de arquivo não permitido. Apenas JPG, PNG, GIF, WebP."; $form_ok = false;
+        // Se o usuário enviou uma foto, processa ela
+        if (isset($_FILES['foto_pet']) && $_FILES['foto_pet']['error'] === 0) {
+            $allowed = ['jpg','jpeg','png','gif','webp'];
+            $ext     = strtolower(pathinfo($_FILES['foto_pet']['name'], PATHINFO_EXTENSION));
+            if (in_array($ext, $allowed)) {
+                $foto_url = uniqid('pet_') . '_' . time() . '.' . $ext;
+                if (!resizeImage($_FILES['foto_pet']['tmp_name'], $target_dir_absolute . $foto_url, 800, 800)) {
+                    $_SESSION['erro_msg'] = "Erro ao salvar imagem.";
+                    $foto_url = null; $form_ok = false;
                 }
+            } else {
+                $_SESSION['erro_msg'] = "Formato de arquivo não permitido.";
+                $form_ok = false;
+            }
+        } 
+        // Se não enviou, copia a imagem padrão para um novo arquivo único
+        else {
+            $default_source_file = '';
+            switch (mb_strtolower($especie, 'UTF-8')) {
+                case 'cão': case 'cachorro': $default_source_file = 'default_dog.png'; break;
+                case 'gato': $default_source_file = 'default_cat.png'; break;
+                default: $default_source_file = 'default_other.png'; break;
+            }
+
+            $source_path = $target_dir_absolute . $default_source_file;
+            $new_filename = uniqid('pet_') . '_' . time() . '.png';
+            $destination_path = $target_dir_absolute . $new_filename;
+
+            if (file_exists($source_path) && is_readable($source_path) && copy($source_path, $destination_path)) {
+                $foto_url = $new_filename;
+            } else {
+                $_SESSION['erro_msg'] = "Erro crítico: Imagem padrão não encontrada ou sem permissão para cópia.";
+                $form_ok = false;
             }
         }
 
-        if ($form_ok) {
-            if (!empty($nome_pet)) {
-                $stmt = $mysqli->prepare("INSERT INTO pets (dono_id, nome, especie, raca, data_nascimento, foto_url) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("isssss", $id_usuario_logado, $nome_pet, $especie, $raca, $data_nascimento, $foto_url);
-                if ($stmt->execute()) { $_SESSION['ok_msg'] = "Pet adicionado com sucesso!"; } 
-                else { $_SESSION['erro_msg'] = "Erro ao adicionar pet: " . $stmt->error; }
-            } else { $_SESSION['erro_msg'] = "O nome do pet é um campo obrigatório."; }
+        if ($form_ok && !empty($nome_pet)) {
+            $stmt = $mysqli->prepare("INSERT INTO pets (dono_id, nome, especie, raca, data_nascimento, foto_url) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("isssss", $id_usuario_logado, $nome_pet, $especie, $raca, $data_nascimento, $foto_url);
+            if ($stmt->execute()) {
+                $_SESSION['ok_msg'] = "Pet adicionado com sucesso!";
+            } else {
+                $_SESSION['erro_msg'] = "Erro ao adicionar pet: " . $stmt->error;
+            }
+        } elseif (empty($nome_pet)) {
+            $_SESSION['erro_msg'] = "O nome do pet é obrigatório.";
         }
-    } 
+    }
+    elseif (isset($_POST['edit_pet'])) {
+        if (in_array($_POST['pet_id'], $pets_bloqueados_ids)) {
+            $_SESSION['erro_msg'] = "Este pet não pode ser editado pois está em um agendamento ativo.";
+        } else {
+            $pet_id          = $_POST['pet_id'];
+            $nome_pet        = trim($_POST['nome_pet']);
+            $especie         = $_POST['especie'];
+            if ($especie === 'Outro(a)') { $especie = trim($_POST['outra_especie']); }
+            $raca            = $_POST['raca'];
+            if ($raca === 'Outro(a)') { $raca = trim($_POST['outra_raca']); }
+            $data_nascimento = $_POST['data_nascimento'] ?: null;
+            $foto_atual      = $_POST['foto_atual'];
+            $foto_url        = $foto_atual;
+
+            if (isset($_FILES['foto_pet']) && $_FILES['foto_pet']['error'] === 0) {
+                $allowed = ['jpg','jpeg','png','gif','webp'];
+                $ext     = strtolower(pathinfo($_FILES['foto_pet']['name'], PATHINFO_EXTENSION));
+                if (in_array($ext, $allowed)) {
+                    $foto_url = uniqid('pet_') . '_' . time() . '.' . $ext;
+                    if (resizeImage($_FILES['foto_pet']['tmp_name'], $target_dir_absolute . $foto_url, 800, 800)) {
+                        if ($foto_atual && !in_array($foto_atual, ['default_dog.png', 'default_cat.png', 'default_other.png']) && file_exists($target_dir_absolute . $foto_atual)) {
+                            @unlink($target_dir_absolute . $foto_atual);
+                        }
+                    } else {
+                        $_SESSION['erro_msg'] = "Erro ao salvar nova imagem.";
+                        $foto_url = $foto_atual; $form_ok = false;
+                    }
+                } else {
+                     $_SESSION['erro_msg'] = "Formato de arquivo não permitido na edição.";
+                     $form_ok = false;
+                }
+            } 
+            
+            if ($form_ok) {
+                $stmt = $mysqli->prepare("UPDATE pets SET nome = ?, especie = ?, raca = ?, data_nascimento = ?, foto_url = ? WHERE id = ? AND dono_id = ?");
+                $stmt->bind_param("sssssii", $nome_pet, $especie, $raca, $data_nascimento, $foto_url, $pet_id, $id_usuario_logado);
+                if ($stmt->execute()) {
+                    $_SESSION['ok_msg'] = "Pet atualizado com sucesso!";
+                } else {
+                    $_SESSION['erro_msg'] = "Erro ao atualizar pet: " . $stmt->error;
+                }
+            }
+        }
+    }
     elseif (isset($_POST['add_endereco'])) {
         $rua = trim($_POST['rua']); $numero = trim($_POST['numero']); $bairro = trim($_POST['bairro']);
         $complemento = trim($_POST['complemento']); $cidade = trim($_POST['cidade']); $estado = trim($_POST['estado']); $cep = trim($_POST['cep']);
@@ -137,58 +205,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else { $_SESSION['erro_msg'] = "Nome ou e-mail inválido."; }
         }
     }
-    elseif (isset($_POST['edit_pet'])) {
-        if (in_array($_POST['pet_id'], $pets_bloqueados_ids)) { $_SESSION['erro_msg'] = "Este pet não pode ser editado pois está em um agendamento ativo."; } 
-        else {
-            $pet_id = $_POST['pet_id'];
-            $nome_pet = trim($_POST['nome_pet']);
-            $especie = $_POST['especie']; if ($especie === 'Outro(a)') { $especie = trim($_POST['outra_especie']); }
-            $raca = $_POST['raca']; if ($raca === 'Outro(a)') { $raca = trim($_POST['outra_raca']); }
-            $data_nascimento = $_POST['data_nascimento'] ?: null;
-            $foto_atual = $_POST['foto_atual'];
-            $foto_url = $foto_atual;
-
-            if (isset($_FILES['foto_pet']) && $_FILES['foto_pet']['error'] == 0) {
-                $target_dir = "../imagens/pets/";
-                if (!is_writable($target_dir)) {
-                    $_SESSION['erro_msg'] = "Erro Crítico: O diretório de imagens não tem permissão de escrita.";
-                    $form_ok = false;
-                } else {
-                    $allowed_formats = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-                    $ext = strtolower(pathinfo($_FILES['foto_pet']['name'], PATHINFO_EXTENSION));
-                    if (in_array($ext, $allowed_formats)) {
-                        $foto_url = uniqid('pet_') . '_' . time() . '.' . $ext;
-                        if (resizeImage($_FILES['foto_pet']['tmp_name'], $target_dir . $foto_url, 800, 800)) {
-                            if ($foto_atual && file_exists($target_dir . $foto_atual)) { @unlink($target_dir . $foto_atual); }
-                        } else {
-                            $_SESSION['erro_msg'] = "Ocorreu um erro ao salvar a nova imagem."; $foto_url = $foto_atual; $form_ok = false;
-                        }
-                    } else {
-                        $_SESSION['erro_msg'] = "Formato de arquivo não permitido."; $foto_url = $foto_atual; $form_ok = false;
-                    }
-                }
-            }
-            
-            if ($form_ok) {
-                $stmt = $mysqli->prepare("UPDATE pets SET nome = ?, especie = ?, raca = ?, data_nascimento = ?, foto_url = ? WHERE id = ? AND dono_id = ?");
-                $stmt->bind_param("sssssii", $nome_pet, $especie, $raca, $data_nascimento, $foto_url, $pet_id, $id_usuario_logado);
-                if ($stmt->execute()) { $_SESSION['ok_msg'] = "Pet atualizado com sucesso!"; } 
-                else { $_SESSION['erro_msg'] = "Erro ao atualizar pet: " . $stmt->error; }
-            }
-        }
-    }
-    elseif (isset($_POST['edit_endereco'])) {
-        if (in_array($_POST['endereco_id'], $enderecos_bloqueados_ids)) { $_SESSION['erro_msg'] = "Este endereço não pode ser editado pois está em um agendamento ativo."; } 
-        else {
-            $endereco_id = $_POST['endereco_id'];
-            $rua = trim($_POST['rua']); $numero = trim($_POST['numero']); $bairro = trim($_POST['bairro']);
-            $complemento = trim($_POST['complemento']); $cidade = trim($_POST['cidade']); $estado = trim($_POST['estado']); $cep = trim($_POST['cep']);
-            $stmt = $mysqli->prepare("UPDATE enderecos SET rua = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, estado = ?, cep = ? WHERE id = ? AND usuario_id = ?");
-            $stmt->bind_param("sssssssii", $rua, $numero, $complemento, $bairro, $cidade, $estado, $cep, $endereco_id, $id_usuario_logado);
-            if ($stmt->execute()) { $_SESSION['ok_msg'] = "Endereço atualizado com sucesso!"; } 
-            else { $_SESSION['erro_msg'] = "Erro ao atualizar endereço: " . $stmt->error; }
-        }
-    }
 
     header("Location: perfil.php");
     exit;
@@ -202,6 +218,8 @@ if (isset($_SESSION['erro_msg'])) { $erro = $_SESSION['erro_msg']; unset($_SESSI
 $usuario_info = $mysqli->query("SELECT nome, email, telefone FROM usuarios WHERE id = $id_usuario_logado")->fetch_assoc();
 $pets = $mysqli->query("SELECT * FROM pets WHERE dono_id = $id_usuario_logado ORDER BY nome ASC")->fetch_all(MYSQLI_ASSOC);
 $enderecos = $mysqli->query("SELECT * FROM enderecos WHERE usuario_id = $id_usuario_logado ORDER BY id ASC")->fetch_all(MYSQLI_ASSOC);
+
+$path_url_imagens = '/petsync/Imagens/pets/';
 
 require '../header.php';
 ?>
@@ -303,18 +321,7 @@ require '../header.php';
                         <?php if(empty($pets)): ?> <p class="text-gray-500 text-center py-4">Nenhum pet cadastrado.</p> <?php endif; ?>
                         <?php foreach($pets as $pet): 
                             $is_blocked = in_array($pet['id'], $pets_bloqueados_ids);
-                            $image_src = '';
-                            if (!empty($pet['foto_url'])) {
-                                $image_src = '../imagens/pets/' . htmlspecialchars($pet['foto_url']) . '?v=' . time();
-                            } else {
-                                $especie_lower = mb_strtolower($pet['especie'] ?? '', 'UTF-8');
-                                // =================================================================
-                                // LINHA CORRIGIDA ABAIXO
-                                // =================================================================
-                                if ($especie_lower === 'cão' || $especie_lower === 'cachorro') { $image_src = '../images/pets/default_dog.png'; } 
-                                elseif ($especie_lower === 'gato') { $image_src = '../images/pets/default_cat.png'; } 
-                                else { $image_src = '../images/pets/default_other.png'; }
-                            }
+                            $image_src = $path_url_imagens . htmlspecialchars($pet['foto_url']) . '?v=' . time();
                         ?>
                             <div class="flex justify-between items-center p-3 border rounded-lg <?= $is_blocked ? 'bg-yellow-50' : 'bg-gray-50' ?>">
                                 <div class="flex items-center text-gray-700">
@@ -404,6 +411,15 @@ require '../header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // INÍCIO DA CORREÇÃO: Remover toasts gerados pelo servidor após a animação
+    const serverToasts = document.querySelectorAll('#toast-container .toast-item');
+    if (serverToasts.length > 0) {
+        setTimeout(() => {
+            serverToasts.forEach(toast => toast.remove());
+        }, 5000); // Corresponde à duração total da animação CSS (4.5s + 0.5s)
+    }
+    // FIM DA CORREÇÃO
+
     // FUNÇÕES GLOBAIS
     const showToast = (message, type = 'alert') => {
         const container = document.getElementById('toast-container');
@@ -432,7 +448,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modal) return; 
         modal.classList.remove('active');
         document.body.classList.remove('overflow-hidden');
-
         setTimeout(() => {
             modal.classList.add('hidden');
         }, 300); 

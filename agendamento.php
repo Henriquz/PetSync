@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_agendamento
     // Se não houver erros, salva no banco
     if (empty($erro)) {
         $stmt = $mysqli->prepare("INSERT INTO agendamentos (usuario_id, pet_id, servico, data_agendamento, observacoes, tipo_entrega, endereco_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iissisi", $id_usuario_logado, $pet_id, $servicos, $data_agendamento_str, $observacoes, $tipo_entrega, $endereco_id);
+        $stmt->bind_param("iissssi", $id_usuario_logado, $pet_id, $servicos, $data_agendamento_str, $observacoes, $tipo_entrega, $endereco_id);
         
         if ($stmt->execute()) {
             $_SESSION['ok_msg'] = ($tipo_entrega === 'delivery') 
