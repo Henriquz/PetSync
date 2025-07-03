@@ -207,7 +207,7 @@ function formatarData($data) {
     </style>
 </head>
 <body class="bg-petLightGray">
-    <?php include 'header.php'; ?>
+    <?php include '../header.php'; ?>
     
     <div id="toast-notification-container" class="fixed top-20 right-5 z-[100]">
         <?php if ($ok): ?><div class="bg-green-500 text-white p-4 rounded-lg shadow-lg"><?= htmlspecialchars($ok) ?></div><?php endif; ?>

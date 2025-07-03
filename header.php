@@ -33,10 +33,37 @@
     
     <style>
         body { font-family: 'Poppins', sans-serif; }
-        .hero-pattern { background-color: #f7fafc; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
         .form-input:focus { border-color: #0078C8; box-shadow: 0 0 0 3px rgba(0, 120, 200, 0.2); }
-        #toast-notification { position: fixed; top: 2rem; right: 2rem; z-index: 9999; padding: 1rem 1.5rem; border-radius: 0.5rem; color: white; font-weight: 500; box-shadow: 0 4px 6px rgba(0,0,0,0.1); opacity: 0; visibility: hidden; transform: translateY(-20px); transition: all 0.3s ease-in-out; }
-        #toast-notification.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        .notification-count {
+            transform: scale(0.9) translate(50%, -50%);
+            transform-origin: top right;
+        }
+        .notification-item { position: relative; padding-right: 2.5rem; }
+        .dismiss-btn { position: absolute; top: 50%; right: 0.75rem; transform: translateY(-50%); width: 1.5rem; height: 1.5rem; border-radius: 9999px; display: flex; align-items: center; justify-content: center; opacity: 0.5; transition: all 0.2s; }
+        .notification-item:hover .dismiss-btn { opacity: 1; }
+        .dismiss-btn:hover { background-color: #e5e7eb; color: #ef4444; }
+
+        .image-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .image-modal.open { opacity: 1; visibility: visible; }
+        .image-modal-content { position: relative; max-width: 90%; max-height: 90%; }
+        .image-modal-content img { display: block; max-width: 100%; max-height: 90vh; border-radius: 0.5rem; }
+        .image-modal-close {
+            position: absolute; top: -1rem; right: -1rem;
+            width: 2.5rem; height: 2.5rem;
+            background-color: white; color: #374151;
+            border-radius: 9999px;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
     </style>
 </head>
 <body class="bg-petLightGray flex flex-col min-h-screen">
@@ -48,8 +75,9 @@
                     Pet<span class="text-petOrange">Sync</span>
                 </a>
                 
-                <div class="hidden md:flex items-center space-x-8">
+                <div class="hidden md:flex items-center space-x-6">
                     <a href="/petsync/index.php#services" class="text-petGray hover:text-petBlue font-medium">Serviços</a>
+                    <a href="/petsync/galeria.php" class="text-petGray hover:text-petBlue font-medium">Galeria</a>
                     <a href="/petsync/index.php#products" class="text-petGray hover:text-petBlue font-medium">Produtos</a>
                     <a href="/petsync/index.php#about" class="text-petGray hover:text-petBlue font-medium">Sobre</a>
                     <a href="/petsync/index.php#contact" class="text-petGray hover:text-petBlue font-medium">Contato</a>
@@ -58,24 +86,58 @@
                         $nomeCompleto = $_SESSION['usuario']['nome'];
                         $primeiroNome = explode(' ', $nomeCompleto)[0];
                     ?>
+                        <?php if (empty($_SESSION['usuario']['is_admin'])): ?>
+                        <div class="relative">
+                            <div id="notification-bell-container" class="relative cursor-pointer">
+                                <svg class="w-6 h-6 text-petGray hover:text-petBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                <span id="notification-count" class="hidden absolute top-0 right-0 notification-count w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"></span>
+                            </div>
+                            <div id="notification-dropdown" class="hidden absolute top-full right-0 mt-4 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-20">
+                                <div class="px-4 py-2 border-b"><h3 class="text-sm font-semibold text-petGray">Notificações</h3></div>
+                                <div id="notification-list" class="max-h-80 overflow-y-auto"><p class="text-center text-sm text-gray-500 py-4">Carregando...</p></div>
+                                <div class="px-4 py-2 border-t bg-gray-50 flex justify-between items-center">
+                                    <button id="clear-read-btn" class="text-xs text-petBlue hover:underline font-semibold">Limpar lidas</button>
+                                    <a href="/petsync/notificacoes.php" class="text-xs text-white bg-petBlue hover:bg-blue-800 font-semibold py-1 px-3 rounded-full transition-colors">Ver Todas</a>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <?php if (!empty($_SESSION['usuario']['is_admin'])): ?>
+                        <div class="relative">
+                            <div id="admin-notification-bell-container" class="relative cursor-pointer">
+                                <svg class="w-6 h-6 text-petGray hover:text-petBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                <span id="admin-notification-count" class="hidden absolute top-0 right-0 notification-count w-5 h-5 bg-petBlue text-white text-xs font-bold rounded-full flex items-center justify-center"></span>
+                            </div>
+                            <div id="admin-notification-dropdown" class="hidden absolute top-full right-0 mt-4 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-20">
+                                <div class="px-4 py-2 border-b"><h3 class="text-sm font-semibold text-petGray">Novos Agendamentos</h3></div>
+                                <div id="admin-notification-list" class="max-h-80 overflow-y-auto"><p class="text-center text-sm text-gray-500 py-4">Carregando...</p></div>
+                                <div class="px-4 py-2 border-t bg-gray-50 flex justify-between items-center">
+                                    <button id="admin-clear-read-btn" class="text-xs text-petBlue hover:underline font-semibold">Limpar lidas</button>
+                                    <a href="/petsync/admin/gerencia_agendamentos.php" class="text-xs text-white bg-petBlue hover:bg-blue-800 font-semibold py-1 px-3 rounded-full transition-colors">Todos os agendamentos</a>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
                         <div class="relative">
                             <button id="user-menu-button" class="flex items-center space-x-2 text-petGray hover:text-petBlue font-medium focus:outline-none">
                                 <span>Olá, <?php echo htmlspecialchars($primeiroNome); ?></span>
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                             </button>
                             <div id="user-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-20">
-    <a href="/petsync/cliente/perfil.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meu Perfil</a>
-    
-    <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
-        <a href="/petsync/admin/gerencia_agendamentos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Gerenciar Agendamentos</a>
-    <?php else: ?>
-        <a href="/petsync/meus_agendamentos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meus Agendamentos</a>
-    <?php endif; ?>
-    <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
-        <a href="/petsync/admin/index.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Painel do Administrador</a>
-    <?php endif; ?>
-    <a href="/petsync/logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-petLightGray">Sair</a>
-</div>
+                                <a href="/petsync/cliente/perfil.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meu Perfil</a>
+                                <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+                                    <a href="/petsync/admin/gerencia_agendamentos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Gerenciar Agendamentos</a>
+                                <?php else: ?>
+                                    <a href="/petsync/meus_agendamentos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meus Agendamentos</a>
+                                    <a href="/petsync/notificacoes.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Minhas Notificações</a>
+                                <?php endif; ?>
+                                <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+                                    <a href="/petsync/admin/index.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Painel do Administrador</a>
+                                <?php endif; ?>
+                                <a href="/petsync/logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-petLightGray">Sair</a>
+                            </div>
                         </div>
                     <?php else: ?>
                         <a href="/petsync/login.php" class="inline-block px-4 py-1.5 bg-petOrange text-white text-sm font-semibold rounded-full shadow-md hover:bg-petBlue hover:shadow-lg transition-colors duration-300 ease-in-out">Entrar</a>
@@ -83,29 +145,33 @@
                 </div>
                 
                 <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-petGray focus:outline-none">
+                     <button id="mobile-menu-button" class="text-petGray focus:outline-none">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
                 </div>
             </div>
             
-            <div id="mobile-menu" class="md:hidden hidden pt-4 pb-2">
-    <div class="border-t my-2"></div>
-    <?php if (isset($_SESSION['usuario'])): ?>
-        <a href="/petsync/cliente/perfil.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meu Perfil</a>
-        
-        <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
-            <a href="/petsync/admin/gerencia_agendamentos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Gerenciar Agendamentos</a>
-        <?php else: ?>
-            <a href="/petsync/meus_agendamentos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meus Agendamentos</a>
-        <?php endif; ?>
-        <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
-            <a href="/petsync/admin/index.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Painel do Administrador</a>
-        <?php endif; ?>
-        <a href="/petsync/logout.php" class="block py-2 px-4 text-red-600 hover:bg-petLightGray rounded-md">Sair</a>
-    <?php else: ?>
-        <?php endif; ?>
-</div>
+             <div id="mobile-menu" class="md:hidden hidden pt-4 pb-2">
+                 <div class="border-t my-2"></div>
+                <?php if (isset($_SESSION['usuario'])): ?>
+                    <a href="/petsync/cliente/perfil.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meu Perfil</a>
+                    <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+                        <a href="/petsync/admin/gerencia_agendamentos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Gerenciar Agendamentos</a>
+                    <?php else: ?>
+                        <a href="/petsync/meus_agendamentos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meus Agendamentos</a>
+                        <a href="/petsync/notificacoes.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Minhas Notificações</a>
+                    <?php endif; ?>
+                    <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+                        <a href="/petsync/admin/index.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Painel do Administrador</a>
+                    <?php endif; ?>
+                    <a href="/petsync/logout.php" class="block py-2 px-4 text-red-600 hover:bg-petLightGray rounded-md">Sair</a>
+                <?php else: ?>
+                    <a href="/petsync/index.php#services" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Serviços</a>
+                    <a href="/petsync/galeria.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Galeria</a>
+                    <a href="/petsync/index.php#products" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Produtos</a>
+                    <a href="/petsync/login.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Entrar</a>
+                <?php endif; ?>
+             </div>
         </div>
     </nav>
     <main class="flex-grow">

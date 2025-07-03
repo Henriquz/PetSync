@@ -13,6 +13,19 @@ require '../header.php';
             
             <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300">
                 <div class="w-16 h-16 bg-blue-100 text-petBlue rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold text-petBlue mb-2">Gerenciar Agendamentos</h2>
+                <p class="text-petGray text-sm flex-grow">Visualize, altere o status ou cancele os agendamentos dos clientes.</p>
+                <div class="mt-auto pt-4">
+                    <a href="gerencia_agendamentos.php" class="bg-petBlue hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Ver Agendamentos</a>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300">
+                <div class="w-16 h-16 bg-blue-100 text-petBlue rounded-full flex items-center justify-center mb-4 mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                 </div>
                 <h2 class="text-2xl font-semibold text-petBlue mb-2">Gerenciar Produtos</h2>
@@ -34,13 +47,41 @@ require '../header.php';
             </div>
 
             <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300">
-                 <div class="w-16 h-16 bg-orange-100 text-petOrange rounded-full flex items-center justify-center mb-4 mx-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.096 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <div class="w-16 h-16 bg-blue-100 text-petBlue rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
                 </div>
-                <h2 class="text-2xl font-semibold text-petOrange mb-2">Configurações do Site</h2>
-                <p class="text-petGray text-sm flex-grow">Edite informações de contato, horários e endereço.</p>
+                <h2 class="text-2xl font-semibold text-petBlue mb-2">Gerenciar Galeria</h2>
+                <p class="text-petGray text-sm flex-grow">Adicione ou remova as fotos de pets da galeria pública.</p>
                  <div class="mt-auto pt-4">
-                    <a href="configuracoes.php" class="bg-petOrange hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Editar Configurações</a>
+                    <a href="gerenciar_galeria.php" class="bg-petBlue hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Ir para Galeria</a>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300">
+                <div class="w-16 h-16 bg-blue-100 text-petBlue rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V4a2 2 0 00-2-2H7a2 2 0 00-2 2v1.882l-2.438 2.438a2 2 0 00-.562 1.414V14a2 2 0 002 2h1.586a1 1 0 01.707.293l2.414 2.414a1 1 0 001.414 0L13 16.293a1 1 0 01.707-.293H15a2 2 0 002-2v-4.266a2 2 0 00-.562-1.414L14.118 5.882H11z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold text-petBlue mb-2">Disparar Notificações</h2>
+                <p class="text-petGray text-sm flex-grow">Envie alertas e comunicados para um ou todos os clientes.</p>
+                 <div class="mt-auto pt-4">
+                    <a href="disparar_aviso.php" class="bg-petBlue hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Enviar Avisos</a>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300">
+                 <div class="w-16 h-16 bg-orange-100 text-petOrange rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v-2m0 6V4" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold text-petOrange mb-2">Configurar Agendamentos</h2>
+                <p class="text-petGray text-sm flex-grow">Defina serviços, opções de entrega e horários de atendimento.</p>
+                 <div class="mt-auto pt-4">
+                    <a href="config_agendamento.php" class="bg-petOrange hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Configurar</a>
                 </div>
             </div>
 
