@@ -1,6 +1,12 @@
 <?php
 // Lembre-se que o arquivo config.php (que inicia a sessão)
 // deve ser incluído ANTES deste header nas suas páginas.
+if (session_status() === PHP_SESSION_NONE) { session_start(); } // Garante que a sessão está ativa
+
+// --- NOVA LÓGICA ---
+// Verifica se a configuração para exibir a loja está ativa.
+// Usamos isset() para garantir que não haverá erro se a variável $configuracoes não existir.
+$exibir_loja = isset($configuracoes['exibir_secao_produtos']) && $configuracoes['exibir_secao_produtos'];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -77,8 +83,10 @@
                 
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="/petsync/index.php#services" class="text-petGray hover:text-petBlue font-medium">Serviços</a>
+                    <?php if ($exibir_loja): // AJUSTE 1: Menu Desktop ?>
+                        <a href="/petsync/loja.php" class="text-petGray hover:text-petBlue font-medium">Loja</a>
+                    <?php endif; ?>
                     <a href="/petsync/galeria.php" class="text-petGray hover:text-petBlue font-medium">Galeria</a>
-                    <a href="/petsync/index.php#products" class="text-petGray hover:text-petBlue font-medium">Produtos</a>
                     <a href="/petsync/index.php#about" class="text-petGray hover:text-petBlue font-medium">Sobre</a>
                     <a href="/petsync/index.php#contact" class="text-petGray hover:text-petBlue font-medium">Contato</a>
 
@@ -86,12 +94,26 @@
                         $nomeCompleto = $_SESSION['usuario']['nome'];
                         $primeiroNome = explode(' ', $nomeCompleto)[0];
                     ?>
-                        <?php if (empty($_SESSION['usuario']['is_admin'])): ?>
+                        <?php if (empty($_SESSION['usuario']['is_admin'])): // Apenas para clientes ?>
+                        
+                        <?php 
+                            $itens_no_carrinho = isset($_SESSION['carrinho']) ? count($_SESSION['carrinho']) : 0;
+                        ?>
+                        <?php if ($exibir_loja): // Mostra o carrinho apenas se a loja estiver ativa ?>
+                        <a href="/petsync/carrinho.php" id="cart-icon-container" class="relative <?php if($itens_no_carrinho == 0) echo 'hidden'; ?>">
+                            <svg class="w-6 h-6 text-petGray hover:text-petBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <span id="cart-count" class="absolute top-0 right-0 notification-count w-5 h-5 bg-petOrange text-white text-xs font-bold rounded-full flex items-center justify-center">
+                                <?= $itens_no_carrinho ?>
+                            </span>
+                        </a>
+                        <?php endif; ?>
+
                         <div class="relative">
                             <div id="notification-bell-container" class="relative cursor-pointer">
                                 <svg class="w-6 h-6 text-petGray hover:text-petBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                                 <span id="notification-count" class="hidden absolute top-0 right-0 notification-count w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center"></span>
                             </div>
+                            
                             <div id="notification-dropdown" class="hidden absolute top-full right-0 mt-4 w-80 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-20">
                                 <div class="px-4 py-2 border-b"><h3 class="text-sm font-semibold text-petGray">Notificações</h3></div>
                                 <div id="notification-list" class="max-h-80 overflow-y-auto"><p class="text-center text-sm text-gray-500 py-4">Carregando...</p></div>
@@ -100,10 +122,11 @@
                                     <a href="/petsync/notificacoes.php" class="text-xs text-white bg-petBlue hover:bg-blue-800 font-semibold py-1 px-3 rounded-full transition-colors">Ver Todas</a>
                                 </div>
                             </div>
+
                         </div>
                         <?php endif; ?>
 
-                        <?php if (!empty($_SESSION['usuario']['is_admin'])): ?>
+                        <?php if (!empty($_SESSION['usuario']['is_admin'])): // Apenas para admins ?>
                         <div class="relative">
                             <div id="admin-notification-bell-container" class="relative cursor-pointer">
                                 <svg class="w-6 h-6 text-petGray hover:text-petBlue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
@@ -128,13 +151,17 @@
                             <div id="user-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-20">
                                 <a href="/petsync/cliente/perfil.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meu Perfil</a>
                                 <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+                                    <a href="/petsync/admin/index.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Painel do Administrador</a>
                                     <a href="/petsync/admin/gerencia_agendamentos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Gerenciar Agendamentos</a>
+                                    <?php if ($exibir_loja): ?>
+                                    <a href="/petsync/admin/gerenciar_pedidos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Gerenciar Pedidos</a>
+                                    <?php endif; ?>
                                 <?php else: ?>
                                     <a href="/petsync/meus_agendamentos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meus Agendamentos</a>
+                                    <?php if ($exibir_loja): ?>
+                                    <a href="/petsync/meus_pedidos.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Meus Pedidos</a>
+                                    <?php endif; ?>
                                     <a href="/petsync/notificacoes.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Minhas Notificações</a>
-                                <?php endif; ?>
-                                <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
-                                    <a href="/petsync/admin/index.php" class="block px-4 py-2 text-sm text-petGray hover:bg-petLightGray">Painel do Administrador</a>
                                 <?php endif; ?>
                                 <a href="/petsync/logout.php" class="block px-4 py-2 text-sm text-red-600 hover:bg-petLightGray">Sair</a>
                             </div>
@@ -156,19 +183,29 @@
                 <?php if (isset($_SESSION['usuario'])): ?>
                     <a href="/petsync/cliente/perfil.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meu Perfil</a>
                     <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
+                        <a href="/petsync/admin/index.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Painel do Administrador</a>
                         <a href="/petsync/admin/gerencia_agendamentos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Gerenciar Agendamentos</a>
-                    <?php else: ?>
+                        <?php if ($exibir_loja): ?>
+                        <a href="/petsync/admin/gerenciar_pedidos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Gerenciar Pedidos</a>
+                        <?php endif; ?>
+                    <?php else: // AJUSTE 2: Menu Mobile Cliente Logado ?>
+                        <?php if ($exibir_loja): ?>
+                            <a href="/petsync/loja.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Loja</a>
+                            <a href="/petsync/carrinho.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meu Carrinho</a>
+                        <?php endif; ?>
                         <a href="/petsync/meus_agendamentos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meus Agendamentos</a>
+                        <?php if ($exibir_loja): ?>
+                        <a href="/petsync/meus_pedidos.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Meus Pedidos</a>
+                        <?php endif; ?>
                         <a href="/petsync/notificacoes.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Minhas Notificações</a>
                     <?php endif; ?>
-                    <?php if (isset($_SESSION['usuario']['is_admin']) && $_SESSION['usuario']['is_admin']): ?>
-                        <a href="/petsync/admin/index.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Painel do Administrador</a>
-                    <?php endif; ?>
                     <a href="/petsync/logout.php" class="block py-2 px-4 text-red-600 hover:bg-petLightGray rounded-md">Sair</a>
-                <?php else: ?>
+                <?php else: // AJUSTE 3: Menu Mobile Deslogado ?>
                     <a href="/petsync/index.php#services" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Serviços</a>
+                    <?php if ($exibir_loja): ?>
+                    <a href="/petsync/loja.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Loja</a>
+                    <?php endif; ?>
                     <a href="/petsync/galeria.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Galeria</a>
-                    <a href="/petsync/index.php#products" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Produtos</a>
                     <a href="/petsync/login.php" class="block py-2 px-4 text-petGray hover:bg-petLightGray rounded-md">Entrar</a>
                 <?php endif; ?>
              </div>

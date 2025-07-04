@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 03-Jul-2025 às 22:25
+-- Tempo de geração: 04-Jul-2025 às 20:34
 -- Versão do servidor: 10.4.27-MariaDB
 -- versão do PHP: 7.4.33
 
@@ -55,8 +55,12 @@ INSERT INTO `agendamentos` (`id`, `usuario_id`, `pet_id`, `servico`, `data_agend
 (20, 1, 36, 'Banho e Tosa', '2025-07-03 10:00:00', 'Cancelado', 'tem alergia a pessoas', NULL, '2025-07-02 19:50:08', 'loja', NULL),
 (21, 1, 36, 'Banho e Tosa', '2025-07-10 10:00:00', 'Cancelado', '', 'teste', '2025-07-03 12:57:02', 'loja', NULL),
 (22, 1, 33, 'banho', '2025-07-07 17:15:00', 'Pendente', '', NULL, '2025-07-03 19:49:38', 'delivery', 5),
-(23, 1, 37, 'tosa', '2025-07-07 16:00:00', 'Pendente', '', NULL, '2025-07-03 19:50:24', 'delivery', 5),
-(24, 1, 36, 'tosa', '2025-07-07 09:15:00', 'Pendente', '', NULL, '2025-07-03 20:15:17', 'loja', NULL);
+(23, 1, 37, 'tosa', '2025-07-07 16:00:00', 'Cancelado', '', 'n quis fazer', '2025-07-03 19:50:24', 'delivery', 5),
+(24, 1, 36, 'tosa', '2025-07-07 09:15:00', 'Concluído', '', '', '2025-07-03 20:15:17', 'loja', NULL),
+(25, 1, 37, 'tosa', '2025-07-14 10:45:00', 'Pendente', '', NULL, '2025-07-03 20:32:32', 'delivery', 5),
+(26, 3, 35, 'tosa', '2025-07-07 09:30:00', 'Pendente', '', NULL, '2025-07-04 11:31:30', 'delivery', 6),
+(27, 1, 37, 'banho', '2025-07-07 10:00:00', 'Concluído', '', '', '2025-07-04 17:17:59', 'delivery', 5),
+(28, 1, 33, 'tosa', '2025-07-14 17:30:00', 'Pendente', '', NULL, '2025-07-04 17:21:24', 'loja', NULL);
 
 -- --------------------------------------------------------
 
@@ -75,26 +79,38 @@ CREATE TABLE `configuracoes` (
 --
 
 INSERT INTO `configuracoes` (`id`, `chave`, `valor`) VALUES
-(1, 'telefone_1', '(33) 5555-0000'),
-(2, 'telefone_2', '(33) 99999-0000'),
+(1, 'telefone_1', '(33) 5555-5555'),
+(2, 'telefone_2', '(33) 99999-5555'),
 (3, 'email_contato', 'e-mail@petsync.com.br'),
-(4, 'horario_semana', 'Segunda a Sexta: 9h às 19h'),
+(4, 'horario_semana', 'Segunda a Sexta: 8h às 19h'),
 (5, 'horario_sabado', 'Sábado: 8h às 22h'),
-(6, 'endereco', 'R. João Pinheiro, 147, Sala 214 - Centro, Caratinga - MG'),
+(6, 'endereco', 'R. João Pinheiro, 147, Sala 214 - Centro, Caratinga - Minas Gerais'),
 (7, 'mapa_url', '<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7508.34123786262!2d-42.14313105!3d-19.790362!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xba90c4afd17a7b%3A0x76859e6d3039c93!2sR.%20Jo%C3%A3o%20Pinheiro%2C%20147%20-%20Centro%2C%20Caratinga%20-%20MG%2C%2035300-037!5e0!3m2!1spt-BR!2sbr!4v1750964848571!5m2!1spt-BR!2sbr\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>'),
 (8, 'sobre_titulo', 'Sobre a PetSync'),
 (9, 'sobre_texto_1', 'A PetSync nasceu da paixão por animais e do desejo de oferecer o melhor cuidado possível para os pets. Fundada em 2025, nossa missão é proporcionar serviços de qualidade e produtos premium que contribuam para o bem-estar e felicidade dos animais de estima'),
 (10, 'sobre_texto_2', 'Nossa equipe é formada por profissionais qualificados e apaixonados por pets, sempre prontos para atender você e seu melhor amigo com carinho e dedicação.'),
 (11, 'stat_1_num', '2+'),
 (12, 'stat_1_desc', 'Anos de experiência'),
-(13, 'stat_2_num', '2k+'),
+(13, 'stat_2_num', '8k+'),
 (14, 'stat_2_desc', 'Clientes felizes'),
-(15, 'stat_3_num', '2+'),
+(15, 'stat_3_num', '5+'),
 (16, 'stat_3_desc', 'Profissionais'),
-(17, 'stat_4_num', '2+'),
-(18, 'stat_4_desc', 'Produtos'),
+(17, 'stat_4_num', '10+'),
+(18, 'stat_4_desc', 'Produtos Vendidos'),
 (19, 'permitir_delivery', '1'),
-(20, 'permitir_cliente_leva_e_busca', '1');
+(20, 'permitir_cliente_leva_e_busca', '1'),
+(22, 'home_servicos_selecionados', '[\"Veterin\\u00e1ria\",\"Sess\\u00e3o de Fotos Pet\"]'),
+(23, 'home_exibir_produtos', '1'),
+(31, 'servico_pet_shop_ativo', '1'),
+(32, 'servico_hospedagem_ativo', '0'),
+(35, 'servico_vacinacao_ativo', '0'),
+(36, 'servico_outros_ativo', '1'),
+(37, 'servico_veterinaria_ativo', '0'),
+(38, 'servico_adestramento_ativo', '0'),
+(39, 'telefone_1_is_whatsapp', '1'),
+(40, 'servico_banho_tosa_ativo', '1'),
+(41, 'exibir_secao_produtos', '1'),
+(42, 'servico_sessao_fotos_ativo', '1');
 
 -- --------------------------------------------------------
 
@@ -124,7 +140,8 @@ INSERT INTO `enderecos` (`id`, `usuario_id`, `cep`, `rua`, `numero`, `complement
 (2, 3, '35300292', 'Rua Pedro Mourão', '45', '201', 'Santa Zita', 'Caratinga', 'MG', 0),
 (3, 7, '35300-282', 'Rua Tupy', '12', '45', 'Santa Zita', 'Caratinga', 'MG', 0),
 (4, 7, '35300-297', 'Rua Doutor Aluízio Muniz', '289', '10', 'Santa Zita', 'Caratinga', 'MG', 0),
-(5, 1, '35300299', 'Rua Catarina Maria Passos', '34', '', 'Santa Zita', 'Caratinga', 'MG', 0);
+(5, 1, '35300299', 'Rua Catarina Maria Passos', '34', '', 'Santa Zita', 'Caratinga', 'MG', 0),
+(6, 3, '35300237', 'Praça Frei Arcanjo Ruzzi', '', '', 'Esplanada', 'Caratinga', 'MG', 0);
 
 -- --------------------------------------------------------
 
@@ -273,7 +290,80 @@ INSERT INTO `notificacoes` (`id`, `usuario_id`, `mensagem`, `link`, `tipo`, `ima
 (33, 11, 'Nesta breve mensagem demonstrativa, apresento um exemplo de texto contendo exatamente duzentos e cinquenta e quatro caracteres, incluindo espaços, pontuações e letras. Obrigado pela atenção e confiança em meu trabalho. Tenha um ótimo dia! Até breve! :)!!', '', 'alerta', NULL, 0, 1, '2025-07-03 14:05:15'),
 (34, 13, 'Nesta breve mensagem demonstrativa, apresento um exemplo de texto contendo exatamente duzentos e cinquenta e quatro caracteres, incluindo espaços, pontuações e letras. Obrigado pela atenção e confiança em meu trabalho. Tenha um ótimo dia! Até breve! :)!!', '', 'alerta', NULL, 0, 1, '2025-07-03 14:05:15'),
 (35, 14, 'Nesta breve mensagem demonstrativa, apresento um exemplo de texto contendo exatamente duzentos e cinquenta e quatro caracteres, incluindo espaços, pontuações e letras. Obrigado pela atenção e confiança em meu trabalho. Tenha um ótimo dia! Até breve! :)!!', '', 'alerta', NULL, 0, 1, '2025-07-03 14:05:15'),
-(36, 15, 'Nesta breve mensagem demonstrativa, apresento um exemplo de texto contendo exatamente duzentos e cinquenta e quatro caracteres, incluindo espaços, pontuações e letras. Obrigado pela atenção e confiança em meu trabalho. Tenha um ótimo dia! Até breve! :)!!', '', 'alerta', NULL, 0, 1, '2025-07-03 14:05:15');
+(36, 15, 'Nesta breve mensagem demonstrativa, apresento um exemplo de texto contendo exatamente duzentos e cinquenta e quatro caracteres, incluindo espaços, pontuações e letras. Obrigado pela atenção e confiança em meu trabalho. Tenha um ótimo dia! Até breve! :)!!', '', 'alerta', NULL, 0, 1, '2025-07-03 14:05:15'),
+(37, 2, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 0, 1, '2025-07-04 17:17:59'),
+(38, 5, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 1, 1, '2025-07-04 17:17:59'),
+(39, 6, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 0, 1, '2025-07-04 17:17:59'),
+(40, 8, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 0, 1, '2025-07-04 17:17:59'),
+(41, 1, 'O atendimento para tico e teco foi iniciado!', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:18:22'),
+(42, 2, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 0, 1, '2025-07-04 17:21:24'),
+(43, 5, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 1, 1, '2025-07-04 17:21:24'),
+(44, 6, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 0, 1, '2025-07-04 17:21:24'),
+(45, 8, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 0, 1, '2025-07-04 17:21:24'),
+(46, 1, 'O atendimento para teco foi iniciado!', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:31:43'),
+(47, 1, 'Oba! O atendimento para teco foi concluído e seu pet já pode ser retirado!', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:32:28'),
+(48, 1, 'Atenção: o agendamento para tico e teco foi cancelado. Motivo: n quis fazer', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:34:05'),
+(49, 1, 'Oba! O atendimento para tico e teco foi concluído e seu pet já pode ser retirado!', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:34:19'),
+(50, 2, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 0, 1, '2025-07-04 17:46:44'),
+(51, 5, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 1, 1, '2025-07-04 17:46:44'),
+(52, 6, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 0, 1, '2025-07-04 17:46:44'),
+(53, 8, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 0, 1, '2025-07-04 17:46:44'),
+(54, 2, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 0, 1, '2025-07-04 17:47:21'),
+(55, 5, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 1, 1, '2025-07-04 17:47:21'),
+(56, 6, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 0, 1, '2025-07-04 17:47:21'),
+(57, 8, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 0, 1, '2025-07-04 17:47:21');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pedidos`
+--
+
+CREATE TABLE `pedidos` (
+  `id` int(11) NOT NULL,
+  `usuario_id` int(11) NOT NULL,
+  `endereco_id` int(11) DEFAULT NULL,
+  `agendamento_id` int(11) DEFAULT NULL,
+  `valor_total` decimal(10,2) NOT NULL,
+  `forma_pagamento` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'Pendente',
+  `observacoes` text DEFAULT NULL,
+  `data_pedido` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Extraindo dados da tabela `pedidos`
+--
+
+INSERT INTO `pedidos` (`id`, `usuario_id`, `endereco_id`, `agendamento_id`, `valor_total`, `forma_pagamento`, `status`, `observacoes`, `data_pedido`) VALUES
+(1, 1, 5, NULL, '20.00', 'Dinheiro', 'Concluído', NULL, '2025-07-04 11:50:35'),
+(2, 1, 5, NULL, '200.00', 'Pix', 'Pendente', NULL, '2025-07-04 12:41:10'),
+(3, 1, NULL, 22, '20.00', 'Cartão na Entrega', 'Pendente', NULL, '2025-07-04 17:46:44'),
+(4, 1, 5, NULL, '20.00', 'Dinheiro', 'Pendente', NULL, '2025-07-04 17:47:21');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `pedido_itens`
+--
+
+CREATE TABLE `pedido_itens` (
+  `id` int(11) NOT NULL,
+  `pedido_id` int(11) NOT NULL,
+  `produto_id` int(11) NOT NULL,
+  `quantidade` int(11) NOT NULL,
+  `preco_unitario` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Extraindo dados da tabela `pedido_itens`
+--
+
+INSERT INTO `pedido_itens` (`id`, `pedido_id`, `produto_id`, `quantidade`, `preco_unitario`) VALUES
+(1, 1, 3, 1, '20.00'),
+(2, 2, 3, 10, '20.00'),
+(3, 3, 3, 1, '20.00'),
+(4, 4, 3, 1, '20.00');
 
 -- --------------------------------------------------------
 
@@ -317,6 +407,8 @@ CREATE TABLE `produtos` (
   `nome` varchar(255) NOT NULL,
   `descricao` text DEFAULT NULL,
   `preco` decimal(10,2) NOT NULL,
+  `estoque` int(11) NOT NULL DEFAULT 0,
+  `ativo` tinyint(1) NOT NULL DEFAULT 1,
   `imagem` varchar(255) DEFAULT NULL,
   `data_cadastro` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -325,8 +417,12 @@ CREATE TABLE `produtos` (
 -- Extraindo dados da tabela `produtos`
 --
 
-INSERT INTO `produtos` (`id`, `nome`, `descricao`, `preco`, `imagem`, `data_cadastro`) VALUES
-(3, 'cama', 'cama para gato', '20.00', '685dc6bdcc0a6.png', '2025-06-26 22:15:29');
+INSERT INTO `produtos` (`id`, `nome`, `descricao`, `preco`, `estoque`, `ativo`, `imagem`, `data_cadastro`) VALUES
+(3, 'cama', 'cama para gato', '20.00', 98, 1, '685dc6bdcc0a6.png', '2025-06-26 22:15:29'),
+(4, 'agua potável para gatos', 'é so agua ', '500.30', 400, 1, '68681565b870b.webp', '2025-07-04 17:54:45'),
+(5, 'Ração Golden Gatos Adultos Carne (10,1 Kg)', '(10,1 Kg)', '89.90', 500, 1, '68681594076da.jpg', '2025-07-04 17:55:32'),
+(6, 'Ração Supra Funny Bunny', 'Ração Supra Funny Bunny Delícias da Horta Coelhos, Hamster e Outros Pequenos Roedores', '123.50', 500, 1, '686815be38fab.jpg', '2025-07-04 17:56:14'),
+(7, 'ratoeira', '', '250.50', 1000, 1, '686815e100363.jpg', '2025-07-04 17:56:49');
 
 -- --------------------------------------------------------
 
@@ -437,6 +533,23 @@ ALTER TABLE `notificacoes`
   ADD KEY `usuario_id` (`usuario_id`);
 
 --
+-- Índices para tabela `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`),
+  ADD KEY `endereco_id` (`endereco_id`),
+  ADD KEY `agendamento_id` (`agendamento_id`);
+
+--
+-- Índices para tabela `pedido_itens`
+--
+ALTER TABLE `pedido_itens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `pedido_id` (`pedido_id`),
+  ADD KEY `produto_id` (`produto_id`);
+
+--
 -- Índices para tabela `pets`
 --
 ALTER TABLE `pets`
@@ -470,19 +583,19 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `agendamentos`
 --
 ALTER TABLE `agendamentos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de tabela `configuracoes`
 --
 ALTER TABLE `configuracoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT de tabela `enderecos`
 --
 ALTER TABLE `enderecos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `galeria`
@@ -506,7 +619,19 @@ ALTER TABLE `horarios_disponiveis`
 -- AUTO_INCREMENT de tabela `notificacoes`
 --
 ALTER TABLE `notificacoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+
+--
+-- AUTO_INCREMENT de tabela `pedidos`
+--
+ALTER TABLE `pedidos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de tabela `pedido_itens`
+--
+ALTER TABLE `pedido_itens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `pets`
@@ -518,7 +643,7 @@ ALTER TABLE `pets`
 -- AUTO_INCREMENT de tabela `produtos`
 --
 ALTER TABLE `produtos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `servicos`
@@ -554,6 +679,21 @@ ALTER TABLE `enderecos`
 --
 ALTER TABLE `notificacoes`
   ADD CONSTRAINT `notificacoes_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Limitadores para a tabela `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`endereco_id`) REFERENCES `enderecos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`agendamento_id`) REFERENCES `agendamentos` (`id`) ON DELETE SET NULL;
+
+--
+-- Limitadores para a tabela `pedido_itens`
+--
+ALTER TABLE `pedido_itens`
+  ADD CONSTRAINT `pedido_itens_ibfk_1` FOREIGN KEY (`pedido_id`) REFERENCES `pedidos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pedido_itens_ibfk_2` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`) ON DELETE CASCADE;
 
 --
 -- Limitadores para a tabela `pets`

@@ -111,7 +111,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_agendamento
         $stmt = $mysqli->prepare("INSERT INTO agendamentos (usuario_id, pet_id, servico, data_agendamento, observacoes, tipo_entrega, endereco_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("iissssi", $id_usuario_logado, $pet_id, $servico_str, $data_agendamento_str, $observacoes, $tipo_entrega, $endereco_id);
 
-        if ($stmt->execute()) {
+         if ($stmt->execute()) {
+            
+            // --- INÍCIO DO CÓDIGO DE NOTIFICAÇÃO PARA ADMINS ---
+            $novo_agendamento_id = $mysqli->insert_id; // Pega o ID do agendamento que acabou de ser criado.
+
+            // 1. Busca todos os administradores do sistema.
+            $result_admins = $mysqli->query("SELECT id FROM usuarios WHERE is_admin = 1");
+            $admins = $result_admins ? $result_admins->fetch_all(MYSQLI_ASSOC) : [];
+
+            if (!empty($admins)) {
+                // 2. Prepara a mensagem e o link da notificação.
+                $nome_cliente = htmlspecialchars($usuario_logado['nome']);
+                
+                // Busca o nome do pet para uma mensagem mais clara.
+                $stmt_pet_nome = $mysqli->prepare("SELECT nome FROM pets WHERE id = ?");
+                $stmt_pet_nome->bind_param("i", $pet_id);
+                $stmt_pet_nome->execute();
+                $nome_pet = $stmt_pet_nome->get_result()->fetch_assoc()['nome'] ?? 'um pet';
+                $stmt_pet_nome->close();
+                
+                $mensagem_notificacao = "Novo agendamento recebido de $nome_cliente para o pet $nome_pet.";
+                $link_notificacao = "admin/gerencia_agendamentos.php#agendamento-" . $novo_agendamento_id;
+
+                // 3. Envia a notificação para cada administrador encontrado.
+                foreach ($admins as $admin) {
+                    criar_notificacao($mysqli, $admin['id'], $mensagem_notificacao, $link_notificacao, 'automatica', null);
+                }
+            }
+            // --- FIM DO CÓDIGO DE NOTIFICAÇÃO ---
+
             $_SESSION['ok_msg'] = "Agendamento solicitado! Você pode acompanhar o status na página 'Meus Agendamentos'.";
             header("Location: meus_agendamentos.php");
             exit;

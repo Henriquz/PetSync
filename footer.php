@@ -77,6 +77,7 @@
             }
         });
 
+        // --- LÓGICA PARA NOTIFICAÇÕES DO CLIENTE ---
         if (clientBell) {
             const clientList = document.getElementById('notification-list');
             const clientClearBtn = document.getElementById('clear-read-btn');
@@ -124,9 +125,13 @@
                 else if (e.target.closest('a') && !e.target.closest('.view-image-btn')) { clientMarkOneAsRead(container.dataset.id); }
             });
             clientClearBtn.addEventListener('click', async () => { await clientApiCall('limpar_lidas'); await clientFetchAndUpdate(); });
-            clientFetchAndUpdate(); setInterval(clientFetchAndUpdate, 60000);
+            
+            // --- CÓDIGO ALTERADO ---
+            clientFetchAndUpdate(); // Busca as notificações assim que a página carrega.
+            setInterval(clientFetchAndUpdate, 20000); // ATUALIZAÇÃO AUTOMÁTICA: Busca novamente a cada 20 segundo.
         }
 
+        // --- LÓGICA PARA NOTIFICAÇÕES DO ADMIN ---
         if (adminBell) {
             const adminList = document.getElementById('admin-notification-list');
             const adminClearBtn = document.getElementById('admin-clear-read-btn');
@@ -171,10 +176,13 @@
                 await adminApiCall('limpar_lidas');
                 await adminFetchAndUpdate();
             });
-            adminFetchAndUpdate();
-            setInterval(adminFetchAndUpdate, 60000);
+
+            // --- CÓDIGO ALTERADO ---
+            adminFetchAndUpdate(); // Busca as notificações do admin assim que a página carrega.
+            setInterval(adminFetchAndUpdate, 20000); // ATUALIZAÇÃO AUTOMÁTICA: Busca novamente a cada 20 segundos.
         }
 
+        // Lógica para fechar os dropdowns ao clicar fora
         window.addEventListener('click', (e) => {
             if (clientBell && !clientBell.contains(e.target) && !clientDropdown.contains(e.target)) {
                 clientDropdown?.classList.add('hidden');
