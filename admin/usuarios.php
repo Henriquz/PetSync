@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
     $is_admin = isset($_POST['is_admin']) ? 1 : 0;
+    $is_colaborador = isset($_POST['is_colaborador']) ? 1 : 0;
     
     if ($id) { // Edição
         $is_active = isset($_POST['is_active']) ? 1 : 0;
@@ -54,19 +55,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($id) { // Edição
             if (!empty($senha)) {
-                $stmt = $mysqli->prepare("UPDATE usuarios SET nome = ?, email = ?, senha = ?, is_admin = ?, is_active = ? WHERE id = ?");
-                $stmt->bind_param('sssiii', $nome, $email, $hash, $is_admin, $is_active, $id);
+                $stmt = $mysqli->prepare("UPDATE usuarios SET nome = ?, email = ?, senha = ?, is_admin = ?, is_colaborador = ?, is_active = ? WHERE id = ?");
+                $stmt->bind_param('sssiiii', $nome, $email, $hash, $is_admin, $is_colaborador, $is_active, $id);
             } else {
-                $stmt = $mysqli->prepare("UPDATE usuarios SET nome = ?, email = ?, is_admin = ?, is_active = ? WHERE id = ?");
-                $stmt->bind_param('ssiii', $nome, $email, $is_admin, $is_active, $id);
+                $stmt = $mysqli->prepare("UPDATE usuarios SET nome = ?, email = ?, is_admin = ?, is_colaborador = ?, is_active = ? WHERE id = ?");
+                $stmt->bind_param('ssiiii', $nome, $email, $is_admin, $is_colaborador, $is_active, $id);
             }
             $ok = "Usuário atualizado com sucesso!";
         } else { // Adição
             if (empty($senha)) {
                 $erro = "O campo senha é obrigatório para novos usuários.";
             } else {
-                $stmt = $mysqli->prepare("INSERT INTO usuarios (nome, email, senha, is_admin, is_active) VALUES (?, ?, ?, ?, ?)");
-                $stmt->bind_param('ssssi', $nome, $email, $hash, $is_admin, $is_active);
+                $stmt = $mysqli->prepare("INSERT INTO usuarios (nome, email, senha, is_admin, is_colaborador, is_active) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param('sssiii', $nome, $email, $hash, $is_admin, $is_colaborador, $is_active);
                 $ok = "Usuário cadastrado com sucesso!";
             }
         }
@@ -123,10 +124,14 @@ if ($busca) {
     $params_sql[] = $search_term;
     $types .= 'ss';
 }
-if ($filtro_tipo !== '') {
-    $where_clauses[] = "is_admin = ?";
-    $params_sql[] = $filtro_tipo;
-    $types .= 'i';
+if ($filtro_tipo !== "") {
+    if ($filtro_tipo === 'admin') {
+        $where_clauses[] = "is_admin = 1";
+    } elseif ($filtro_tipo === 'colaborador') {
+        $where_clauses[] = "is_colaborador = 1";
+    } elseif ($filtro_tipo === 'cliente') {
+        $where_clauses[] = "is_admin = 0 AND is_colaborador = 0";
+    }
 }
 if ($filtro_status !== '') {
     $where_clauses[] = "is_active = ?";
@@ -181,7 +186,8 @@ require '../header.php';
         $form_id = $usuario_para_editar['id'] ?? '';
         $form_nome = $_POST['nome'] ?? $usuario_para_editar['nome'] ?? '';
         $form_email = $_POST['email'] ?? $usuario_para_editar['email'] ?? '';
-        $form_is_admin = isset($_POST['is_admin']) ? true : ($usuario_para_editar['is_admin'] ?? false);
+        $form_is_admin = isset($_POST["is_admin"]) ? true : ($usuario_para_editar["is_admin"] ?? false);
+        $form_is_colaborador = isset($_POST["is_colaborador"]) ? true : ($usuario_para_editar["is_colaborador"] ?? false);
         $form_is_active = isset($_POST['is_active']) ? true : ($usuario_para_editar['is_active'] ?? true);
         $is_super_admin_form = ($form_email === $super_admin_email);
         ?>
@@ -204,6 +210,10 @@ require '../header.php';
                 <div class="flex items-center">
                     <input type="checkbox" name="is_admin" id="is_admin_checkbox" class="h-4 w-4 rounded" <?= $form_is_admin ? 'checked' : '' ?> <?= $is_super_admin_form ? 'onclick="return false;"' : '' ?>>
                     <label for="is_admin_checkbox" class="ml-2 text-petGray font-medium">É Administrador?</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" name="is_colaborador" id="is_colaborador_checkbox" class="h-4 w-4 rounded" <?= $form_is_colaborador ? 'checked' : '' ?> <?= $is_super_admin_form ? 'onclick="return false;"' : '' ?>>
+                    <label for="is_colaborador_checkbox" class="ml-2 text-petGray font-medium">É Colaborador?</label>
                 </div>
                 <?php if ($usuario_para_editar && !$is_super_admin_form): ?>
                 <div class="flex items-center">
@@ -239,8 +249,9 @@ require '../header.php';
                     <label for="filtro_tipo" class="block text-sm font-medium text-gray-700">Tipo de Usuário</label>
                     <select name="filtro_tipo" id="filtro_tipo" class="mt-1 w-full p-2 border rounded-md form-input bg-white">
                         <option value="" <?= $filtro_tipo === '' ? 'selected' : '' ?>>Todos os Tipos</option>
-                        <option value="1" <?= $filtro_tipo === '1' ? 'selected' : '' ?>>Admin</option>
-                        <option value="0" <?= $filtro_tipo === '0' ? 'selected' : '' ?>>Cliente</option>
+                        <option value="admin" <?= $filtro_tipo === 'admin' ? 'selected' : '' ?>>Admin</option>
+                        <option value="colaborador" <?= $filtro_tipo === 'colaborador' ? 'selected' : '' ?>>Colaborador</option>
+                        <option value="cliente" <?= $filtro_tipo === 'cliente' ? 'selected' : '' ?>>Cliente</option>
                     </select>
                 </div>
                 <div>
@@ -268,7 +279,15 @@ require '../header.php';
                         <tr class="border-b hover:bg-gray-50 <?= $usuario['is_active'] ? '' : 'opacity-50 bg-red-50' ?>">
                             <td class="p-2 font-medium"><?= htmlspecialchars($usuario['nome']) ?></td>
                             <td class="p-2"><?= htmlspecialchars($usuario['email']) ?></td>
-                            <td class="p-2"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $usuario['is_admin'] ? 'bg-petBlue text-white' : 'bg-gray-200 text-gray-700' ?>"><?= $usuario['is_admin'] ? 'Admin' : 'Cliente' ?></span></td>
+                            <td class="p-2"><span class="text-xs font-semibold px-2 py-1 rounded-full <?php 
+                                if ($usuario["is_admin"]) echo "bg-petBlue text-white";
+                                elseif ($usuario["is_colaborador"]) echo "bg-petOrange text-white";
+                                else echo "bg-gray-200 text-gray-700";
+                            ?>"><?php 
+                                if ($usuario["is_admin"]) echo "Admin";
+                                elseif ($usuario["is_colaborador"]) echo "Colaborador";
+                                else echo "Cliente";
+                            ?></span></td>
                             <td class="p-2"><span class="text-xs font-semibold px-2 py-1 rounded-full <?= $usuario['is_active'] ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800' ?>"><?= $usuario['is_active'] ? 'Ativo' : 'Inativo' ?></span></td>
                             <td class="p-2">
                                 <?php if ($usuario['email'] === $super_admin_email): ?>

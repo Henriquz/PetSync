@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = 'Preencha e-mail e senha.';
     } else {
         // PASSO 1: Busca o usuário APENAS pelo e-mail, independente do status.
-        $stmt = $mysqli->prepare('SELECT id, nome, email, senha, is_admin, is_active FROM usuarios WHERE email = ?');
+        $stmt = $mysqli->prepare('SELECT id, nome, email, senha, is_admin, is_colaborador, is_active FROM usuarios WHERE email = ?');
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $u = $stmt->get_result()->fetch_assoc();
@@ -28,9 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['usuario'] = [ 
                         'id' => $u['id'], 
                         'nome' => $u['nome'],
-                        'is_admin' => $u['is_admin']
+                        'is_admin' => $u['is_admin'],
+                        'is_colaborador' => $u['is_colaborador']
                     ];
-                    header('Location: index.php');
+                    
+                    // Redireciona baseado no tipo de usuário
+                    if ($u['is_admin']) {
+                        header('Location: admin/index.php');
+                    } elseif ($u['is_colaborador']) {
+                        header('Location: colaborador/index.php');
+                    } else {
+                        header('Location: index.php');
+                    }
                     exit;
                 } else {
                     // ERRO ESPECÍFICO: A conta existe e a senha está correta, mas está inativa.

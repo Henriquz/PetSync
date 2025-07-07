@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 04-Jul-2025 às 20:34
+-- Tempo de geração: 07-Jul-2025 às 16:28
 -- Versão do servidor: 10.4.27-MariaDB
 -- versão do PHP: 7.4.33
 
@@ -38,29 +38,30 @@ CREATE TABLE `agendamentos` (
   `observacoes_admin` text DEFAULT NULL,
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `tipo_entrega` varchar(50) NOT NULL,
-  `endereco_id` int(11) DEFAULT NULL
+  `endereco_id` int(11) DEFAULT NULL,
+  `colaborador_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Extraindo dados da tabela `agendamentos`
 --
 
-INSERT INTO `agendamentos` (`id`, `usuario_id`, `pet_id`, `servico`, `data_agendamento`, `status`, `observacoes`, `observacoes_admin`, `data_criacao`, `tipo_entrega`, `endereco_id`) VALUES
-(14, 1, 33, 'Banho e Tosa', '2025-07-03 10:00:00', 'Concluído', '0', '', '2025-07-02 19:04:55', 'loja', NULL),
-(15, 7, 34, 'Vacinação, Hospedagem', '2025-07-04 09:00:00', 'Cancelado', '0', NULL, '2025-07-02 19:14:58', 'delivery', 4),
-(16, 1, 33, 'Consulta Veterinária', '2025-07-23 14:00:00', 'Cancelado', '0', 'testando apenas', '2025-07-02 19:19:59', 'loja', NULL),
-(17, 1, 33, 'Hospedagem', '2025-07-03 10:00:00', 'Concluído', '0', 'feito', '2025-07-02 19:21:17', 'loja', NULL),
-(18, 3, 35, 'Consulta Veterinária', '2025-07-02 10:00:00', 'Cancelado', '0', 'n veio observação', '2025-07-02 19:25:56', 'delivery', 2),
-(19, 1, 33, 'Banho e Tosa', '2025-07-02 17:00:00', 'Concluído', 'esse é apenas teste', 'tudo certo', '2025-07-02 19:30:32', 'loja', NULL),
-(20, 1, 36, 'Banho e Tosa', '2025-07-03 10:00:00', 'Cancelado', 'tem alergia a pessoas', NULL, '2025-07-02 19:50:08', 'loja', NULL),
-(21, 1, 36, 'Banho e Tosa', '2025-07-10 10:00:00', 'Cancelado', '', 'teste', '2025-07-03 12:57:02', 'loja', NULL),
-(22, 1, 33, 'banho', '2025-07-07 17:15:00', 'Pendente', '', NULL, '2025-07-03 19:49:38', 'delivery', 5),
-(23, 1, 37, 'tosa', '2025-07-07 16:00:00', 'Cancelado', '', 'n quis fazer', '2025-07-03 19:50:24', 'delivery', 5),
-(24, 1, 36, 'tosa', '2025-07-07 09:15:00', 'Concluído', '', '', '2025-07-03 20:15:17', 'loja', NULL),
-(25, 1, 37, 'tosa', '2025-07-14 10:45:00', 'Pendente', '', NULL, '2025-07-03 20:32:32', 'delivery', 5),
-(26, 3, 35, 'tosa', '2025-07-07 09:30:00', 'Pendente', '', NULL, '2025-07-04 11:31:30', 'delivery', 6),
-(27, 1, 37, 'banho', '2025-07-07 10:00:00', 'Concluído', '', '', '2025-07-04 17:17:59', 'delivery', 5),
-(28, 1, 33, 'tosa', '2025-07-14 17:30:00', 'Pendente', '', NULL, '2025-07-04 17:21:24', 'loja', NULL);
+INSERT INTO `agendamentos` (`id`, `usuario_id`, `pet_id`, `servico`, `data_agendamento`, `status`, `observacoes`, `observacoes_admin`, `data_criacao`, `tipo_entrega`, `endereco_id`, `colaborador_id`) VALUES
+(14, 1, 33, 'Banho e Tosa', '2025-07-03 10:00:00', 'Concluído', '0', '', '2025-07-02 19:04:55', 'loja', NULL, NULL),
+(15, 7, 34, 'Vacinação, Hospedagem', '2025-07-04 09:00:00', 'Cancelado', '0', NULL, '2025-07-02 19:14:58', 'delivery', 4, NULL),
+(16, 1, 33, 'Consulta Veterinária', '2025-07-23 14:00:00', 'Cancelado', '0', 'testando apenas', '2025-07-02 19:19:59', 'loja', NULL, NULL),
+(17, 1, 33, 'Hospedagem', '2025-07-03 10:00:00', 'Concluído', '0', 'feito', '2025-07-02 19:21:17', 'loja', NULL, NULL),
+(18, 3, 35, 'Consulta Veterinária', '2025-07-02 10:00:00', 'Cancelado', '0', 'n veio observação', '2025-07-02 19:25:56', 'delivery', 2, NULL),
+(19, 1, 33, 'Banho e Tosa', '2025-07-02 17:00:00', 'Concluído', 'esse é apenas teste', 'tudo certo', '2025-07-02 19:30:32', 'loja', NULL, NULL),
+(20, 1, 36, 'Banho e Tosa', '2025-07-03 10:00:00', 'Cancelado', 'tem alergia a pessoas', NULL, '2025-07-02 19:50:08', 'loja', NULL, NULL),
+(21, 1, 36, 'Banho e Tosa', '2025-07-10 10:00:00', 'Cancelado', '', 'teste', '2025-07-03 12:57:02', 'loja', NULL, NULL),
+(22, 1, 33, 'banho', '2025-07-07 17:15:00', 'Pendente', '', NULL, '2025-07-03 19:49:38', 'delivery', 5, NULL),
+(23, 1, 37, 'tosa', '2025-07-07 16:00:00', 'Cancelado', '', 'n quis fazer', '2025-07-03 19:50:24', 'delivery', 5, NULL),
+(24, 1, 36, 'tosa', '2025-07-07 09:15:00', 'Concluído', '', '', '2025-07-03 20:15:17', 'loja', NULL, NULL),
+(25, 1, 37, 'tosa', '2025-07-14 10:45:00', 'Pendente', '', NULL, '2025-07-03 20:32:32', 'delivery', 5, NULL),
+(26, 3, 35, 'tosa', '2025-07-07 09:30:00', 'Pendente', '', NULL, '2025-07-04 11:31:30', 'delivery', 6, NULL),
+(27, 1, 37, 'banho', '2025-07-07 10:00:00', 'Concluído', '', '', '2025-07-04 17:17:59', 'delivery', 5, NULL),
+(28, 1, 33, 'tosa', '2025-07-14 17:30:00', 'Pendente', '', NULL, '2025-07-04 17:21:24', 'loja', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -259,7 +260,7 @@ INSERT INTO `notificacoes` (`id`, `usuario_id`, `mensagem`, `link`, `tipo`, `ima
 (2, 2, 'Novo agendamento de jullye para teco.', 'admin/gerencia_agendamentos.php', 'automatica', NULL, 0, 1, '2025-07-03 12:57:02'),
 (3, 5, 'Novo agendamento de jullye para teco.', 'admin/gerencia_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-03 12:57:02'),
 (4, 6, 'Novo agendamento de jullye para teco.', 'admin/gerencia_agendamentos.php', 'automatica', NULL, 0, 1, '2025-07-03 12:57:02'),
-(5, 8, 'Novo agendamento de jullye para teco.', 'admin/gerencia_agendamentos.php', 'automatica', NULL, 0, 1, '2025-07-03 12:57:02'),
+(5, 8, 'Novo agendamento de jullye para teco.', 'admin/gerencia_agendamentos.php', 'automatica', NULL, 1, 1, '2025-07-03 12:57:02'),
 (6, 1, 'O atendimento para teco foi iniciado!', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-03 12:57:36'),
 (7, 1, 'Atenção: o agendamento para teco foi cancelado. Motivo: teste', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-03 13:03:40'),
 (8, 1, 'esse é apenas um aviso de teste', '', 'alerta', 'uploads/notificacoes/notif_686682d80445e4.38444887.png', 1, 0, '2025-07-03 13:17:12'),
@@ -294,12 +295,12 @@ INSERT INTO `notificacoes` (`id`, `usuario_id`, `mensagem`, `link`, `tipo`, `ima
 (37, 2, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 0, 1, '2025-07-04 17:17:59'),
 (38, 5, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 1, 1, '2025-07-04 17:17:59'),
 (39, 6, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 0, 1, '2025-07-04 17:17:59'),
-(40, 8, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 0, 1, '2025-07-04 17:17:59'),
+(40, 8, 'Novo agendamento recebido de jullye para o pet tico e teco.', 'admin/gerencia_agendamentos.php#agendamento-27', 'automatica', NULL, 1, 1, '2025-07-04 17:17:59'),
 (41, 1, 'O atendimento para tico e teco foi iniciado!', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:18:22'),
 (42, 2, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 0, 1, '2025-07-04 17:21:24'),
 (43, 5, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 1, 1, '2025-07-04 17:21:24'),
 (44, 6, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 0, 1, '2025-07-04 17:21:24'),
-(45, 8, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 0, 1, '2025-07-04 17:21:24'),
+(45, 8, 'Novo agendamento recebido de jullye para o pet tico.', 'admin/gerencia_agendamentos.php#agendamento-28', 'automatica', NULL, 1, 1, '2025-07-04 17:21:24'),
 (46, 1, 'O atendimento para teco foi iniciado!', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:31:43'),
 (47, 1, 'Oba! O atendimento para teco foi concluído e seu pet já pode ser retirado!', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:32:28'),
 (48, 1, 'Atenção: o agendamento para tico e teco foi cancelado. Motivo: n quis fazer', 'meus_agendamentos.php', 'automatica', NULL, 1, 0, '2025-07-04 17:34:05'),
@@ -307,11 +308,11 @@ INSERT INTO `notificacoes` (`id`, `usuario_id`, `mensagem`, `link`, `tipo`, `ima
 (50, 2, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 0, 1, '2025-07-04 17:46:44'),
 (51, 5, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 1, 1, '2025-07-04 17:46:44'),
 (52, 6, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 0, 1, '2025-07-04 17:46:44'),
-(53, 8, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 0, 1, '2025-07-04 17:46:44'),
+(53, 8, 'Nova venda realizada por jullye (Pedido #3).', 'admin/gerenciar_pedidos.php#pedido-3', 'automatica', NULL, 1, 1, '2025-07-04 17:46:44'),
 (54, 2, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 0, 1, '2025-07-04 17:47:21'),
 (55, 5, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 1, 1, '2025-07-04 17:47:21'),
 (56, 6, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 0, 1, '2025-07-04 17:47:21'),
-(57, 8, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 0, 1, '2025-07-04 17:47:21');
+(57, 8, 'Nova venda realizada por jullye (Pedido #4).', 'admin/gerenciar_pedidos.php#pedido-4', 'automatica', NULL, 1, 1, '2025-07-04 17:47:21');
 
 -- --------------------------------------------------------
 
@@ -460,6 +461,7 @@ CREATE TABLE `usuarios` (
   `senha` varchar(255) NOT NULL,
   `data_cadastro` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_admin` tinyint(1) NOT NULL DEFAULT 0,
+  `is_colaborador` tinyint(1) NOT NULL DEFAULT 0,
   `is_active` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -467,18 +469,18 @@ CREATE TABLE `usuarios` (
 -- Extraindo dados da tabela `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nome`, `email`, `telefone`, `senha`, `data_cadastro`, `is_admin`, `is_active`) VALUES
-(1, 'jullye', 'jullye@jullye.com', '33999472125', '$2y$10$90g8fbCQ4t79tKKdxZ2f.u968ViDvo302dyvVTnRIbOjqeJCMtxj6', '2025-06-26 13:55:23', 0, 1),
-(2, 'jullye@jullye.com', 'teste@teste.com', '99999999999', '$2y$10$.eaFQhEyzLR5dfQG8PZYNemvDl3CMS2hXo5Vjf5OH7gHR4jJj4YaO', '2025-06-26 14:00:03', 1, 1),
-(3, 'Henrique Jullye', '123@gmail.com', '', '$2y$10$/My2AQh8G9wVFajNqZVIqOCTYDK1Qc3Uc1pJg.DWQh1hgekIr30Fq', '2025-06-26 14:07:50', 0, 1),
-(5, 'admin', 'admin@admin.com', '(33) 33333-3333', '$2y$10$8ndbxvY8jEIX9W60N2gPeemjdgZVBP.4AJyWFP7zJYw6reewubvGe', '2025-06-26 17:55:08', 1, 1),
-(6, 'teste', 'teste@admin.com', NULL, '$2y$10$ZVZS7YJX4oFm8FzgL9N3PO86stLS1gOgCAc/F/CO4.MwiFEZQlvXS', '2025-06-26 18:14:10', 1, 1),
-(7, 'miguel araujo', 'miguel@mighuel.com', '339999999', '$2y$10$y0hXAEdagO.HrFCwWMlyRuQOSm/rb3MhbHoQXWDQh7x/hPupWIjci', '2025-06-26 22:07:00', 0, 1),
-(8, 'miguel araujo', 'miguel@araujo.com', NULL, '$2y$10$ZadXVKxe6Ql/yC8AJ1tt6uJtNobosmFdvNuDGxFfGAXtZvS26Cwpm', '2025-06-26 22:22:28', 1, 1),
-(11, 'chico le', 'chicole@gmail.com', '', '$2y$10$wM.rm/qsKGA1TTwwUIdw1e3pWCiBsN1RdmjvXhyisdFK6BM9RsvWe', '2025-06-30 18:21:35', 0, 1),
-(13, 'teste novo cadastro', 'teste@kelly.com', '33999465022', '$2y$10$bX1Wupiyv2pc5pVfVt1Gpe.QyCu1mZvD5hJWnS3JR495YQJFaNufa', '2025-07-01 12:55:13', 0, 1),
-(14, 'teste endereço', 'testeendereco@gmail.com', '', '$2y$10$2EZJ80avPnnVvDu/KALKA.oUChUa5hgfJrcYqQSvnyN.Aq28RvSeO', '2025-07-01 13:05:05', 0, 1),
-(15, 'ola teste', 'teste@ola.com', '(33) 3 3333-3333', '$2y$10$t5vzIXQkaKB22QvXHq2EO.1IslJqD2Uh5NyRfbY5cnZas9p/PkMxG', '2025-07-01 13:53:17', 0, 1);
+INSERT INTO `usuarios` (`id`, `nome`, `email`, `telefone`, `senha`, `data_cadastro`, `is_admin`, `is_colaborador`, `is_active`) VALUES
+(1, 'jullye', 'jullye@jullye.com', '33999472125', '$2y$10$90g8fbCQ4t79tKKdxZ2f.u968ViDvo302dyvVTnRIbOjqeJCMtxj6', '2025-06-26 13:55:23', 0, 0, 1),
+(2, 'jullye@jullye.com', 'teste@teste.com', '99999999999', '$2y$10$.eaFQhEyzLR5dfQG8PZYNemvDl3CMS2hXo5Vjf5OH7gHR4jJj4YaO', '2025-06-26 14:00:03', 1, 0, 1),
+(3, 'Henrique Jullye', '123@gmail.com', '', '$2y$10$/My2AQh8G9wVFajNqZVIqOCTYDK1Qc3Uc1pJg.DWQh1hgekIr30Fq', '2025-06-26 14:07:50', 0, 0, 1),
+(5, 'admin', 'admin@admin.com', '(33) 33333-3333', '$2y$10$8ndbxvY8jEIX9W60N2gPeemjdgZVBP.4AJyWFP7zJYw6reewubvGe', '2025-06-26 17:55:08', 1, 0, 1),
+(6, 'teste', 'teste@admin.com', NULL, '$2y$10$ZVZS7YJX4oFm8FzgL9N3PO86stLS1gOgCAc/F/CO4.MwiFEZQlvXS', '2025-06-26 18:14:10', 1, 0, 1),
+(7, 'miguel araujo', 'miguel@mighuel.com', '339999999', '$2y$10$y0hXAEdagO.HrFCwWMlyRuQOSm/rb3MhbHoQXWDQh7x/hPupWIjci', '2025-06-26 22:07:00', 0, 0, 1),
+(8, 'miguel araujo', 'miguel@araujo.com', NULL, '$2y$10$ZadXVKxe6Ql/yC8AJ1tt6uJtNobosmFdvNuDGxFfGAXtZvS26Cwpm', '2025-06-26 22:22:28', 0, 1, 1),
+(11, 'chico le', 'chicole@gmail.com', '', '$2y$10$wM.rm/qsKGA1TTwwUIdw1e3pWCiBsN1RdmjvXhyisdFK6BM9RsvWe', '2025-06-30 18:21:35', 0, 0, 1),
+(13, 'teste novo cadastro', 'teste@kelly.com', '33999465022', '$2y$10$bX1Wupiyv2pc5pVfVt1Gpe.QyCu1mZvD5hJWnS3JR495YQJFaNufa', '2025-07-01 12:55:13', 0, 0, 1),
+(14, 'teste endereço', 'testeendereco@gmail.com', '', '$2y$10$2EZJ80avPnnVvDu/KALKA.oUChUa5hgfJrcYqQSvnyN.Aq28RvSeO', '2025-07-01 13:05:05', 0, 0, 1),
+(15, 'ola teste', 'teste@ola.com', '(33) 3 3333-3333', '$2y$10$RuYSkwPJrcbPcPAelRmP4OcM1QzUlsTJaZK0GEHpxY6iaXTYF.8oC', '2025-07-01 13:53:17', 0, 1, 1);
 
 --
 -- Índices para tabelas despejadas
@@ -490,7 +492,8 @@ INSERT INTO `usuarios` (`id`, `nome`, `email`, `telefone`, `senha`, `data_cadast
 ALTER TABLE `agendamentos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`),
-  ADD KEY `pet_id` (`pet_id`);
+  ADD KEY `pet_id` (`pet_id`),
+  ADD KEY `agendamentos_colaborador_fk` (`colaborador_id`);
 
 --
 -- Índices para tabela `configuracoes`
@@ -665,6 +668,7 @@ ALTER TABLE `usuarios`
 -- Limitadores para a tabela `agendamentos`
 --
 ALTER TABLE `agendamentos`
+  ADD CONSTRAINT `agendamentos_colaborador_fk` FOREIGN KEY (`colaborador_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `agendamentos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `agendamentos_ibfk_2` FOREIGN KEY (`pet_id`) REFERENCES `pets` (`id`) ON DELETE CASCADE;
 
