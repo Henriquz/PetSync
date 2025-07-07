@@ -56,6 +56,8 @@ require 'header.php';
                     $link_agendamento = 'agendamento.php';
                     if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario']['is_admin'])) {
                         $link_agendamento = 'agendamento_admin.php';
+                    } elseif (!empty($_SESSION['usuario']['is_colaborador'])) {
+                        $link_agendamento = 'colaborador/agendamento.php';
                     }
                     ?>
                     <a href="<?= $link_agendamento ?>" class="bg-petBlue hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg text-center transition duration-300">Agendar Visita</a>

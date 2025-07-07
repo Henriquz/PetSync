@@ -1,22 +1,16 @@
 <?php
 // ======================================================================
-// PetSync - Página de Agendamento v13.0 (Admin Dinâmico Completo)
+// PetSync - Página de Agendamento Colaborador (Idêntica ao Admin)
 // ======================================================================
 
 // 1. CONFIGURAÇÃO E SEGURANÇA
 // ----------------------------------------------------------------------
-include 'config.php';
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-
-if (!isset($_SESSION['usuario']) || empty($_SESSION['usuario']['is_admin'])) {
-    session_destroy();
-    header('Location: login.php');
-    exit;
-}
+include '../config.php';
+include 'check_colaborador.php';
 
 // 2. DEFINIÇÕES INICIAIS
 // ----------------------------------------------------------------------
-$page_title = 'Novo Agendamento (Admin) - PetSync';
+$page_title = 'Novo Agendamento (Colaborador) - PetSync';
 $ok = '';
 $erro = '';
 $form_data_json = 'null';
@@ -33,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_agendamento
     $tipo_entrega = $_POST['tipo_entrega'] ?? null;
     $endereco_id = ($tipo_entrega === 'delivery') ? ($_POST['endereco_id'] ?? null) : null;
     $error_step = 0;
+    $colaborador_id = $_SESSION['usuario']['id']; // Atribui o agendamento ao colaborador logado
 
     if ($cliente_id === 'novo_cliente') {
         $novo_nome = trim($_POST['novo_cliente_nome']);
@@ -49,9 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_agendamento
             $error_step = 0;
         } else {
             $is_admin = 0;
+            $is_colaborador = 0; // Novo cliente não é admin nem colaborador por padrão
             $senha_padrao = password_hash('petsynccliente', PASSWORD_DEFAULT);
-            $stmt_user = $mysqli->prepare("INSERT INTO usuarios (nome, email, telefone, senha, is_admin) VALUES (?, ?, ?, ?, ?)");
-            $stmt_user->bind_param("ssssi", $novo_nome, $novo_email, $_POST['novo_cliente_telefone'], $senha_padrao, $is_admin);
+            $stmt_user = $mysqli->prepare("INSERT INTO usuarios (nome, email, telefone, senha, is_admin, is_colaborador) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt_user->bind_param("ssssii", $novo_nome, $novo_email, $_POST['novo_cliente_telefone'], $senha_padrao, $is_admin, $is_colaborador);
             if ($stmt_user->execute()) {
                 $cliente_id = $mysqli->insert_id;
             } else {
@@ -107,14 +103,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_agendamento
     }
 
     if (empty($erro)) {
-        $stmt = $mysqli->prepare("INSERT INTO agendamentos (usuario_id, pet_id, servico, data_agendamento, observacoes, tipo_entrega, endereco_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iissssi", $cliente_id, $pet_id, $servicos, $data_agendamento_str, $observacoes, $tipo_entrega, $endereco_id);
+        // Inserir agendamento com colaborador atribuído
+        $stmt = $mysqli->prepare("INSERT INTO agendamentos (usuario_id, pet_id, servico, data_agendamento, observacoes, tipo_entrega, endereco_id, colaborador_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Confirmado')");
+        $stmt->bind_param("iissssiis", $cliente_id, $pet_id, $servicos, $data_agendamento_str, $observacoes, $tipo_entrega, $endereco_id, $colaborador_id, 'Confirmado');
+        
         if ($stmt->execute()) {
-            $_SESSION['ok_msg'] = "Agendamento realizado com sucesso!";
+            $agendamento_id = $mysqli->insert_id;
+            
+            // Criar notificação para o cliente
+            $stmt_cliente = $mysqli->prepare("SELECT nome FROM usuarios WHERE id = ?");
+            $stmt_cliente->bind_param("i", $cliente_id);
+            $stmt_cliente->execute();
+            $cliente_nome = $stmt_cliente->get_result()->fetch_assoc()['nome'];
+            $stmt_cliente->close();
+            
+            $stmt_pet_nome = $mysqli->prepare("SELECT nome FROM pets WHERE id = ?");
+            $stmt_pet_nome->bind_param("i", $pet_id);
+            $stmt_pet_nome->execute();
+            $pet_nome = $stmt_pet_nome->get_result()->fetch_assoc()['nome'];
+            $stmt_pet_nome->close();
+            
+            $mensagem_cliente = "Seu agendamento para " . htmlspecialchars($pet_nome) . " foi confirmado para " . date('d/m/Y \à\s H:i', strtotime($data_agendamento_str)) . ".";
+            criar_notificacao($mysqli, $cliente_id, $mensagem_cliente, 'meus_agendamentos.php', 'automatica', null);
+            
+            $_SESSION['ok_msg'] = "Agendamento criado com sucesso! O cliente foi notificado.";
+            
+            // Limpar dados do formulário
+            $form_data_json = 'null';
         } else {
-            $_SESSION['erro_msg'] = "Ocorreu um erro ao salvar o agendamento: " . $stmt->error;
+            $_SESSION['erro_msg'] = "Erro ao criar o agendamento: " . $stmt->error;
             $_SESSION['form_data'] = $_POST;
-            $_SESSION['error_step'] = 5;
+            $_SESSION['error_step'] = 2;
         }
         $stmt->close();
     } else {
@@ -123,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_agendamento
         $_SESSION['error_step'] = $error_step;
     }
 
-    header("Location: agendamento_admin.php");
+    header("Location: agendamento.php"); // Redireciona para a própria página de agendamento do colaborador
     exit;
 }
 
@@ -135,7 +154,7 @@ if (isset($_SESSION['form_data'])) { $form_data_json = json_encode($_SESSION['fo
 if (isset($_SESSION['error_step'])) { $error_step_json = json_encode($_SESSION['error_step']); unset($_SESSION['error_step']); }
 
 // --- MODIFICADO: BUSCA DE DADOS DINÂMICOS ---
-$clientes = $mysqli->query("SELECT id, nome, email FROM usuarios WHERE is_admin = 0 ORDER BY nome ASC")->fetch_all(MYSQLI_ASSOC);
+$clientes = $mysqli->query("SELECT id, nome, email FROM usuarios WHERE is_admin = 0 AND is_colaborador = 0 ORDER BY nome ASC")->fetch_all(MYSQLI_ASSOC);
 
 $query_servicos = "SELECT nome, duracao_minutos FROM servicos WHERE ativo = 1 ORDER BY nome ASC";
 $result_servicos = $mysqli->query($query_servicos);
@@ -189,7 +208,7 @@ $dias_trabalho = $horarios_trabalho_result ? array_column($horarios_trabalho_res
         <main id="booking-form-container" class="py-12">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
-                    <div class="text-center mb-12"><h1 class="text-4xl md:text-5xl font-bold text-petGray mb-4">Agendamento <span class="text-petOrange">Administrativo</span></h1></div>
+                    <div class="text-center mb-12"><h1 class="text-4xl md:text-5xl font-bold text-petGray mb-4">Agendamento <span class="text-petOrange">Colaborador</span></h1></div>
                     <div class="flex items-center justify-between mb-12 space-x-2 text-xs sm:text-sm">
                         <?php $steps_texts = ['Cliente', 'Pet', 'Serviços', 'Entrega', 'Horário', 'Confirmar']; ?>
                         <?php foreach($steps_texts as $i => $text): ?>
@@ -198,7 +217,7 @@ $dias_trabalho = $horarios_trabalho_result ? array_column($horarios_trabalho_res
                         <?php endforeach; ?>
                     </div>
 
-                    <form id="booking-form" action="agendamento_admin.php" method="POST" novalidate>
+                    <form id="booking-form" action="agendamento.php" method="POST" novalidate>
                         <input type="hidden" name="data_agendamento" id="data_agendamento_hidden">
                         
                         <div id="steps-container">
@@ -363,7 +382,7 @@ $dias_trabalho = $horarios_trabalho_result ? array_column($horarios_trabalho_res
         </main>
     <?php else: ?>
         <main class="py-12"><div class="container mx-auto px-4 py-16 text-center"><div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg"><div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"><svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div><h2 class="text-3xl font-bold text-petGray mb-4">Agendamento Realizado!</h2><p class="text-petGray text-lg mb-6"><?= htmlspecialchars($ok) ?></p><p class="text-gray-500 mb-8">Redirecionando para a página de agendamento em 5 segundos...</p></div></div></main>
-        <script> setTimeout(() => { window.location.href = 'agendamento_admin.php'; }, 5000); </script>
+        <script> setTimeout(() => { window.location.href = 'agendamento.php'; }, 5000); </script>
     <?php endif; ?>
     <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -906,3 +925,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
