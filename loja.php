@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 
 // Garante que apenas clientes logados (não admins) acessem a loja.
 // Se não estiver logado como cliente, redireciona para a página de login.
-if (!isset($_SESSION['usuario']) || !empty($_SESSION['usuario']['is_admin'])) {
+if (!isset($_SESSION['usuario'])) {
     header('Location: login.php?redirect_url=loja.php'); // Redireciona para o login
     exit;
 }
