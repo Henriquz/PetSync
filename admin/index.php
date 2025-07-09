@@ -33,7 +33,8 @@ $loja_ativa = isset($configuracoes['exibir_secao_produtos']) && $configuracoes['
                 <div id="tooltip-content" class="hidden absolute left-0 top-full mt-2 w-64 bg-gray-800 text-white text-sm rounded-lg shadow-lg p-3 z-20 transition-opacity duration-300">
                     <p class="font-bold mb-2">Legenda de Cores:</p>
                     <div class="flex items-center mb-1"><span class="w-4 h-4 rounded-full bg-petBlue mr-2"></span><span>Azul: Gestão Essencial</span></div>
-                    <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-petOrange mr-2"></span><span>Laranja: Ferramentas e Conteúdo</span></div>
+                    <div class="flex items-center mb-1"><span class="w-4 h-4 rounded-full bg-petOrange mr-2"></span><span>Laranja: Ferramentas e Conteúdo</span></div>
+                    <div class="flex items-center"><span class="w-4 h-4 rounded-full bg-green-500 mr-2"></span><span>Verde: Análise e Dados</span></div>
                 </div>
             </div>
         </div>
@@ -51,6 +52,20 @@ $loja_ativa = isset($configuracoes['exibir_secao_produtos']) && $configuracoes['
                 </div>
             </div>
 
+            <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300 h-full">
+                <div class="w-16 h-16 bg-orange-100 text-petOrange rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold text-petOrange mb-2">Configurar Agendamento</h2>
+                <p class="text-petGray text-sm flex-grow">Ajuste tipos de serviço, horários e dias disponíveis.</p>
+                <div class="mt-auto pt-4">
+                    <a href="config_agendamento.php" class="bg-petOrange hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Ajustar</a>
+                </div>
+            </div>
+            
             <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300 h-full <?= !$loja_ativa ? 'grayscale opacity-60' : '' ?>">
                 <div class="w-16 h-16 <?= !$loja_ativa ? 'bg-gray-200 text-gray-500' : 'bg-blue-100 text-petBlue' ?> rounded-full flex items-center justify-center mb-4 mx-auto">
                     <?php if ($loja_ativa): ?>
@@ -69,20 +84,20 @@ $loja_ativa = isset($configuracoes['exibir_secao_produtos']) && $configuracoes['
                     <?php endif; ?>
                 </div>
             </div>
-            
+
             <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300 h-full <?= !$loja_ativa ? 'grayscale opacity-60' : '' ?>">
-                <div class="w-16 h-16 <?= !$loja_ativa ? 'bg-gray-200 text-gray-500' : 'bg-blue-100 text-petBlue' ?> rounded-full flex items-center justify-center mb-4 mx-auto">
+                <div class="w-16 h-16 <?= !$loja_ativa ? 'bg-gray-200 text-gray-500' : 'bg-orange-100 text-petOrange' ?> rounded-full flex items-center justify-center mb-4 mx-auto">
                      <?php if ($loja_ativa): ?>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                     <?php else: ?>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
                     <?php endif; ?>
                 </div>
-                <h2 class="text-2xl font-semibold <?= !$loja_ativa ? 'text-gray-500' : 'text-petBlue' ?> mb-2">Gerenciar Produtos</h2>
+                <h2 class="text-2xl font-semibold <?= !$loja_ativa ? 'text-gray-500' : 'text-petOrange' ?> mb-2">Configurar Produtos</h2>
                 <p class="text-petGray text-sm flex-grow">Adicione, edite ou remova produtos da sua loja.</p>
                 <div class="mt-auto pt-4">
                     <?php if ($loja_ativa): ?>
-                        <a href="produtos.php" class="bg-petBlue hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Ir para Produtos</a>
+                        <a href="produtos.php" class="bg-petOrange hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Configurar</a>
                     <?php else: ?>
                         <button class="ativar-loja-btn bg-gray-400 cursor-pointer text-white font-bold py-2 px-6 rounded-lg">Ativar Loja</button>
                     <?php endif; ?>
@@ -118,11 +133,12 @@ $loja_ativa = isset($configuracoes['exibir_secao_produtos']) && $configuracoes['
                 <p class="text-petGray text-sm flex-grow">Defina serviços, horários de atendimento e outras opções.</p>
                 <div class="mt-auto pt-4"><a href="configuracoes.php" class="bg-petOrange hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Configurar</a></div>
             </div>
+
             <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col text-center hover:shadow-xl transition-shadow duration-300 h-full">
-                <div class="w-16 h-16 bg-orange-100 text-petOrange rounded-full flex items-center justify-center mb-4 mx-auto"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg></div>
-                <h2 class="text-2xl font-semibold text-petOrange mb-2">Relatórios</h2>
+                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 mx-auto"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg></div>
+                <h2 class="text-2xl font-semibold text-green-600 mb-2">Relatórios</h2>
                 <p class="text-petGray text-sm flex-grow">Visualize dados e métricas importantes do seu sistema.</p>
-                <div class="mt-auto pt-4"><a href="relatorios.php" class="bg-petOrange hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Ver Relatórios</a></div>
+                <div class="mt-auto pt-4"><a href="relatorios.php" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition-colors">Ver Relatórios</a></div>
             </div>
         </div>
     </div>
