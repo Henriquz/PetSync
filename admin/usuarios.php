@@ -11,21 +11,23 @@ if (isset($_GET['toggle_status_id'])) {
     $novo_status = intval($_GET['status']);
 
     if ($id_para_alterar == $_SESSION['usuario']['id']) {
-        $erro = "Você não pode alterar o status da sua própria conta!";
+        $_SESSION['erro_msg'] = "Você não pode alterar o status da sua própria conta!";
     } else {
         $stmt_check = $mysqli->prepare("SELECT email FROM usuarios WHERE id = ?");
         $stmt_check->bind_param('i', $id_para_alterar);
         $stmt_check->execute();
         $user_to_toggle = $stmt_check->get_result()->fetch_assoc();
         if ($user_to_toggle && $user_to_toggle['email'] === $super_admin_email) {
-            $erro = "Não é permitido inativar o administrador principal.";
+            $_SESSION['erro_msg'] = "Não é permitido inativar o administrador principal.";
         } else {
             $stmt = $mysqli->prepare("UPDATE usuarios SET is_active = ? WHERE id = ?");
             $stmt->bind_param('ii', $novo_status, $id_para_alterar);
             $stmt->execute();
-            $ok = "Status do usuário alterado com sucesso!";
+            $_SESSION['ok_msg'] = "Status do usuário alterado com sucesso!";
         }
     }
+    header("Location: usuarios.php");
+    exit;
 }
 
 // --- LÓGICA PARA ADICIONAR OU EDITAR ---
@@ -75,7 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if(!$stmt->execute()) { 
                 $erro = "Erro: " . $stmt->error; 
             } else {
-                $redirect_url = "usuarios.php?ok_msg=" . urlencode($ok);
+                $_SESSION['ok_msg'] = $ok;
+                $redirect_url = "usuarios.php?";
                 if (isset($_GET['busca'])) $redirect_url .= "&busca=" . urlencode($_GET['busca']);
                 if (isset($_GET['filtro_tipo'])) $redirect_url .= "&filtro_tipo=" . urlencode($_GET['filtro_tipo']);
                 if (isset($_GET['filtro_status'])) $redirect_url .= "&filtro_status=" . urlencode($_GET['filtro_status']);
@@ -84,9 +87,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+    // Se houver erro no POST, ele será exibido no formulário abaixo
+    $_SESSION['erro_msg'] = $erro;
 }
 
+
 // --- LÓGICA DE EXIBIÇÃO ---
+if (isset($_SESSION['ok_msg'])) { $ok = $_SESSION['ok_msg']; unset($_SESSION['ok_msg']); }
+if (isset($_SESSION['erro_msg'])) { $erro = $_SESSION['erro_msg']; unset($_SESSION['erro_msg']); }
+
 $acao = $_GET['acao'] ?? null;
 $usuario_para_editar = null;
 $exibir_formulario = ($acao === 'adicionar' || $acao === 'editar');
@@ -99,8 +108,6 @@ if ($acao === 'editar' && isset($_GET['id'])) {
     $usuario_para_editar = $stmt->get_result()->fetch_assoc();
     if (!$usuario_para_editar) $exibir_formulario = false;
 }
-
-if(isset($_GET['ok_msg'])) $ok = $_GET['ok_msg'];
 
 // --- LÓGICA DE PAGINAÇÃO E FILTROS MÚLTIPLOS ---
 $busca = trim($_GET['busca'] ?? '');
@@ -168,8 +175,16 @@ $usuarios = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 require '../header.php';
 ?>
 
-<?php if ($ok): ?><div id="toast-notification" class="bg-green-500 show"><?= htmlspecialchars($ok) ?></div><?php endif; ?>
-<?php if ($erro): ?><div id="toast-notification" class="bg-red-500 show"><?= htmlspecialchars($erro) ?></div><?php endif; ?>
+<style>
+    #toast-notification-container > div { animation: fadeInOut 5s forwards; }
+    @keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translateY(-20px); } 10%, 90% { opacity: 1; transform: translateY(0); } }
+    #confirmation-modal { transition: opacity 0.3s ease; }
+</style>
+
+<div id="toast-notification-container" class="fixed top-24 right-5 z-[100] w-full max-w-sm">
+    <?php if ($ok): ?><div class="bg-green-500 text-white p-4 rounded-lg shadow-lg mb-2"><?= htmlspecialchars($ok) ?></div><?php endif; ?>
+    <?php if ($erro): ?><div class="bg-red-500 text-white p-4 rounded-lg shadow-lg mb-2"><?= htmlspecialchars($erro) ?></div><?php endif; ?>
+</div>
 
 <div class="container mx-auto px-4 py-12">
     <div class="flex flex-col md:flex-row justify-between items-center mb-8">
@@ -325,9 +340,6 @@ require '../header.php';
     </div>
 </div>
 
-<style>
-    #confirmation-modal { transition: opacity 0.3s ease; }
-</style>
 <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-lg shadow-2xl p-6 md:p-8 max-w-md w-full">
         <h3 id="modal-title" class="text-2xl font-bold text-petGray mb-4">Confirmação Necessária</h3>
@@ -341,9 +353,8 @@ require '../header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const toast = document.getElementById('toast-notification');
-    if (toast) { setTimeout(() => { toast.classList.remove('show'); }, 5000); }
-
+    // MODIFICADO: Removido o script do toast antigo
+    
     const toggleAddFormBtn = document.querySelector('a[href="usuarios.php?acao=adicionar"]');
     const formContainer = document.getElementById('form-container');
     const cancelFormLink = document.querySelector('#form-container a[href="usuarios.php"]');

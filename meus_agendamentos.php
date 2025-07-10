@@ -1,6 +1,6 @@
 <?php
 // ======================================================================
-// PetSync - Página "Meus Agendamentos" v4.0 (Design Renovado)
+// PetSync - Página "Meus Agendamentos" v5.1 (Design Sutil)
 // ======================================================================
 
 // 1. CONFIGURAÇÃO E SEGURANÇA
@@ -126,20 +126,222 @@ function formatarData($data) {
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { petOrange: '#FF7A00', petBlue: '#0078C8', petGray: '#4A5568', petLightGray: '#f8fafc' } } } }
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        petOrange: '#FF7A00', 
+                        petBlue: '#0078C8', 
+                        petGray: '#4A5568', 
+                        petLightGray: '#f8fafc',
+                        petPurple: '#8B5CF6',
+                        petGreen: '#10B981',
+                        petRed: '#EF4444',
+                        petYellow: '#F59E0B'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-gentle': 'bounceGentle 0.6s ease-in-out',
+                        'pulse-soft': 'pulseSoft 2s infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        },
+                        pulseSoft: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.8' }
+                        }
+                    }
+                } 
+            } 
+        }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
-        #toast-notification-container > div { animation: fadeInOut 5s forwards; }
-        @keyframes fadeInOut { 0%, 100% { opacity: 0; transform: translateY(-20px); } 10%, 90% { opacity: 1; transform: translateY(0); } }
+        html, body { height: 100%; margin: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f2f5; /* Cor de fundo mais neutra */
+            display: flex;
+            flex-direction: column;
+        }
+        main { flex: 1; }
         
-        .filter-btn.active { background-color: #0078C8; color: white; font-weight: 600; border-color: #0078C8; }
-        .page-item.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-        .page-item.active { border-color: #0078C8; background-color: #0078C8; color: white; }
-        .details-arrow { transition: transform 0.3s ease; }
-        .details-toggle-btn.open .details-arrow { transform: rotate(180deg); }
-        .modal-overlay { transition: opacity 0.3s ease; }
+        #toast-notification-container > div { 
+            animation: fadeInOut 5s forwards; 
+        }
+        
+        @keyframes fadeInOut { 
+            0%, 100% { opacity: 0; transform: translateY(-20px); } 
+            10%, 90% { opacity: 1; transform: translateY(0); } 
+        }
+        
+        /* Filtros Ajustados */
+        .filter-container {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-btn {
+            position: relative;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+        
+        .filter-btn:hover {
+            background-color: #f0f2f5;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+        
+        .filter-btn.active {
+            background-color: #0078C8; /* Cor original do botão ativo */
+            color: white;
+            font-weight: 600;
+            border-color: #0078C8;
+            transform: none; /* Remove a transformação extra */
+            box-shadow: none; /* Remove a sombra extra */
+        }
+        
+        .filter-btn.all.active { background-color: #667eea; border-color: #667eea; }
+        .filter-btn.pendente.active { background-color: #f59e0b; border-color: #f59e0b; }
+        .filter-btn.confirmado.active { background-color: #3b82f6; border-color: #3b82f6; }
+        .filter-btn.andamento.active { background-color: #f97316; border-color: #f97316; }
+        .filter-btn.concluido.active { background-color: #10b981; border-color: #10b981; }
+        .filter-btn.cancelado.active { background-color: #ef4444; border-color: #ef4444; }
+        
+        .filter-btn:not(.active) {
+            background-color: #f8fafc;
+            color: #64748b;
+            border-color: #e2e8f0;
+        }
+        
+        /* Cards Ajustados */
+        .appointment-card {
+            transition: all 0.2s ease-in-out;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            min-height: auto; /* Remover altura mínima fixa */
+            height: 100%; /* Garantir que cards na mesma linha tenham a mesma altura */
+        }
+        
+        .appointment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: #cbd5e1;
+        }
+        
+        .appointment-card.has-actions {
+            border-left: 4px solid #0078C8; /* Cor mais neutra */
+        }
+        
+        .appointment-card.has-actions:hover {
+            border-left-color: #0056b3;
+        }
+        
+        /* Status badges ajustados */
+        .status-badge {
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            border: 1px solid;
+        }
+        
+        /* Paginação Ajustada */
+        .pagination-container {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .page-item {
+            transition: all 0.2s ease-in-out;
+            border-radius: 0.375rem;
+            border: 1px solid transparent;
+        }
+        
+        .page-item:hover {
+            background-color: #f0f2f5;
+            border-color: #cbd5e1;
+        }
+        
+        .page-item.active {
+            background-color: #0078C8;
+            border-color: #0078C8;
+            color: white;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .page-item:not(.active):not(.disabled):hover {
+            background-color: #e2e8f0;
+            border-color: #0078C8;
+        }
+        
+        .page-item.disabled { 
+            opacity: 0.6; 
+            cursor: not-allowed; 
+            pointer-events: none; 
+        }
+        
+        /* Animações de entrada mais sutis */
+        .animate-on-load {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        /* Detalhes expansíveis */
+        .details-arrow { 
+            transition: transform 0.2s ease-in-out; 
+        }
+        
+        .details-toggle-btn.open .details-arrow { 
+            transform: rotate(180deg); 
+        }
+        
+        .details-toggle-btn {
+            transition: all 0.2s ease;
+            border-radius: 50%;
+        }
+        
+        .details-toggle-btn:hover {
+            background-color: #f0f2f5;
+            transform: none;
+        }
+        
+        /* Modal ajustado */
+        .modal-overlay { 
+            transition: opacity 0.2s ease;
+            backdrop-filter: blur(2px); /* Menos blur */
+        }
+        
+        .modal-content {
+            animation: fadeIn 0.2s ease-out; /* Animação mais rápida */
+        }
+        
+        /* Botões de ação ajustados */
+        .cancel-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .cancel-btn:hover {
+            background-color: rgba(239, 68, 68, 0.05); /* Menos intenso */
+            transform: none;
+        }
     </style>
 </head>
 <body class="bg-petLightGray">
@@ -151,45 +353,78 @@ function formatarData($data) {
     </div>
 
     <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Header Section -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold text-petGray">Meus Agendamentos</h1>
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-petGray">
+                    Meus Agendamentos
+                </h1>
+                <p class="text-gray-600 mt-2 text-lg">Gerencie todos os seus agendamentos em um só lugar</p>
+            </div>
             <a href="agendamento.php" class="mt-4 md:mt-0 inline-flex items-center px-5 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-petBlue hover:bg-blue-800 transition">
-                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
                 Fazer Novo Agendamento
             </a>
         </div>
 
-        <div class="bg-white p-4 rounded-lg shadow-sm mb-8">
+        <!-- Filtros Ajustados -->
+        <div class="filter-container rounded-lg p-4 mb-8">
             <div class="flex flex-wrap items-center gap-2">
                 <span class="text-sm font-semibold text-petGray mr-2">Filtrar por:</span>
-                <a href="?status=all" class="filter-btn px-4 py-2 text-sm rounded-full bg-gray-100 text-gray-800 transition hover:bg-gray-200 <?= $status_filtro === 'all' ? 'active' : '' ?>">Todos</a>
-                <a href="?status=Pendente" class="filter-btn px-4 py-2 text-sm rounded-full bg-gray-100 text-gray-800 transition hover:bg-gray-200 <?= $status_filtro === 'Pendente' ? 'active' : '' ?>">Pendentes</a>
-                <a href="?status=Concluído" class="filter-btn px-4 py-2 text-sm rounded-full bg-gray-100 text-gray-800 transition hover:bg-gray-200 <?= $status_filtro === 'Concluído' ? 'active' : '' ?>">Concluídos</a>
-                <a href="?status=Cancelado" class="filter-btn px-4 py-2 text-sm rounded-full bg-gray-100 text-gray-800 transition hover:bg-gray-200 <?= $status_filtro === 'Cancelado' ? 'active' : '' ?>">Cancelados</a>
+                <a href="?status=all" class="filter-btn all px-4 py-2 text-sm rounded-full transition <?= $status_filtro === 'all' ? 'active' : '' ?>">Todos</a>
+                <a href="?status=Pendente" class="filter-btn pendente px-4 py-2 text-sm rounded-full transition <?= $status_filtro === 'Pendente' ? 'active' : '' ?>">Pendentes</a>
+                <a href="?status=Confirmado" class="filter-btn confirmado px-4 py-2 text-sm rounded-full transition <?= $status_filtro === 'Confirmado' ? 'active' : '' ?>">Confirmados</a>
+                <a href="?status=Em Andamento" class="filter-btn andamento px-4 py-2 text-sm rounded-full transition <?= $status_filtro === 'Em Andamento' ? 'active' : '' ?>">Em Andamento</a>
+                <a href="?status=Concluído" class="filter-btn concluido px-4 py-2 text-sm rounded-full transition <?= $status_filtro === 'Concluído' ? 'active' : '' ?>">Concluídos</a>
+                <a href="?status=Cancelado" class="filter-btn cancelado px-4 py-2 text-sm rounded-full transition <?= $status_filtro === 'Cancelado' ? 'active' : '' ?>">Cancelados</a>
             </div>
         </div>
 
-        <div id="appointments-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+        <!-- Lista de Agendamentos -->
+        <div id="appointments-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             <?php if (empty($agendamentos)): ?>
                 <div class="col-span-1 lg:col-span-3 bg-white p-8 rounded-lg shadow text-center text-petGray">
-                    <svg class="mx-auto h-12 w-12 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    <svg class="mx-auto h-12 w-12 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
                     <h3 class="mt-2 text-lg font-medium">Nenhum agendamento encontrado</h3>
                     <p class="mt-1 text-sm text-gray-500">Você ainda não possui agendamentos com este status.</p>
                 </div>
             <?php else: ?>
-                <?php foreach ($agendamentos as $agendamento): ?>
+                <?php foreach ($agendamentos as $index => $agendamento): ?>
                     <?php
                         $status_classes = 'bg-gray-100 text-gray-800';
-                        if ($agendamento['status'] === 'Pendente') $status_classes = 'bg-yellow-100 text-yellow-800';
-                        if ($agendamento['status'] === 'Confirmado') $status_classes = 'bg-sky-100 text-sky-800';
-                        if ($agendamento['status'] === 'Em Andamento') $status_classes = 'bg-orange-100 text-orange-800';
-                        if ($agendamento['status'] === 'Concluído') $status_classes = 'bg-green-100 text-green-800';
-                        if ($agendamento['status'] === 'Cancelado') $status_classes = 'bg-red-100 text-red-800';
+                        $status_icon = '';
+                        if ($agendamento['status'] === 'Pendente') {
+                            $status_classes = 'bg-yellow-100 text-yellow-800';
+                            $status_icon = '<svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+                        }
+                        if ($agendamento['status'] === 'Confirmado') {
+                            $status_classes = 'bg-sky-100 text-sky-800';
+                            $status_icon = '<svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+                        }
+                        if ($agendamento['status'] === 'Em Andamento') {
+                            $status_classes = 'bg-orange-100 text-orange-800';
+                            $status_icon = '<svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>';
+                        }
+                        if ($agendamento['status'] === 'Concluído') {
+                            $status_classes = 'bg-green-100 text-green-800';
+                            $status_icon = '<svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>';
+                        }
+                        if ($agendamento['status'] === 'Cancelado') {
+                            $status_classes = 'bg-red-100 text-red-800';
+                            $status_icon = '<svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+                        }
+                        
+                        $has_actions = ($agendamento['status'] === 'Pendente' || $agendamento['status'] === 'Confirmado');
                     ?>
-                    <div class="appointment-card flex flex-col bg-white rounded-xl shadow-md overflow-hidden transition hover:shadow-xl" data-id="<?= $agendamento['id'] ?>" data-pet-name="<?= htmlspecialchars($agendamento['pet_nome'] ?? 'Pet Excluído') ?>">
-                        <div class="p-5">
+                    <div class="appointment-card flex flex-col bg-white rounded-xl shadow-md overflow-hidden transition hover:shadow-xl <?= $has_actions ? 'has-actions' : '' ?>" data-id="<?= $agendamento['id'] ?>" data-pet-name="<?= htmlspecialchars($agendamento['pet_nome'] ?? 'Pet Excluído') ?>">
+                        <div class="p-5 flex-1">
                             <div class="flex items-center justify-between">
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold <?= $status_classes ?>">
+                                    <?= $status_icon ?>
                                     <?= htmlspecialchars($agendamento['status']) ?>
                                 </span>
                                 <button type="button" class="details-toggle-btn p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600" data-target="#details-<?= $agendamento['id'] ?>">
@@ -254,21 +489,22 @@ function formatarData($data) {
             <?php endif; ?>
         </div>
 
+        <!-- Paginação Ajustada -->
         <?php if($total_paginas > 1): ?>
-        <nav class="mt-12 flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
+        <nav class="pagination-container mt-12 flex items-center justify-between px-4 sm:px-0">
             <div class="-mt-px flex w-0 flex-1">
-                <a href="?status=<?= $status_filtro ?>&pagina=<?= $pagina_atual - 1 ?>" class="page-item <?= $pagina_atual <= 1 ? 'disabled' : '' ?> inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                <a href="?status=<?= $status_filtro ?>&pagina=<?= $pagina_atual - 1 ?>" class="page-item <?= $pagina_atual <= 1 ? 'disabled' : '' ?> inline-flex items-center pr-1 pt-4 pb-4 text-sm font-medium text-gray-500 hover:text-gray-700">
                     <svg class="mr-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
                     Anterior
                 </a>
             </div>
             <div class="hidden md:-mt-px md:flex">
                 <?php for($i = 1; $i <= $total_paginas; $i++): ?>
-                <a href="?status=<?= $status_filtro ?>&pagina=<?= $i ?>" class="page-item <?= $i == $pagina_atual ? 'active' : '' ?> inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"><?= $i ?></a>
+                <a href="?status=<?= $status_filtro ?>&pagina=<?= $i ?>" class="page-item <?= $i == $pagina_atual ? 'active' : '' ?> inline-flex items-center px-4 pt-4 pb-4 text-sm font-medium text-gray-500 hover:text-gray-700"><?= $i ?></a>
                 <?php endfor; ?>
             </div>
             <div class="-mt-px flex w-0 flex-1 justify-end">
-                <a href="?status=<?= $status_filtro ?>&pagina=<?= $pagina_atual + 1 ?>" class="page-item <?= $pagina_atual >= $total_paginas ? 'disabled' : '' ?> inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                <a href="?status=<?= $status_filtro ?>&pagina=<?= $pagina_atual + 1 ?>" class="page-item <?= $pagina_atual >= $total_paginas ? 'disabled' : '' ?> inline-flex items-center pl-1 pt-4 pb-4 text-sm font-medium text-gray-500 hover:text-gray-700">
                     Próxima
                     <svg class="ml-3 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                 </a>
@@ -277,6 +513,7 @@ function formatarData($data) {
         <?php endif; ?>
     </main>
 
+    <!-- Modal Ajustado -->
     <div id="cancel-modal" class="modal fixed inset-0 z-50 hidden">
         <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
         <div class="flex items-center justify-center min-h-screen">
@@ -325,6 +562,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (detailsContent) {
                     toggleButton.classList.toggle('open');
                     detailsContent.classList.toggle('hidden');
+                    
+                    // Animação suave para os detalhes
+                    if (!detailsContent.classList.contains('hidden')) {
+                        detailsContent.style.maxHeight = '0';
+                        detailsContent.style.overflow = 'hidden';
+                        detailsContent.style.transition = 'max-height 0.3s ease-out';
+                        
+                        setTimeout(() => {
+                            detailsContent.style.maxHeight = detailsContent.scrollHeight + 'px';
+                        }, 10);
+                        
+                        setTimeout(() => {
+                            detailsContent.style.maxHeight = '';
+                            detailsContent.style.overflow = '';
+                        }, 300);
+                    }
                 }
             }
             
@@ -340,7 +593,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 agendamentoIdInput.value = agendamentoId;
                 modalPetName.textContent = petName;
+                
+                // Animação de abertura do modal
                 cancelModal.classList.remove('hidden');
+                setTimeout(() => {
+                    cancelModal.querySelector('.modal-overlay').style.opacity = '1';
+                }, 10);
             }
         });
     }
@@ -351,11 +609,63 @@ document.addEventListener('DOMContentLoaded', function() {
         const cancelForm = document.getElementById('cancel-form');
         const overlay = cancelModal.querySelector('.modal-overlay');
 
-        confirmCancelBtn.addEventListener('click', () => cancelForm.submit());
-        closeModalBtn.addEventListener('click', () => cancelModal.classList.add('hidden'));
-        overlay?.addEventListener('click', () => cancelModal.classList.add('hidden'));
+        confirmCancelBtn.addEventListener('click', () => {
+            // Animação de loading no botão
+            confirmCancelBtn.innerHTML = `
+                <svg class="animate-spin w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Cancelando...
+            `;
+            confirmCancelBtn.disabled = true;
+            
+            setTimeout(() => {
+                cancelForm.submit();
+            }, 500);
+        });
+        
+        const closeModal = () => {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                cancelModal.classList.add('hidden');
+                overlay.style.opacity = '';
+            }, 300);
+        };
+        
+        closeModalBtn.addEventListener('click', closeModal);
+        overlay?.addEventListener('click', closeModal);
     }
+    
+    // Efeito de hover nos filtros
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = '';
+            }
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                this.style.transform = '';
+            }
+        });
+    });
+    
+    // Remover efeito de parallax suave no scroll
+    // window.addEventListener('scroll', () => {
+    //     const scrolled = window.pageYOffset;
+    //     const parallax = document.querySelector('main');
+    //     const speed = scrolled * 0.1;
+        
+    //     if (parallax) {
+    //         parallax.style.transform = `translateY(${speed}px)`;
+    //     }
+    // });
 });
 </script>
+<?php require 'footer.php'; ?>
 </body>
 </html>
+
